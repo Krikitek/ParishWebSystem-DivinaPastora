@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagskedyul ng Serbisyo sa Simbahan</title>
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="user-schedule-service.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+    <div class="details-container">
+        <a href="dashboard-user.html" class="back-link view-files-link"
+           style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+            <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+            <span>Bumalik sa Dashboard</span>
+        </a>
+        <style>
+            @media (max-width: 600px) {
+                .details-container .back-link {
+                    width: 100%;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding: 8px 0;
+                }
+                .details-container .back-link span {
+                    font-size: 15px;
+                }
+            }
+        </style>
+
+        <!-- Schedule Form Section (Step 1) -->
+        <section class="form-section" id="schedule-form-section">
+            <div class="form-progress">
+                <div class="progress-step active" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label" id="step-1-label">Impormasyon ng Serbisyo</div>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Pagsusuri</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Pagkilala</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Bayad</div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <h2>Pagskedyul ng Serbisyo sa Simbahan
+                    <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                        Schedule Church Services
+                        </span>
+                </h2>
+                
+                <div class="form-group">
+                    <label>Uri ng Serbisyo <span class="required">*</span>
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                        Type of Service
+                        </span>
+                    </label>
+                    <div class="select-field">
+                        <select id="serviceTypeSelect" required>
+                            <option value="" disabled selected>PUMILI NG SERBISYO (Select Service)</option>
+                            <option value="BAPTISM">BINYAG (BAPTISM)</option>
+                            <option value="CONFIRMATION">KUMPIL (CONFIRMATION)</option>
+                            <option value="COMMUNION">UNANG KOMUNYON (FIRST COMMUNION)</option>
+                            <option value="WEDDING">KASAL (WEDDING)</option>
+                            <option value="FUNERAL">LIBING (FUNERAL)</option>
+                            <option value="INTENTION">INTENSYON SA MISA (MASS INTENTION)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div id="dynamic-service-fields">
+                    <div class="service-placeholder">
+                        <div class="info-text">
+                            <i class="fas fa-info-circle"></i> Ang mga field na kailangan para sa serbisyo ay lalabas dito batay sa inyong pinili
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn cancel-btn" id="cancel-schedule-btn">KANSELAHIN</button>
+                    <button class="btn next-btn" id="next-btn" disabled>SUSUNOD</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Step 1 Review Section -->
+        <section class="form-section" id="step1-review-section" style="display: none;">
+            <div class="form-progress">
+                <div class="progress-step completed" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Detalye ng Iskedyul</div>
+                </div>
+                <div class="progress-step active" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Buod</div>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Pagkilala</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Bayad</div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <h2>Pakikumpirma kung tama ang mga detalye
+                    <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                        Please confirm if the details are correct
+                        </span>
+                </h2>
+                
+                <div class="review-details">
+                    <div class="review-section">
+                        <h3>Impormasyon ng Serbisyo
+                            <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Service Information
+                                </span>
+                        </h3>
+                        <div class="review-row">
+                            <div class="review-label">Uri ng Serbisyo:
+                                <br>
+                                    <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Service Type:
+                                    </span>
+                            </div>
+                            <div class="review-value" id="review-service-type"></div>
+                        </div>
+                        <div class="review-row">
+                            <div class="review-label">Nais na Petsa:
+                                <br>
+                                    <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Preferred Date:
+                                    </span>
+                            </div>
+                            <div class="review-value" id="review-date"></div>
+                        </div>
+                        <div class="review-row">
+                            <div class="review-label">Nais na Oras:
+                                <br>
+                                    <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Preferred Time:
+                                    </span>
+                            </div>
+                            <div class="review-value" id="review-time"></div>
+                        </div>
+                        <div class="review-row">
+                            <div class="review-label">Limos sa Serbisyo:
+                                <br>
+                                    <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Service Fee:
+                                    </span>
+                            </div>
+                            <div class="review-value" id="review-fee"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="review-section">
+                        <h3>Mga Detalye ng Serbisyo
+                            <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Service Details
+                                </span>
+                        </h3>
+                        <div id="review-service-details">
+                            <!-- Dynamic service details will be populated here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn edit-btn" id="edit-step1-btn">BAGUHIN</button>
+                    <button class="btn confirm-btn" id="confirm-step1-btn">KUMPIRMAHIN</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Acknowledgement Section (Step 3) -->
+        <section class="form-section" id="acknowledgement-section" style="display: none;">
+            <div class="form-progress">
+                <div class="progress-step completed" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Detalye ng Iskedyul</div>
+                </div>
+                <div class="progress-step completed" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Buod</div>
+                </div>
+                <div class="progress-step active" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Pagkilala</div>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Bayad</div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <h2>Pagkilala</h2>
+                
+                <div class="terms-conditions-container">
+                    <h3>Mga Tuntunin at Kondisyon</h3>
+                    <div class="terms-text">
+                        <p>1. Ang lahat ng impormasyong ibinigay ay tumpak at kumpleto ayon sa aking kaalaman.</p>
+                        <p>2. Nauunawaan ko na ito ay isang kahilingan para sa reserbasyon at ang kumpirmasyon ay nakasalalay sa pagkakaroon.</p>
+                        <p>3. Sumasang-ayon ako na isumite ang lahat ng kinakailangang dokumento sa loob ng takdang panahon.</p>
+                        <p>4. Nauunawaan ko na kailangan ng bayad upang makumpirma ang reserbasyon.</p>
+                        <p>5. Tinatanggap ko na ang mga bayad ay hindi maibabalik ngunit maaaring ma-iskedyul muli nang may paunang abiso.</p>
+                        <p>6. Ang parokya ay may karapatang kanselahin o muling mag-iskedyul ng mga serbisyo dahil sa hindi inaasahang mga pangyayari.</p>
+                        <p>7. Darating ako nang hindi bababa sa 30 minuto bago ang nakatakdang oras ng serbisyo.</p>
+                        <p>8. Nauunawaan ko ang dress code at mga inaasahang ugali para sa mga serbisyo sa simbahan.</p>
+                    </div>
+                    
+                    <div class="consent-checkbox">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="acknowledgementTerms" required>
+                            <span>Kinikilala ko na nabasa, naintindihan, at sumasang-ayon ako sa mga tuntunin at kondisyong nabanggit sa itaas. Pinatutunayan ko na ang lahat ng impormasyong ibinigay ay totoo at tumpak.</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn back-btn" id="back-to-step1-review-btn">BUMALIK</button>
+                    <button class="btn next-btn" id="to-payment-btn">MAGPATULOY SA BAYAD</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Payment Section (Step 4) -->
+        <section class="form-section" id="payment-section" style="display: none;">
+            <div class="form-progress">
+                <div class="progress-step completed" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Detalye ng Iskedyul</div>
+                </div>
+                <div class="progress-step completed" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Buod</div>
+                </div>
+                <div class="progress-step completed" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Pagkilala</div>
+                </div>
+                <div class="progress-step active" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Bayad</div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <h2>Bayad</h2>
+                
+                <div class="review-details">
+                    <div class="review-section">
+                        <h3>Buod ng Serbisyo</h3>
+                        <div class="review-row">
+                            <div class="review-label">Napiling Serbisyo:</div>
+                            <div class="review-value" id="payment-service"></div>
+                        </div>
+                        <div class="review-row">
+                            <div class="review-label">Petsa:</div>
+                            <div class="review-value" id="payment-date"></div>
+                        </div>
+                        <div class="review-row">
+                            <div class="review-label">Oras:</div>
+                            <div class="review-value" id="payment-time"></div>
+                        </div>
+                        <div class="review-row">
+                            <div class="review-label">Bayad sa Serbisyo:</div>
+                            <div class="review-value" id="payment-fee"></div>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3>Paraan ng Pagbabayad</h3>
+                <div class="gcash-integrated-payment">
+                    <div class="gcash-header">
+                        <div class="gcash-logo">
+                            <i class="fas fa-mobile-alt"></i> GCash Payment
+                        </div>
+                        <div class="secure-badge">
+                            <i class="fas fa-shield-alt"></i> Secure
+                        </div>
+                    </div>
+                    
+                    <div class="gcash-form">
+                        <div class="info-text">
+                            <i class="fas fa-info-circle"></i> Mangyaring magbayad gamit ang GCash sa number: <strong>09123456789</strong> (Divina Pastora Parish)
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>GCash Number <span class="required">*</span></label>
+                                <div class="input-field">
+                                    <input type="text" id="gcashNumber" placeholder="Ilagay ang inyong GCash number" required>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Halaga <span class="required">*</span></label>
+                                <div class="input-field">
+                                    <input type="text" id="paymentAmount" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="payment-notice">
+                            <i class="fas fa-exclamation-triangle"></i> Pakisiguro na tama ang inyong GCash number at halaga bago magbayad.
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-actions">
+                    <button class="btn back-btn" id="back-to-acknowledgement-btn">BUMALIK</button>
+                    <button class="btn confirm-btn" id="pay-with-gcash-btn">MAGBAYAD GAMIT ANG GCASH</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- GCash Verification Modal -->
+        <div class="modal" id="gcash-verification-modal" style="display: none;">
+            <div class="modal-content">
+                <h2>GCash Verification</h2>
+                <p>Nakatanggap kami ng inyong bayad. Mangyaring ilagay ang verification code na naipadala sa inyong GCash number.</p>
+                <div class="form-group">
+                    <label>Verification Code</label>
+                    <input type="text" id="verification-code" placeholder="Ilagay ang 6-digit code" maxlength="6">
+                </div>
+                <div class="modal-buttons">
+                    <button id="verify-payment-btn" class="btn confirm-btn">VERIFY</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Receipt Section -->
+        <section class="form-section" id="receipt-section" style="display: none;">
+            <div class="form-progress">
+                <div class="progress-step completed" data-step="1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Detalye ng Iskedyul</div>
+                </div>
+                <div class="progress-step completed" data-step="2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">Buod</div>
+                </div>
+                <div class="progress-step completed" data-step="3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Pagkilala</div>
+                </div>
+                <div class="progress-step completed" data-step="4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">Bayad</div>
+                </div>
+            </div>
+
+            <div class="form-container">
+                <div class="payment-success">
+                    <div class="success-icon">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <h2>Matagumpay na Nabayad!</h2>
+                    <p>Ang inyong bayad ay natanggap na at ang reserbasyon ay nakumpirma.</p>
+                    
+                    <div class="payment-receipt">
+                        <div class="receipt-header">
+                            <h3>Resibo ng Bayad</h3>
+                            <div class="receipt-date" id="receipt-date"></div>
+                        </div>
+                        
+                        <div class="receipt-row">
+                            <div class="receipt-label">Transaction ID:</div>
+                            <div class="receipt-value" id="transaction-id"></div>
+                        </div>
+                        <div class="receipt-row">
+                            <div class="receipt-label">Uri ng Serbisyo:</div>
+                            <div class="receipt-value" id="receipt-service"></div>
+                        </div>
+                        <div class="receipt-row">
+                            <div class="receipt-label">Petsa at Oras:</div>
+                            <div class="receipt-value" id="receipt-datetime"></div>
+                        </div>
+                        <div class="receipt-row">
+                            <div class="receipt-label">Halagang Nabayad:</div>
+                            <div class="receipt-value" id="receipt-amount"></div>
+                        </div>
+                        <div class="receipt-row">
+                            <div class="receipt-label">GCash Number:</div>
+                            <div class="receipt-value" id="receipt-gcash"></div>
+                        </div>
+                        <div class="receipt-row">
+                            <div class="receipt-label">Status:</div>
+                            <div class="receipt-value success">BAYAD NA</div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn print-receipt-btn" id="print-receipt-btn">
+                            <i class="fas fa-print"></i> I-PRINT ANG RESIBO
+                        </button>
+                        <button class="btn next-btn" id="return-dashboard-btn">BUMALIK SA DASHBOARD</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="chatbot-container">
+        <div class="chatbot-icon" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>Chronos Support</h3>
+                <button id="close-chatbot"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot">
+                    Kumusta! Paano ko kayo matutulungan sa pagskedyul ng serbisyo sa simbahan ngayong araw?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-message" placeholder="I-type ang inyong mensahe...">
+                <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="user-dashboard.js"></script>
+    <script src="user-schedule-service.js"></script>
+    <script src="user-schedule-service-form-validation.js"></script>
+    <script src="user-schedule-service-payment.js"></script>
+    <script src="user-schedule-service-upload-validation.js"></script>
+</body>
+</html>

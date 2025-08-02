@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Files</title>
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="files-user.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <a href="dashboard-user.html" class="back-link view-files-link"
+           style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+            <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+            <span>Bumalik sa Dashboard</span>
+        </a>
+        <style>
+            @media (max-width: 600px) {
+                .details-container .back-link {
+                    width: 100%;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding: 8px 0;
+                }
+                .details-container .back-link span {
+                    font-size: 15px;
+                }
+            }
+        </style>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+            <!-- Files Section -->
+            <section id="files-section">
+                <div class="section-header">
+                    <h2>My Files</h2>
+                    <p>View and download your requested certificates and documents</p>
+                </div>
+
+                <div class="files-grid">
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-details">
+                            <h3>Baptismal Certificate</h3>
+                            <p>Requested: June 2, 2025</p>
+                            <p class="status approved">Ready for Download</p>
+                        </div>
+                        <div class="file-actions">
+                            <button class="download-btn"><i class="fas fa-download"></i> Download</button>
+                        </div>
+                    </div>
+
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-details">
+                            <h3>Confirmation Certificate</h3>
+                            <p>Requested: May 28, 2025</p>
+                            <p class="status pending">Processing</p>
+                        </div>
+                        <div class="file-actions">
+                            <button class="download-btn" disabled><i class="fas fa-hourglass-half"></i> Pending</button>
+                        </div>
+                    </div>
+
+                    <div class="file-card">
+                        <div class="file-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="file-details">
+                            <h3>Marriage Certificate</h3>
+                            <p>Requested: April 15, 2025</p>
+                            <p class="status approved">Ready for Download</p>
+                        </div>
+                        <div class="file-actions">
+                            <button class="download-btn"><i class="fas fa-download"></i> Download</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="no-files" style="display: none;">
+                    <i class="fas fa-folder-open"></i>
+                    <p>You don't have any files yet</p>
+                    <button class="request-btn">Request a Certificate</button>
+                </div>
+            </section>  
+            </section>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-icon" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>Chronos Support</h3>
+                <button id="close-chatbot"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot">
+                    Hello! How can I help you with Chronos today?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-message" placeholder="Type your message...">
+                <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <h2>Complete Your Donation</h2>
+            <div class="payment-details">
+                <p><strong>Amount:</strong> <span id="modal-amount">PHP 500</span></p>
+                <p><strong>Purpose:</strong> <span id="modal-purpose">General Parish Fund</span></p>
+            </div>
+            <div class="payment-methods">
+                <h3>Payment Method</h3>
+                <div class="payment-option">
+                    <input type="radio" id="gcash" name="payment" checked>
+                    <label for="gcash">GCash</label>
+                </div>
+            </div>
+            <div class="gcash-details">
+                <p>Please send your donation to:</p>
+                <div class="qr-code">
+                    <img src="/placeholder.svg?height=200&width=200" alt="GCash QR Code">
+                </div>
+                <p class="gcash-number">GCash Number: 09123456789</p>
+                <p>After sending, please upload your payment receipt:</p>
+                <input type="file" id="payment-receipt" accept="image/*">
+            </div>
+            <div class="modal-buttons">
+                <button id="cancel-payment">Cancel</button>
+                <button id="confirm-payment">Confirm Payment</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-user.js"></script>
+</body>
+</html>

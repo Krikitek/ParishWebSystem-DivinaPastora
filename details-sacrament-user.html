@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalye ng mga Sakramento</title>
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .details-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #2196F3;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .details-header {
+            margin-bottom: 30px;
+        }
+        
+        .details-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .details-header p {
+            color: #666;
+        }
+        
+        .sacrament-tabs {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .sacrament-tab {
+            padding: 10px 15px;
+            background-color: #e0e0e0;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 500;
+        }
+        
+        .sacrament-tab:hover {
+            background-color: #d0d0d0;
+        }
+        
+        .sacrament-tab.active {
+            background-color: #2196F3;
+            color: white;
+        }
+        
+        .sacrament-content {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 25px;
+        }
+        
+        .sacrament-panel {
+            display: none;
+        }
+        
+        .sacrament-panel.active {
+            display: block;
+        }
+        
+        .sacrament-panel h2 {
+            color: #2196F3;
+            margin-top: 0;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .sacrament-panel h2 i {
+            font-size: 24px;
+        }
+        
+        .sacrament-description {
+            background-color: #ededed;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            margin-bottom: 25px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .sacrament-description p {
+            margin: 0;
+            color: #005eaa;
+            font-style: italic;
+        }
+        
+        .requirements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .requirement-section {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .requirement-section h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .requirement-section h3 i {
+            color: #2196F3;
+        }
+        
+        .requirement-section ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .requirement-section li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .process-timeline {
+            margin-bottom: 25px;
+        }
+        
+        .process-timeline h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+        
+        .timeline-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .timeline-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+        }
+        
+        .timeline-number {
+            width: 30px;
+            height: 30px;
+            background-color: #2196F3;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+        
+        .timeline-content h4 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+        
+        .timeline-content p {
+            margin: 0;
+            color: #555;
+            font-size: 14px;
+        }
+        
+        .fees-section {
+            background-color: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        
+        .fees-section h3 {
+            color: #2e7d32;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .fees-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        
+        .fee-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .fee-item h4 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .fee-item p {
+            margin: 0;
+            color: #2e7d32;
+            font-weight: bold;
+            font-size: 18px;
+        }
+        
+        .important-notes {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .important-notes h3 {
+            color: #856404;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .important-notes ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .important-notes li {
+            margin-bottom: 8px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <a href="dashboard-user.html" class="back-link view-files-link"
+           style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+            <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+            <span>Bumalik sa Dashboard</span>
+        </a>
+        <style>
+            @media (max-width: 600px) {
+                .details-container .back-link {
+                    width: 100%;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding: 8px 0;
+                }
+                .details-container .back-link span {
+                    font-size: 15px;
+                }
+            }
+        </style>
+        
+        <div class="details-header">
+            <h1>Detalye ng mga Sakramento</h1>
+            <p>Alamin ang mga kinakailangan, proseso, at mahalagang impormasyon para sa bawat sakramento sa Parokya ng Divina Pastora.</p>
+        </div>
+        
+        <div class="sacrament-tabs">
+            <button class="sacrament-tab active" data-tab="baptism">Binyag</button>
+            <button class="sacrament-tab" data-tab="confirmation">Kumpil</button>
+            <button class="sacrament-tab" data-tab="communion">Unang Komunyon</button>
+            <button class="sacrament-tab" data-tab="marriage">Kasal</button>
+            <button class="sacrament-tab" data-tab="funeral">Libing</button>
+        </div>
+        
+        <div class="sacrament-content">
+            <!-- Baptism Panel -->
+            <div class="sacrament-panel active" id="baptism">
+                <h2><i class="fas fa-baby"></i> Binyag (Baptism)</h2>
+                
+                <div class="sacrament-description">
+                    <p>Ang Binyag ay ang unang sakramento na tinatanggap ng isang tao sa Simbahang Katoliko. Ito ay nagbubura ng orihinal na kasalanan at ginagawang anak ng Diyos ang nabinyagan.</p>
+                </div>
+                
+                <div class="requirements-grid">
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-file-alt"></i> Mga Dokumento</h3>
+                        <ul>
+                            <li>Birth Certificate ng bata</li>
+                            <li>Pre-Jordan Seminar Card ng Ama at Ina</li>
+                            <li>Valid ID ng Ama at Ina</li>
+                            <li>Permit mula sa parokyang kinabibilangan kung hindi taga-barangay Tambo, Sico at San Salvador</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-users"></i> Mga Ninong/Ninang</h3>
+                        <ul>
+                            <li>18 taong gulang pataas</li>
+                            <li>Nabinyagan at nakumpil na Katoliko</li>
+                            <li>Marriage Contract kung kasal sa simbahan</li>
+                            <li>Kumpil Certificate kung hindi kasal sa simbahan</li>
+                            <li>Pre-Jordan Seminar Card</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="process-timeline">
+                    <h3>Proseso ng Binyag</h3>
+                    <div class="timeline-steps">
+                        <div class="timeline-step">
+                            <div class="timeline-number">1</div>
+                            <div class="timeline-content">
+                                <h4>Pre-Baptismal Seminar</h4>
+                                <p>Dadalo ang mga magulang at ninong/ninang sa seminar tungkol sa kahulugan ng Binyag</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="timeline-number">2</div>
+                            <div class="timeline-content">
+                                <h4>Pagkumpleto ng Dokumento</h4>
+                                <p>Ipasa ang lahat ng kinakailangang dokumento sa parish office</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="timeline-number">3</div>
+                            <div class="timeline-content">
+                                <h4>Pag-iskedyul</h4>
+                                <p>Piliin ang petsa at oras ng binyag (karaniwang Linggo pagkatapos ng misa)</p>
+                            </div>
+                        </div>
+                        
+                        <div class="timeline-step">
+                            <div class="timeline-number">4</div>
+                            <div class="timeline-content">
+                                <h4>Seremonya ng Binyag</h4>
+                                <p>Ang aktwal na seremonya ng binyag sa harap ng komunidad</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="fees-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Limos sa Binyag</h3>
+                    <div class="fees-grid">
+                        <div class="fee-item">
+                            <h4>Binyag</h4>
+                            <p>₱400</p>
+                        </div>
+                        <div class="fee-item">
+                            <h4>Sertipiko</h4>
+                            <p>₱100</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="important-notes">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Mahalagang Paalala</h3>
+                    <ul>
+                        <li>Kailangan ng 2 linggong advance booking</li>
+                        <li>Ang binyag ay ginagawa tuwing Linggo 10:00 AM</li>
+                        <li>Ang Pre-Jordan Seminar ay ginagawa tuwing Linggo, 8:30 AM sa BAPTISTRY</li>
+                        <li>Magdala ng sariling bimpo at kandila</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Confirmation Panel -->
+            <div class="sacrament-panel" id="confirmation">
+                <h2><i class="fas fa-dove"></i> Kumpil (Confirmation)</h2>
+                
+                <div class="sacrament-description">
+                    <p>Ang Kumpil ay sakramento na nagpapalakas sa pananampalataya at nagbibigay ng mga regalo ng Espiritu Santo sa mga nabinyagan na.</p>
+                </div>
+                
+                <div class="requirements-grid">
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-file-alt"></i> Mga Dokumento</h3>
+                        <ul>
+                            <li>Baptismal Certificate ng  kukumpilan</li>
+                            <li>First Communion Certificate</li>
+                            <li>Permit mula sa parokyang kinabibilangan kung hindi taga-barangay Tambo, Sico at San Salvador</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-user-check"></i> Mga Sponsor</h3>
+                        <ul>
+                            <li>18 taong gulang pataas</li>
+                            <li>Nabinyagan at nakumpil na Katoliko</li>
+                            <li>Marriage Contract kung kasal sa simbahan</li>
+                            <li>Kumpil Certificate kung hindi kasal sa simbahan</li>
+                            <li>Pre-Pentecost Seminar Card</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="fees-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Limos sa Kumpil</h3>
+                    <div class="fees-grid">
+                        <div class="fee-item">
+                            <h4>Kumpil</h4>
+                            <p>₱300</p>
+                        </div>
+                        <div class="fee-item">
+                            <h4>Sertipiko</h4>
+                            <p>₱100</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- First Communion Panel -->
+            <div class="sacrament-panel" id="communion">
+                <h2><i class="fas fa-bread-slice"></i> Unang Komunyon (First Communion)</h2>
+                
+                <div class="sacrament-description">
+                    <p>Ang Unang Komunyon ay ang unang pagkakataong tumatanggap ang bata ng Eucharist, ang Katawan at Dugo ni Kristo.</p>
+                </div>
+                
+                <div class="requirements-grid">
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-file-alt"></i> Mga Dokumento</h3>
+                        <ul>
+                            <li>Baptismal Certificate</li>
+                            <li>Birth Certificate</li>
+                            <li>Certificate of Attendance sa First Communion Classes</li>
+                            <li>Valid ID ng mga magulang</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-child"></i> Mga Kinakailangan</h3>
+                        <ul>
+                            <li>7-8 taong gulang</li>
+                            <li>Nakakaintindi ng kahulugan ng Eucharist</li>
+                            <li>Nakapag-aral ng basic catechism</li>
+                            <li>Nakakagawa ng first confession</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="fees-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Mga Bayarin</h3>
+                    <div class="fees-grid">
+                        <div class="fee-item">
+                            <h4>Unang Komunyon</h4>
+                            <p>₱200</p>
+                        </div>
+                        <div class="fee-item">
+                            <h4>Sertipiko</h4>
+                            <p>₱100</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Marriage Panel -->
+            <div class="sacrament-panel" id="marriage">
+                <h2><i class="fas fa-ring"></i> Kasal (Marriage)</h2>
+                
+                <div class="sacrament-description">
+                    <p>Ang Kasal ay sakramento na nagbubuklod sa dalawang taong nagmamahalan sa harap ng Diyos at ng komunidad.</p>
+                </div>
+                
+                <div class="requirements-grid">
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-file-alt"></i> Mga Kailangan</h3>
+                        <ul>
+                            <li>Partida ng Binyag na ang purpose ay for MARRIAGE (kukunin kung saang simbahan bininyagan)</li>
+                            <li>Partida ng Kumpil na ang purpose ay for MARRIAGE (kukunin kung saang simbahan kinumpilan)</li>
+                            <li>Banns & Permit from other Parish</li>
+                            <li>Dispensation of Banns (kung kailangan)</li>
+                            <li>Photocopy of CENOMAR (sa PSA kukuha)</li>
+                            <li>Lisensya sa Kasal (sa City Hall kukuha)</li>
+                            <li>Seminar sa Family and Life</li>
+                            <li>Pagsusulit o Canonical Interview</li>
+                            <li>Pagpapabinyag o pagpapakumpil kung wala pang Binyag o Kumpil</li>
+                            <li>Kumpisal</li>
+                            <li>Pangalan ng mga Ninong at Ninang sa kasal</li>
+                            <li>4R picture</li>
+                        </ul>
+                    </div>
+
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-file-alt"></i> Kung OFW o Foreigner</h3>
+                        <ul>
+                            <li>Freedom to Marry (Church)</li>
+                            <li>Legal Capacity (Embassy)</li>
+                            <li>Interview sa Chancery Office</li>
+                        </ul>
+                        <h3><i class="fas fa-file-alt"></i> Kung iba ang relihiyon ng mapapangasawa</h3>
+                        <ul>
+                            <li>Interview sa Chancery Office</li>
+                        </ul>
+                        <h3><i class="fas fa-file-alt"></i> Kung may nakaraang kasal ang mapapangasawa</h3>
+                        <ul>
+                            <li>Divorce Papers</li>
+                            <li>Interview sa Chancery Office</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="sacrament-description">
+                    <p>Ang hindi pagtugon sa mga nabanggit na kasunduan ay hindi pagkatuloy sa Kasal.</p>
+                </div>
+
+                <div class="fees-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Mga Bayarin</h3>
+                    <div class="fees-grid">
+                        <div class="fee-item">
+                            <h4>Single Pair</h4>
+                            <p>₱5,000</p>
+                        </div>
+                        <div class="fee-item">
+                            <h4>Aral Batangueño</h4>
+                            <p>₱300</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="important-notes">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Mahalagang Paalala</h3>
+                    <ul>
+                        <li>Ang Kandila, Veil, Cord, Singsing at Bible ay sa ikakasal manggagaling.</li>
+                        <li>Hindi pinahihintulutan ang Little Bride & Little Groom.</li>
+                        <li>Hindi pinahihintulutan ang pagsusuot ng mga damit na "daring".</li>
+                        <li>Gumamit ng "shawl" o bandana kung hindi maiiwasan ang pagsusuot nito.</li>
+                        <li>Hindi pinahihintulutan ang "close door" at pagsasabog ng "petals" o bulaklak.</li>
+                        <li>Kung sakaling panahon ng Adbiyento ang kasal, kulay puti at berde lamang na bulaklak ang maaaring gamitin.</li>
+                        <li>Kung mayroon kayong Guest Priest, makikipasa sa opisina ang photocopy ng ASM at CELEBRET ID ng paring magkakasal.</li>
+                        <li>P2,000 reservation fee is nonrefundable but deductible sa total fee.</li>
+                        <li>Photographers are only given 20 minutes for the photo-op.</li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <!-- Funeral Panel -->
+            <div class="sacrament-panel" id="funeral">
+                <h2><i class="fas fa-cross"></i> Misa sa Paglibing (Funeral Mass)</h2>
+                
+                <div class="sacrament-description">
+                    <p>Ang Misa sa Paglibing ay panalangin para sa kaluluwa ng yumaong miyembro ng pamilya at pagbibigay ng kaaliwan sa mga naulila.</p>
+                </div>
+                
+                <div class="requirements-grid">
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-file-alt"></i> Mga Dokumento</h3>
+                        <ul>
+                            <li>Death Certificate</li>
+                            <li>Valid ID ng nagre-request</li>
+                            <li>Proof of relationship sa namatay</li>
+                            <li>Funeral home contact details</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="requirement-section">
+                        <h3><i class="fas fa-clock"></i> Pag-iskedyul</h3>
+                        <ul>
+                            <li>24 oras advance notice</li>
+                            <li>Available araw-araw</li>
+                            <li>Coordinate with funeral home</li>
+                            <li>Flexible sa oras</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="fees-section">
+                    <h3><i class="fas fa-money-bill-wave"></i> Mga Bayarin</h3>
+                    <div class="fees-grid">
+                        <div class="fee-item">
+                            <h4>Funeral Mass</h4>
+                            <p>₱1,000</p>
+                        </div>
+                        <div class="fee-item">
+                            <h4>Mass Intention</h4>
+                            <p>₱150</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Tab functionality
+            const tabs = document.querySelectorAll('.sacrament-tab');
+            const panels = document.querySelectorAll('.sacrament-panel');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const tabId = this.getAttribute('data-tab');
+                    
+                    // Remove active class from all tabs and panels
+                    tabs.forEach(t => t.classList.remove('active'));
+                    panels.forEach(p => p.classList.remove('active'));
+                    
+                    // Add active class to current tab and panel
+                    this.classList.add('active');
+                    document.getElementById(tabId).classList.add('active');
+                });
+            });
+        });
+    </script>
+
+    <script src="dashboard-user.js"></script>
+
+</body>
+</html>

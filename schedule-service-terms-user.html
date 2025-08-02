@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Church Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="schedule-service-terms-user.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+      <a href="dashboard-user.html" class="back-link view-files-link"
+           style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+            <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+            <span>Bumalik sa Dashboard</span>
+        </a>
+        <style>
+            @media (max-width: 600px) {
+                .details-container .back-link {
+                    width: 100%;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding: 8px 0;
+                }
+                .details-container .back-link span {
+                    font-size: 15px;
+                }
+            }
+        </style>
+    <main>
+        <div class="terms-page-container">
+            <div class="terms-content">
+                <h1>Mga Tuntunin at Kundisyon para sa mga Serbisyo ng Simbahan</h1>
+                <p class="terms-intro">Mangyaring basahin nang mabuti ang mga sumusunod na tuntunin at kundisyon bago magpatuloy sa pag-schedule ng mga serbisyo ng simbahan.</p>
+                
+                <div class="terms-section">
+                    <h2>1. Patakaran sa Reberbasyon</h2>
+                    <ul>
+                        <li>Ang lahat ng reserbasyon ay nakadepende sa availability at pag-apruba ng opisina ng parokya.</li>
+                        <li>Ang reserbasyon ay kailangang gawin nang hindi bababa sa 2 linggo bago ang serbisyo para sa karamihan ng mga serbisyo.</li>
+                        <li>Para sa kasal, ang reserbasyon ay kailangang gawin nang hindi bababa sa 6 na buwan bago ang petsa ng kasal.</li>
+                        <li>May karapatan ang parokya na kanselahin o ilipat ang serbisyo dahil sa hindi inaasahang pangyayari.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section">
+                    <h2>2. Patakaran sa Pagbabayad</h2>
+                    <ul>
+                        <li>Kailangang bayaran nang buo upang makumpirma ang iyong reserbasyon.</li>
+                        <li>GCash lamang ang tinatanggap na paraan ng pagbabayad.</li>
+                        <li>Ang mga bayad ay hindi mare-refund ngunit maaaring ilipat sa ibang petsa kung may paunang abiso.</li>
+                        <li>Maaaring may karampatang bayad para sa proseso ng transaksyon.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section">
+                    <h2>3. Paglipat ng Petsa at Kanselasyon</h2>
+                    <ul>
+                        <li>Ang kahilingan sa paglipat ng petsa ay kailangang gawin nang hindi bababa sa 3 araw bago ang nakatakdang serbisyo.</li>
+                        <li>Ang pagkansela na mas mababa sa 3 araw bago ang serbisyo ay hindi na maaaring ilipat sa ibang petsa.</li>
+                        <li>May karapatan ang parokya na maningil ng bayad para sa pagproseso ng paglipat ng petsa.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section">
+                    <h2>4. Mga Kinakailangang Dokumento</h2>
+                    <ul>
+                        <li>Ang lahat ng kinakailangang dokumento ay kailangang isumite nang hindi bababa sa 1 linggo bago ang serbisyo.</li>
+                        <li>Ang hindi pagsumite ng mga kinakailangang dokumento ay maaaring magresulta sa pagkansela ng serbisyo.</li>
+                        <li>Hindi responsable ang parokya sa anumang pagkakamali sa mga isinumiteng dokumento.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section">
+                    <h2>5. Mga Tiyak na Tuntunin para sa Serbisyo</h2>
+                    
+                    <h3>5.1. Binyag</h3>
+                    <ul>
+                        <li>Dapat naroon ang mga magulang at mga ninong/ninang sa seremonya.</li>
+                        <li>Kailangan ang isa sa mga ninong/ninang ay aktibong Katoliko.</li>
+                    </ul>
+                    
+                    <h3>5.2. Kumpil</h3>
+                    <ul>
+                        <li>Dapat nakatapos ng kinakailangang katesismo ang kumpilando.</li>
+                        <li>Ang mga sponsor ay dapat kumpiladong Katoliko.</li>
+                    </ul>
+                    
+                    <h3>5.3. Unang Komunyon</h3>
+                    <ul>
+                        <li>Dapat nakatapos ng kinakailangang klase para sa Unang Komunyon ang bata.</li>
+                    </ul>
+                    
+                    <h3>5.4. Kasal</h3>
+                    <ul>
+                        <li>Dapat makumpleto ng magkasintahan ang pre-marriage counseling program.</li>
+                        <li>Lahat ng kinakailangang kanonikal ay dapat matupad bago ang petsa ng kasal.</li>
+                    </ul>
+                    
+                    <h3>5.5. Misa sa Paglibing</h3>
+                    <ul>
+                        <li>Kailangang ipaalam sa parokya nang hindi bababa sa 24 oras bago ang nais na oras ng misa sa paglibing.</li>
+                    </ul>
+                    
+                    <h3>5.6. Intensyon sa Misa</h3>
+                    <ul>
+                        <li>Ang mga intensyon sa misa ay dapat isumite nang hindi bababa sa 3 araw bago ang nais na petsa.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section">
+                    <h2>6. Patakaran sa Privacy</h2>
+                    <ul>
+                        <li>Ang personal na impormasyon na nakolekta ay gagamitin lamang para sa layunin ng serbisyong hinihiling.</li>
+                        <li>Maaaring ibahagi ang impormasyon sa mga kaugnay na kawani ng simbahan para sa koordinasyon ng serbisyo.</li>
+                        <li>Hindi ibebenta o ipapamahagi ng parokya ang iyong impormasyon sa iba para sa layunin ng marketing.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-section">
+                    <h2>7. Pangkalahatang Probisyon</h2>
+                    <ul>
+                        <li>May karapatan ang parokya na baguhin ang mga tuntunin at kundisyon anumang oras.</li>
+                        <li>Sa pagpapatuloy ng reserbasyon, sumasang-ayon kang sundin ang lahat ng patakaran at regulasyon ng parokya.</li>
+                        <li>Anumang hindi pagkakaunawaan ay lulutasin sa maayos na paraan.</li>
+                    </ul>
+                </div>
+                
+                <div class="terms-agreement">
+                    <form id="terms-form">
+                        <div class="agreement-checkbox">
+                            <input type="checkbox" id="agree-terms" required>
+                            <label for="agree-terms">Nabasa at sumasang-ayon ako sa mga tuntunin at kundisyon</label>
+                        </div>
+                        <div class="agreement-checkbox">
+                            <input type="checkbox" id="agree-privacy" required>
+                            <label for="agree-privacy">Sumasang-ayon ako sa pagkuha at pagproseso ng aking personal na datos</label>
+                        </div>
+                        <div class="terms-buttons">
+                            <a href="dashboard-user.html" class="btn cancel-btn">Kanselahin</a>
+                            <button type="submit" id="proceed-to-scheduling" class="btn proceed-btn">Magpatuloy sa Pag-schedule</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-icon" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>Suporta ng Chronos</h3>
+                <button id="close-chatbot"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot">
+                    Kumusta! Paano kita matutulungan sa pag-schedule ng mga serbisyo ng simbahan ngayon?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-message" placeholder="I-type ang iyong mensahe...">
+                <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const termsForm = document.getElementById('terms-form');
+            const agreeTerms = document.getElementById('agree-terms');
+            const agreePrivacy = document.getElementById('agree-privacy');
+            const proceedButton = document.getElementById('proceed-to-scheduling');
+            
+            // Chatbot functionality
+            const chatbotToggle = document.getElementById('chatbot-toggle');
+            const chatbotWindow = document.getElementById('chatbot-window');
+            const closeChat = document.getElementById('close-chatbot');
+            
+            chatbotToggle.addEventListener('click', function() {
+                chatbotWindow.style.display = chatbotWindow.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            closeChat.addEventListener('click', function() {
+                chatbotWindow.style.display = 'none';
+            });
+            
+            // Check if both checkboxes are checked to enable the proceed button
+            function checkAgreements() {
+                proceedButton.disabled = !(agreeTerms.checked && agreePrivacy.checked);
+            }
+            
+            agreeTerms.addEventListener('change', checkAgreements);
+            agreePrivacy.addEventListener('change', checkAgreements);
+            
+            // Initially disable the button
+            proceedButton.disabled = true;
+            
+            // Handle form submission
+            termsForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                if (agreeTerms.checked && agreePrivacy.checked) {
+                    window.location.href = 'user-schedule-service.html';
+                }
+            });
+        });
+    </script>
+    <script src="dashboard-user.js"></script>
+</body>
+</html>

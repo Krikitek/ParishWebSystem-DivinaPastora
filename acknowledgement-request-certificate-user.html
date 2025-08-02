@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acknowledgement - Chronos</title>
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="request-certificate-form-user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .acknowledgement-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .status-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            border-radius: 8px;
+        }
+
+        .status-pending {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffc107;
+        }
+
+        .status-approved {
+            background: linear-gradient(135deg, #d4edda, #a8e6cf);
+            border: 2px solid #28a745;
+        }
+
+        .status-rejected {
+            background: linear-gradient(135deg, #f8d7da, #ff7675);
+            border: 2px solid #dc3545;
+        }
+
+        .status-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .status-pending .status-icon {
+            color: #856404;
+        }
+
+        .status-approved .status-icon {
+            color: #155724;
+        }
+
+        .status-rejected .status-icon {
+            color: #721c24;
+        }
+
+        .status-title {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .status-message {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+        }
+
+        .request-details {
+            background: #f8f9fa;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin: 2rem 0;
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-value {
+            color: #212529;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 2rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .btn-primary {
+            background: #007bff;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #0056b3;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #1e7e34;
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #545b62;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .btn-warning:hover {
+            background: #e0a800;
+        }
+
+        .refresh-notice {
+            background: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 6px;
+            padding: 1rem;
+            margin: 1rem 0;
+            text-align: center;
+        }
+
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #007bff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .print-area {
+            display: none;
+        }
+
+        @media print {
+            body * {
+                visibility: hidden;
+            }
+            .print-area, .print-area * {
+                visibility: visible;
+            }
+            .print-area {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .acknowledgement-container {
+                margin: 1rem;
+                padding: 1rem;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+            
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <div class="details-container">
+            <a href="dashboard-user.html" class="back-link view-files-link"
+               style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+                <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+                <span>Bumalik sa Dashboard</span>
+            </a>
+
+            <!-- Progress Steps -->
+            <section class="form-section">
+                <div class="form-progress">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Request Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Delivery Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Buod
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Summary
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active" id="step-4-progress">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" id="step-5-progress">
+                        <div class="step-number">5</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acknowledgement-container">
+                    <!-- Status Header -->
+                    <div class="status-header" id="status-header">
+                        <div class="status-icon" id="status-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="status-title" id="status-title">
+                            Nakatanggap ng Kahilingan
+                        </div>
+                        <div class="status-message" id="status-message">
+                            Ang inyong kahilingan ay nakatanggap na at naghihintay ng pag-apruba ng admin.
+                        </div>
+                        <div class="status-message" style="font-style: italic; color: #666;">
+                            <span id="status-message-english">Your request has been received and is waiting for admin approval.</span>
+                        </div>
+                    </div>
+
+                    <!-- Auto-refresh Notice -->
+                    <div class="refresh-notice" id="refresh-notice">
+                        <i class="fas fa-sync-alt"></i>
+                        Ang status ay awtomatikong mag-uupdate. Maaari din ninyong i-refresh ang page para sa pinakabagong update.
+                        <br>
+                        <em>Status will automatically update. You can also refresh the page for the latest updates.</em>
+                    </div>
+
+                    <!-- Request Details -->
+                    <div class="request-details">
+                        <h3 style="margin-bottom: 1rem; color: #495057;">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <small style="font-style: italic; color: #6c757d;">Request Details</small>
+                        </h3>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Reference Number:</div>
+                            <div class="detail-value" id="reference-number">Loading...</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Certificate Type:</div>
+                            <div class="detail-value" id="certificate-type">Loading...</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Requester Name:</div>
+                            <div class="detail-value" id="requester-name">Loading...</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Date Submitted:</div>
+                            <div class="detail-value" id="date-submitted">Loading...</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Purpose:</div>
+                            <div class="detail-value" id="purpose">Loading...</div>
+                        </div>
+                        
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value" id="current-status">Loading...</div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons" id="action-buttons">
+                        <button class="btn btn-warning" id="refresh-status-btn">
+                            <i class="fas fa-sync-alt"></i>
+                            I-refresh ang Status
+                        </button>
+                        
+                        <button class="btn btn-success" id="print-acknowledgement-btn" style="display: none;">
+                            <i class="fas fa-print"></i>
+                            I-print ang Acknowledgement
+                        </button>
+                        
+                        <button class="btn btn-primary" id="proceed-payment-btn" style="display: none;">
+                            <i class="fas fa-credit-card"></i>
+                            Magpatuloy sa Bayad
+                        </button>
+                        
+                        <a href="dashboard-user.html" class="btn btn-secondary">
+                            <i class="fas fa-home"></i>
+                            Bumalik sa Dashboard
+                        </a>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Print Area -->
+    <div class="print-area" id="print-area">
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <h1>Chronos Parish System</h1>
+            <h2>Certificate Request Acknowledgement</h2>
+        </div>
+        
+        <div id="print-content">
+            <!-- Print content will be populated here -->
+        </div>
+        
+        <div style="margin-top: 2rem; text-align: center; font-size: 0.9rem; color: #666;">
+            <p>Printed on: <span id="print-date"></span></p>
+            <p>This is an official acknowledgement from Chronos Parish System</p>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-icon" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>Chronos Support</h3>
+                <button id="close-chatbot"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot">
+                    Kumusta! Paano ko kayo matutulungan sa Chronos ngayon?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-message" placeholder="I-type ang inyong mensahe... / Type your message...">
+                <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-user.js"></script>
+    <script src="acknowledgement-request-certificate-handler-user.js"></script>
+</body>
+</html>

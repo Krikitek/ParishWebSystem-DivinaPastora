@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalye ng Pag-iskedyul ng Serbisyo</title>
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .details-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .back-link {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #2196F3;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        
+        .details-header {
+            margin-bottom: 30px;
+        }
+        
+        .details-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        
+        .details-header p {
+            color: #666;
+        }
+        
+        .service-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+        
+        .service-type {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+        
+        .service-type:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+        
+        .service-type h3 {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #FFC107;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .service-type h3 i {
+            font-size: 20px;
+        }
+        
+        .service-type p {
+            color: #555;
+            margin-bottom: 15px;
+        }
+        
+        .service-type ul {
+            margin-bottom: 20px;
+            padding-left: 20px;
+        }
+        
+        .service-type li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .schedule-btn {
+            display: inline-block;
+            background-color: #FFC107;
+            color: #333;
+            padding: 10px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s;
+        }
+        
+        .schedule-btn:hover {
+            background-color: #FFB300;
+        }
+        
+        .schedule-info {
+            background-color: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .schedule-info h3 {
+            color: #856404;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .schedule-info ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .schedule-info li {
+            margin-bottom: 8px;
+            color: #856404;
+        }
+        
+        .requirements-section {
+            margin-bottom: 40px;
+        }
+        
+        .requirements-section h2 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        
+        .requirement-item {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 15px;
+        }
+        
+        .requirement-item h3 {
+            color: #FFC107;
+            margin-top: 0;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .requirement-item h3 i {
+            font-size: 18px;
+        }
+        
+        .requirement-item ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        
+        .requirement-item li {
+            margin-bottom: 8px;
+            color: #555;
+        }
+        
+        .calendar-section {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .calendar-section h3 {
+            color: #333;
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+        
+        .time-slots {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .time-slot {
+            background-color: #f5f5f5;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .time-slot:hover {
+            background-color: #e0e0e0;
+        }
+        
+        .time-slot.available {
+            background-color: #e8f5e8;
+            border-color: #4CAF50;
+        }
+        
+        .time-slot.unavailable {
+            background-color: #ffebee;
+            border-color: #f44336;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+        <a href="dashboard-user.html" class="back-link view-files-link"
+           style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+            <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+            <span>Bumalik sa Dashboard</span>
+        </a>
+        <style>
+            @media (max-width: 600px) {
+                .details-container .back-link {
+                    width: 100%;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding: 8px 0;
+                }
+                .details-container .back-link span {
+                    font-size: 15px;
+                }
+            }
+        </style>
+        
+        <div class="details-header">
+            <h1>Detalye ng Pag-iskedyul ng Serbisyo</h1>
+            <p>Alamin kung paano mag-iskedyul ng mga serbisyo sa Parokya ng Divina Pastora at ang mga kinakailangan para sa bawat uri ng serbisyo.</p>
+        </div>
+        
+        <div class="schedule-info">
+            <h3><i class="fas fa-info-circle"></i> Mahalagang Paalala</h3>
+            <ul>
+                <li>Lahat ng pag-iskedyul ay dapat gawin nang hindi bababa sa 2 linggo bago ang nais na petsa</li>
+                <li>Para sa mga kasal, kailangan ng hindi bababa sa 6 na buwan advance booking</li>
+                <li>Ang mga available na oras ay maaaring mag-iba depende sa mga espesyal na okasyon</li>
+                <li>Ang kumpirmasyon ng schedule ay makakamit lamang pagkatapos ng pagbabayad</li>
+            </ul>
+        </div>
+        
+        <div class="service-types">
+            <div class="service-type">
+                <h3><i class="fas fa-baby"></i> Binyag</h3>
+                <p>Mag-iskedyul ng binyag para sa inyong anak.</p>
+                <ul>
+                    <li>Available tuwing Linggo pagkatapos ng 10:00 AM Mass</li>
+                    <li>Kailangan ng pre-baptismal seminar</li>
+                    <li>Bayad: ₱500</li>
+                </ul>
+                <a href="baptism-schedule.html" class="schedule-btn">Mag-iskedyul</a>
+            </div>
+            
+            <div class="service-type">
+                <h3><i class="fas fa-dove"></i> Kumpil</h3>
+                <p>Mag-iskedyul ng kumpil para sa mga kabataan.</p>
+                <ul>
+                    <li>Available sa mga itinakdang petsa ng taon</li>
+                    <li>Kailangan ng confirmation classes</li>
+                    <li>Bayad: ₱300</li>
+                </ul>
+                <a href="confirmation-schedule.html" class="schedule-btn">Mag-iskedyul</a>
+            </div>
+            
+            <div class="service-type">
+                <h3><i class="fas fa-ring"></i> Kasal</h3>
+                <p>Mag-iskedyul ng kasal sa simbahan.</p>
+                <ul>
+                    <li>Available Sabado at Linggo</li>
+                    <li>Kailangan ng pre-marriage counseling</li>
+                    <li>Bayad: ₱3,000 - ₱5,000</li>
+                </ul>
+                <a href="wedding-schedule.html" class="schedule-btn">Mag-iskedyul</a>
+            </div>
+            
+            <div class="service-type">
+                <h3><i class="fas fa-bread-slice"></i> Unang Komunyon</h3>
+                <p>Mag-iskedyul ng Unang Komunyon para sa mga bata.</p>
+                <ul>
+                    <li>Available sa mga itinakdang petsa</li>
+                    <li>Kailangan ng First Communion classes</li>
+                    <li>Bayad: ₱200</li>
+                </ul>
+                <a href="communion-schedule.html" class="schedule-btn">Mag-iskedyul</a>
+            </div>
+            
+            <div class="service-type">
+                <h3><i class="fas fa-cross"></i> Misa sa Paglibing</h3>
+                <p>Mag-iskedyul ng misa para sa mga yumaong kaanak.</p>
+                <ul>
+                    <li>Available araw-araw</li>
+                    <li>24 oras advance notice</li>
+                    <li>Bayad: ₱1,000</li>
+                </ul>
+                <a href="funeral-schedule.html" class="schedule-btn">Mag-iskedyul</a>
+            </div>
+            
+            <div class="service-type">
+                <h3><i class="fas fa-praying-hands"></i> Intensyon sa Misa</h3>
+                <p>Mag-request ng mass intention.</p>
+                <ul>
+                    <li>Available sa lahat ng misa</li>
+                    <li>3 araw advance notice</li>
+                    <li>Bayad: ₱150</li>
+                </ul>
+                <a href="mass-intention-schedule.html" class="schedule-btn">Mag-iskedyul</a>
+            </div>
+        </div>
+        
+        <div class="requirements-section">
+            <h2>Mga Kinakailangan para sa Pag-iskedyul</h2>
+            
+            <div class="requirement-item">
+                <h3><i class="fas fa-baby"></i> Para sa Binyag</h3>
+                <ul>
+                    <li>Birth Certificate ng bata</li>
+                    <li>Marriage Certificate ng mga magulang (kung kasal)</li>
+                    <li>Valid ID ng mga magulang</li>
+                    <li>Certificate of Attendance sa Pre-Baptismal Seminar</li>
+                    <li>Valid ID ng mga ninong/ninang</li>
+                </ul>
+            </div>
+            
+            <div class="requirement-item">
+                <h3><i class="fas fa-ring"></i> Para sa Kasal</h3>
+                <ul>
+                    <li>Birth Certificate ng mag-jowa</li>
+                    <li>Baptismal Certificate ng mag-jowa</li>
+                    <li>Confirmation Certificate ng mag-jowa</li>
+                    <li>Certificate of No Marriage (CENOMAR)</li>
+                    <li>Pre-Marriage Investigation Report</li>
+                    <li>Certificate of Attendance sa Pre-Cana Seminar</li>
+                </ul>
+            </div>
+            
+            <div class="requirement-item">
+                <h3><i class="fas fa-dove"></i> Para sa Kumpil</h3>
+                <ul>
+                    <li>Baptismal Certificate</li>
+                    <li>Birth Certificate</li>
+                    <li>Certificate of Attendance sa Confirmation Classes</li>
+                    <li>Valid ID ng sponsor</li>
+                    <li>Confirmation Certificate ng sponsor</li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="calendar-section">
+            <h3><i class="fas fa-calendar-alt"></i> Sample na Available na Oras</h3>
+            <p>Narito ang mga karaniwang available na oras para sa mga serbisyo:</p>
+            
+            <div class="time-slots">
+                <div class="time-slot available">8:00 AM</div>
+                <div class="time-slot available">9:00 AM</div>
+                <div class="time-slot unavailable">10:00 AM</div>
+                <div class="time-slot available">11:00 AM</div>
+                <div class="time-slot available">2:00 PM</div>
+                <div class="time-slot unavailable">3:00 PM</div>
+                <div class="time-slot available">4:00 PM</div>
+                <div class="time-slot available">5:00 PM</div>
+            </div>
+            
+            <p style="margin-top: 15px; color: #666; font-size: 14px;">
+                <span style="color: #4CAF50;">■</span> Available &nbsp;&nbsp;
+                <span style="color: #f44336;">■</span> Hindi Available
+            </p>
+        </div>
+    </div>
+</body>
+
+<script src="dashboard-user.js"></script>
+
+</html>

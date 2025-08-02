@@ -1,0 +1,814 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Intensyon sa Misa - Mass Intention</title>
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="mass-intention.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <div class="details-container">
+            <a href="dashboard-user.html" class="back-link view-files-link"
+               style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+                <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+                <span>Bumalik sa Dashboard</span>
+            </a>
+
+            <!-- Step 1: Mass Intention Details -->
+            <section class="form-section" id="intention-form-section">
+                <div class="form-progress">
+                    <div class="progress-step active" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Detalye ng Intensyon
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Intention Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Pagsusuri
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Review
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Intentions Overview -->
+                <div class="requests-overview">
+                    <div class="requests-counter">
+                        <div class="counter-info">
+                            <i class="fas fa-list-alt"></i>
+                            <span>Kasalukuyang Intensyon:</span>
+                            <div class="counter-badge" id="intentions-count">1</div>
+                        </div>
+                        <button class="add-another-request" id="add-another-intention-btn" style="display: none;">
+                            <i class="fas fa-plus"></i> Magdagdag pa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h2>Intensyon sa Misa
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Mass Intention
+                        </span>
+                    </h2>
+                    
+                    <!-- Preferred Schedule -->
+                    <h3>
+                        <i class="fas fa-calendar-alt"></i> Nais na Petsa at Oras
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Preferred Date and Time
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Nais na Petsa <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Preferred Date
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="date" id="preferredIntentionDate" name="preferredIntentionDate" required onchange="updateAvailableTimes()">
+                            </div>
+                            <small class="date-info">
+                                Maaari lamang pumili ng petsa na mas malayo sa ngayon.
+                                <br>
+                                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                    May only choose dates that are further from today.
+                                </span>
+                            </small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Nais na Oras <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Preferred Time
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="preferredIntentionTime" name="preferredIntentionTime" required disabled>
+                                    <option value="" disabled selected>PUMILI MUNA NG PETSA</option>
+                                </select>
+                            </div>
+                            <small class="time-info">
+                                Lunes-Sabado: 5:30 AM, 7:00 AM, 5:00 PM<br>
+                                Linggo: 5:30 AM, 9:00 AM, 3:30 PM, 5:00 PM, 7:00 PM
+                                <br>
+                                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                    Monday-Saturday: 5:30 AM, 7:00 AM, 5:00 PM<br>
+                                    Sunday: 5:30 AM, 9:00 AM, 3:30 PM, 5:00 PM, 7:00 PM
+                                </span>
+                            </small>
+                        </div>
+                    </div>
+
+                    <!-- Intention Type -->
+                    <h3>
+                        <i class="fas fa-pray"></i> Uri ng Intensyon
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Type of Intention
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Uri ng Intensyon <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Type of Intention
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="intentionType" name="intentionType" required onchange="updateNameFields()">
+                                    <option value="" disabled selected>PUMILI NG URI NG INTENSYON</option>
+                                    <option value="PASASALAMAT">PASASALAMAT (THANKSGIVING)</option>
+                                    <option value="KAARAWAN">KAARAWAN (BIRTHDAY)</option>
+                                    <option value="KAHILINGAN">KAHILINGAN (PRAYER REQUEST)</option>
+                                    <option value="ANIBERSARYO_NG_KASAL">ANIBERSARYO NG KASAL (WEDDING ANNIVERSARY)</option>
+                                    <option value="KALULUWA">KALULUWA (FOR THE SOULS)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Names Section -->
+                    <h3>
+                        <i class="fas fa-users"></i> Mga Pangalan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Names
+                        </span>
+                    </h3>
+                    <div id="nameFieldsContainer">
+                        <div class="name-limits-info">
+                            <i class="fas fa-info-circle"></i> 
+                            <span id="nameLimitsText">
+                                Pumili muna ng uri ng intensyon upang makita ang limitasyon sa bilang ng pangalan.
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Choose intention type first to see name limitations.
+                                </span>
+                            </span>
+                        </div>
+                    </div>
+
+                    <!-- Special Message -->
+                    <h3>
+                        <i class="fas fa-message"></i> Espesyal na Mensahe
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Special Message
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>
+                                Espesyal na Mensahe (Opsyonal)
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Special Message (Optional)
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <textarea id="intentionMessage" name="intentionMessage" placeholder="Maaaring maglagay ng espesyal na mensahe para sa intensyon"></textarea>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <h3>
+                        <i class="fas fa-address-book"></i> Impormasyon sa Pakikipag-ugnayan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Contact Information
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Pangalan ng Nag-request <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Requester's Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="requesterName" name="requesterName" required placeholder="Kumpleto na pangalan">
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Cellphone No. <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Cellphone Number
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="tel" id="requesterCellphone" name="requesterCellphone" required placeholder="09XXXXXXXXX">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Mass Offering -->
+                    <h3>
+                        <i class="fas fa-hand-holding-heart"></i> Limos sa Misa
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Mass Offering
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Halaga ng Limos <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Offering Amount
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="massOffering" name="massOffering" required>
+                                    <option value="" disabled selected>PUMILI NG HALAGA</option>
+                                    <option value="100">PHP 100.00</option>
+                                    <option value="200">PHP 200.00</option>
+                                    <option value="300">PHP 300.00</option>
+                                    <option value="500">PHP 500.00</option>
+                                    <option value="1000">PHP 1,000.00</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn add-request-btn" id="add-new-intention-btn" type="button">
+                            <i class="fas fa-plus"></i> MAGDAGDAG NG BAGONG INTENSYON
+                        </button>
+                        <button class="btn cancel-btn" id="cancel-intention-btn">KANSELAHIN</button>
+                        <button class="btn next-btn" id="save-and-continue-btn" disabled>I-SAVE AT MAGPATULOY</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 2: Review Section -->
+            <section class="form-section" id="intentions-review-section" style="display: none;">
+                <div class="form-progress">
+                    <div class="progress-step completed" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Detalye ng Intensyon
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Intention Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Pagsusuri
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Review
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="requests-review-section">
+                    <div class="requests-counter">
+                        <div class="counter-info">
+                            <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
+                            <span>Mga Nailagay na Intensyon:</span>
+                            <div class="counter-badge" id="review-intentions-count">0</div>
+                        </div>
+                        <button class="add-another-request" id="add-more-intentions-btn">
+                            <i class="fas fa-plus"></i> Magdagdag pa ng Intensyon
+                        </button>
+                    </div>
+
+                    <div class="form-container">
+                        <h2>Mga Nailagay na Intensyon sa Misa
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Submitted Mass Intentions
+                            </span>
+                        </h2>
+
+                        <div class="flash-message" id="flash-message" style="display: none;">
+                            <i class="fas fa-info-circle"></i>
+                            <span id="flash-text">Matagumpay na naidagdag ang intensyon!</span>
+                        </div>
+
+                        <div class="requests-table-container">
+                            <table class="requests-table" id="intentions-review-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Uri ng Intensyon</th>
+                                        <th>Petsa at Oras</th>
+                                        <th>Mga Pangalan</th>
+                                        <th>Limos</th>
+                                        <th>Mga Aksyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="intentions-review-tbody">
+                                    <!-- Dynamic content will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn back-btn" id="back-to-form-btn">BUMALIK SA FORM</button>
+                            <button class="btn next-btn" id="proceed-to-acknowledgement-btn">MAGPATULOY SA PAGKILALA</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 3: Enhanced Acknowledgement Section -->
+            <section class="form-section" id="acknowledgement-section" style="display: none;">
+                <div class="form-progress">
+                    <div class="progress-step completed" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Detalye ng Intensyon
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Intention Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Pagsusuri
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Review
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="acknowledgement-container">
+                    <!-- Reference Number Section -->
+                    <div class="reference-section">
+                        <h3>
+                            <i class="fas fa-hashtag"></i>
+                            Reference Number
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Numero ng Sanggunian
+                            </span>
+                        </h3>
+                        <div class="reference-display">
+                            <div class="reference-number" id="acknowledgement-reference-number">MI-20250621-1234</div>
+                            <p class="reference-note">
+                                <strong>Mangyaring itago ang reference number na ito.</strong>
+                                <br>
+                                <em>Please keep this reference number safe.</em>
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Mass Intention Summary -->
+                    <div class="intention-summary">
+                        <h3>
+                            <i class="fas fa-list-alt"></i>
+                            Buod ng Mga Intensyon sa Misa
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Mass Intention Summary
+                            </span>
+                        </h3>
+                        <div class="summary-container" id="acknowledgement-summary">
+                            <!-- Dynamic content will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- Terms and Conditions -->
+                    <div class="terms-conditions-container">
+                        <h3>
+                            <i class="fas fa-file-contract"></i>
+                            Mga Tuntunin at Kondisyon
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Terms and Conditions
+                            </span>
+                        </h3>
+                        <div class="terms-text">
+                            <p>1. Ang lahat ng impormasyong ibinigay ay tumpak at kumpleto ayon sa aking kaalaman.</p>
+                            <p>2. Nauunawaan ko na ang intensyon sa misa ay isang espirituwal na hiling na ipapanalangin sa panahon ng Banal na Misa.</p>
+                            <p>3. Ang petsa at oras ng misa ay nakasalalay sa availability ng pari at simbahan.</p>
+                            <p>4. Ang limos na ibibigay ay hindi maibabalik ngunit maaaring ma-reschedule ang misa kung kinakailangan.</p>
+                            <p>5. Ang parokya ay may karapatang baguhin ang iskedyul ng misa dahil sa hindi inaasahang mga pangyayari.</p>
+                            <p>6. Ang intensyon ay babasahin ng pari sa panahon ng misa at isasama sa mga panalangin.</p>
+                            <p>7. Matatanggap ko ang kumpirmasyon ng iskedyul ng misa sa pamamagitan ng text o email.</p>
+                            <p>8. Nauunawaan ko na ang bayad ay para sa suporta sa mga gawain ng parokya.</p>
+                            <p>9. Ang reference number ay dapat na panatilihin para sa mga susunod na reference.</p>
+                        </div>
+                        
+                        <div class="consent-checkbox">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="acknowledgementTerms" required>
+                                <span>
+                                    Kinikilala ko na nabasa, naintindihan, at sumasang-ayon ako sa mga tuntunin at kondisyong nabanggit sa itaas. Pinatutunayan ko na ang lahat ng impormasyong ibinigay ay totoo at tumpak. Naiintindihan ko rin ang kahalagahan ng reference number.
+                                    <br><br>
+                                    <em>I acknowledge that I have read, understood, and agree to the terms and conditions mentioned above. I certify that all information provided is true and accurate. I also understand the importance of the reference number.</em>
+                                </span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn back-btn" id="back-to-review-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            BUMALIK
+                        </button>
+                        <button class="btn next-btn" id="to-payment-btn" disabled>
+                            <i class="fas fa-credit-card"></i>
+                            MAGPATULOY SA BAYAD
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Step 4: Enhanced Payment Section -->
+            <section class="form-section" id="payment-section" style="display: none;">
+                <div class="form-progress">
+                    <div class="progress-step completed" data-step="1">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Detalye ng Intensyon
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Intention Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed" data-step="2">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Pagsusuri
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Review
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed" data-step="3">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active" data-step="4">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="payment-container">
+                    <h2>
+                        <i class="fas fa-credit-card"></i>
+                        Payment
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Bayad
+                        </span>
+                    </h2>
+
+                    <!-- Order Summary -->
+                    <div class="order-summary">
+                        <h3>Order Summary</h3>
+                        <div class="summary-details" id="payment-order-summary">
+                            <!-- Dynamic content will be populated here -->
+                        </div>
+                    </div>
+
+                    <!-- GCash Payment Section -->
+                    <div class="gcash-payment-section" id="gcash-payment-form">
+                        <h3>GCash Payment</h3>
+                        
+                        <div class="gcash-container">
+                            <div class="gcash-header">
+                                <div class="gcash-logo">
+                                    <i class="fas fa-mobile-alt"></i>
+                                    GCash
+                                </div>
+                                <div class="secure-badge">
+                                    <i class="fas fa-shield-alt"></i>
+                                    Secure Payment
+                                </div>
+                            </div>
+                            
+                            <div class="gcash-form">
+                                <div class="form-group">
+                                    <label for="gcash-mobile">GCash Mobile Number</label>
+                                    <input type="text" id="gcash-mobile" placeholder="09123456789" maxlength="11">
+                                </div>
+                                
+                                <div class="form-group">
+                                    <label for="gcash-amount">Amount to Pay</label>
+                                    <div class="amount-field">
+                                        <span class="currency-symbol">₱</span>
+                                        <input type="text" id="gcash-amount" readonly>
+                                    </div>
+                                </div>
+                                
+                                <div class="payment-notice">
+                                    <i class="fas fa-info-circle"></i>
+                                    Sa pag-click ng "Pay with GCash", kayo ay ligtas na makakakonekta sa GCash upang aprubahan ang bayad na ito.
+                                    <br>
+                                    <em>By clicking "Pay with GCash", you will be securely connected to GCash to authorize this payment.</em>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="action-buttons" id="payment-action-buttons">
+                        <button class="btn btn-secondary" id="back-to-acknowledgement-btn">
+                            <i class="fas fa-arrow-left"></i>
+                            BACK
+                        </button>
+                        
+                        <button class="btn btn-primary" id="pay-with-gcash-btn">
+                            <i class="fas fa-mobile-alt"></i>
+                            Pay with GCash
+                        </button>
+                    </div>
+
+                    <!-- Payment Success -->
+                    <div class="payment-success" id="payment-success" style="display: none;">
+                        <div class="success-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <h3>Payment Successful!</h3>
+                        <p>Ang inyong bayad ay matagumpay na naproseso. Ang mga intensyon sa misa ay naipasa na sa admin.</p>
+                        <p><em>Your payment has been successfully processed. Your mass intentions have been submitted to the admin.</em></p>
+
+                        <div class="payment-receipt">
+                            <div class="receipt-header">
+                                <h4>Payment Receipt</h4>
+                                <span class="receipt-date" id="receipt-date"></span>
+                            </div>
+                            
+                            <div class="receipt-row">
+                                <span class="receipt-label">Transaction ID:</span>
+                                <span class="receipt-value" id="receipt-transaction-id"></span>
+                            </div>
+                            
+                            <div class="receipt-row">
+                                <span class="receipt-label">GCash Number:</span>
+                                <span class="receipt-value" id="receipt-gcash-number"></span>
+                            </div>
+                            
+                            <div class="receipt-row">
+                                <span class="receipt-label">Amount Paid:</span>
+                                <span class="receipt-value" id="receipt-amount"></span>
+                            </div>
+                            
+                            <div class="receipt-row">
+                                <span class="receipt-label">Status:</span>
+                                <span class="receipt-value success">PAID</span>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-success" id="print-receipt-btn">
+                                <i class="fas fa-print"></i>
+                                Print Receipt
+                            </button>
+                            
+                            <a href="dashboard-user.html" class="btn btn-primary">
+                                <i class="fas fa-home"></i>
+                                Return to Dashboard
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Payment Failed -->
+                    <div class="payment-failed" id="payment-failed" style="display: none;">
+                        <div class="failed-icon">
+                            <i class="fas fa-times-circle"></i>
+                        </div>
+                        <h3>Payment Failed</h3>
+                        <p>Hindi namin maproseso ang inyong bayad. Mangyaring subukan muli o gumamit ng ibang paraan ng pagbabayad.</p>
+                        <p><em>We couldn't process your payment. Please try again or use a different payment method.</em></p>
+
+                        <div class="error-details">
+                            <div class="error-message" id="payment-error-message">Transaction declined by payment provider.</div>
+                            <div class="error-code" id="payment-error-code">Error Code: GC-1001</div>
+                        </div>
+
+                        <div class="action-buttons">
+                            <button class="btn btn-primary" id="try-again-btn">
+                                <i class="fas fa-redo"></i>
+                                Try Again
+                            </button>
+                            
+                            <button class="btn btn-warning" id="contact-support-btn">
+                                <i class="fas fa-headset"></i>
+                                Contact Support
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </div>
+
+    <!-- Payment Processing Overlay -->
+    <div class="payment-overlay" id="payment-processing-overlay" style="display: none;">
+        <div class="payment-processing-content">
+            <div class="spinner"></div>
+            <h3>Processing Payment</h3>
+            <p>Please wait while we process your payment...</p>
+        </div>
+    </div>
+    
+    <!-- OTP Verification Modal -->
+    <div class="modal" id="otp-modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3><i class="fas fa-shield-alt"></i> Security Verification</h3>
+            </div>
+            <div class="modal-body">
+                <p>We've sent a one-time password (OTP) to your GCash mobile number.</p>
+                <div class="otp-container">
+                    <input type="text" maxlength="1" class="otp-input" data-index="1">
+                    <input type="text" maxlength="1" class="otp-input" data-index="2">
+                    <input type="text" maxlength="1" class="otp-input" data-index="3">
+                    <input type="text" maxlength="1" class="otp-input" data-index="4">
+                    <input type="text" maxlength="1" class="otp-input" data-index="5">
+                    <input type="text" maxlength="1" class="otp-input" data-index="6">
+                </div>
+                <div class="otp-error" id="otp-error-message"></div>
+                <div class="otp-timer">
+                    <span>Code expires in: </span>
+                    <span id="otp-timer">03:00</span>
+                </div>
+                <div class="otp-resend">
+                    <button id="resend-otp-btn" disabled>Resend Code</button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" id="cancel-otp-btn">Cancel</button>
+                <button class="btn btn-primary" id="verify-otp-btn">Verify</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout Modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-user.js"></script>
+    <script src="mass-intention-handler.js"></script>
+    <script src="mass-intention-validation.js"></script>
+</body>
+</html>

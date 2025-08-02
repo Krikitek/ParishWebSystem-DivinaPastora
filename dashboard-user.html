@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="fil">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Chronos Parish Services</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- FIXED HEADER - DO NOT MODIFY STRUCTURE -->
+<header class="dashboard-header">
+    <div class="header-flex-wrapper">
+        <div class="logo-container">
+            <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+        </div>
+        <nav class="user-actions" role="navigation" aria-label="User navigation">
+            <div class="language-toggle">
+                <button id="lang-toggle" class="lang-btn" aria-label="Toggle Language" type="button">
+                    <span class="flag-icon">🇵🇭</span>
+                    <span class="lang-text">FIL</span>
+                </button>
+            </div>
+            <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                <i class="fas fa-folder" aria-hidden="true"></i>
+                <span>Files</span>
+            </a>
+            <div class="user-logout">
+                <button id="logout-btn" type="button" aria-label="Logout">
+                    <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                    <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                </button>
+            </div>
+        </nav>
+    </div>
+</header>
+
+        <!-- Enhanced Certificate Request Section -->
+        <section class="certificate-section">
+            <div class="certificate-header">
+                <h2 data-en="Need Parish Services from Divina Pastora?" data-fil="Kailangan ng Serbisyo sa Parokya mula sa Divina Pastora?">
+                    Kailangan ng Serbisyo sa Parokya mula sa Divina Pastora?
+                </h2>
+                <div class="description-content">
+                    <p data-en="Request baptism, confirmation, or other official church records? Want to schedule sacraments like baptism or confirmation? Ready to support the Church through donations or mass intentions?" data-fil="Humiling ng binyag, kumpil, o iba pang opisyal na talaan ng simbahan? Gusto bang mag-iskedyul ng sakramento tulad ng binyag o kumpil? Handang suportahan ang Simbahan sa pamamagitan ng donasyon o mass intention?">
+                        Humiling ng binyag, kumpil, o iba pang opisyal na talaan ng simbahan? Gusto bang mag-iskedyul ng sakramento tulad ng binyag o kumpil? Handang suportahan ang Simbahan sa pamamagitan ng donasyon o mass intention?
+                    </p>
+                </div>
+            </div>
+
+            <div class="certificate-grid">
+                <div class="certificate-card request-certificate-card" 
+                     data-tooltip-fil="I-click para magsimula ng kahilingan ng sertipiko" 
+                     data-tooltip-en="Click to start certificate request"
+                     role="button" 
+                     tabindex="0"
+                     aria-label="Request Certificate Service">
+                    <div class="certificate-icon blue">
+                        <i class="fas fa-file-alt" aria-hidden="true"></i>
+                    </div>
+                    <h3>
+                        <span data-fil="Humiling ng Sertipiko" data-en="Request Certificate">Humiling ng Sertipiko</span>
+                        <span class="subtitle" data-fil="Request Certificate" data-en="Request Certificate">Request Certificate</span>
+                    </h3>
+                </div>
+
+                <div class="certificate-card mass-intention-card" 
+                     data-tooltip-fil="I-click para mag-request ng mass intention" 
+                     data-tooltip-en="Click to request mass intention"
+                     role="button" 
+                     tabindex="0"
+                     aria-label="Mass Intention Service">
+                    <div class="certificate-icon purple">
+                        <i class="fas fa-praying-hands" aria-hidden="true"></i>
+                    </div>
+                    <h3>
+                        <span data-fil="Mass Intention" data-en="Mass Intention">Mass Intention</span>
+                        <span class="subtitle" data-fil="Mass Intention" data-en="Mass Intention">Mass Intention</span>
+                    </h3>
+                </div>
+                
+                <div class="certificate-card schedule-service-card" 
+                     data-tooltip-fil="I-click para mag-iskedyul ng serbisyo sa simbahan" 
+                     data-tooltip-en="Click to schedule church service"
+                     role="button" 
+                     tabindex="0"
+                     aria-label="Schedule Church Service">
+                    <div class="certificate-icon gold">
+                        <i class="fas fa-calendar-alt" aria-hidden="true"></i>
+                    </div>
+                    <h3>
+                        <span data-fil="Mag-iskedyul ng Serbisyo" data-en="Schedule Service">Mag-iskedyul ng Serbisyo</span>
+                        <span class="subtitle" data-fil="Schedule Service" data-en="Schedule Service">Schedule Service</span>
+                    </h3>
+                </div>
+                
+                <div class="certificate-card donate-card" 
+                     data-tooltip-fil="I-click para mag-donate sa simbahan" 
+                     data-tooltip-en="Click to donate to the church"
+                     role="button" 
+                     tabindex="0"
+                     aria-label="Donate to Church">
+                    <div class="certificate-icon red">
+                        <i class="fas fa-heart" aria-hidden="true"></i>
+                    </div>
+                    <h3>
+                        <span data-fil="Mag-donate Dito" data-en="Donate Here">Mag-donate Dito</span>
+                        <span class="subtitle" data-fil="Donate Here" data-en="Donate Here">Donate Here</span>
+                    </h3>
+                </div>
+            </div>
+
+            <!-- Enhanced Process Steps -->
+            <div class="process-section">
+                <h3 class="process-title" data-en="How It Works" data-fil="Paano Ito Gumagana">Paano Ito Gumagana</h3>
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>                    
+                        <h4 data-en="Request Details" data-fil="Mga Detalye ng Kahilingan">Mga Detalye ng Kahilingan</h4>
+                        <p data-en="Fill out the required information for your certificate request" data-fil="Punan ang kinakailangang impormasyon para sa inyong kahilingan ng sertipiko">
+                            Punan ang kinakailangang impormasyon para sa inyong kahilingan ng sertipiko
+                        </p>
+                        <a href="details-request-user.html" class="step-button" data-en="REQUEST DETAILS" data-fil="MGA DETALYE NG KAHILINGAN">MGA DETALYE NG KAHILINGAN</a>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-church"></i>
+                        </div>
+                        <h4 data-en="Sacrament Details" data-fil="Mga Detalye ng Sakramento">Mga Detalye ng Sakramento</h4>
+                        <p data-en="Provide information about the sacrament" data-fil="Magbigay ng impormasyon tungkol sa sakramento">
+                            Magbigay ng impormasyon tungkol sa sakramento
+                        </p>
+                        <a href="details-sacrament-user.html" class="step-button" data-en="SACRAMENT DETAILS" data-fil="MGA DETALYE NG SAKRAMENTO">MGA DETALYE NG SAKRAMENTO</a>
+                    </div>
+                    
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h4 data-en="Schedule Details" data-fil="Mga Detalye ng Iskedyul">Mga Detalye ng Iskedyul</h4>
+                        <p data-en="Choose your preferred date and time" data-fil="Piliin ang inyong gustong petsa at oras">
+                            Piliin ang inyong gustong petsa at oras
+                        </p>
+                        <a href="details-scheduling-user.html" class="step-button" data-en="SCHEDULE DETAILS" data-fil="MGA DETALYE NG ISKEDYUL">MGA DETALYE NG ISKEDYUL</a>
+                    </div>
+
+                    <div class="step">
+                        <div class="step-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <h4 data-en="Delivery Details" data-fil="Mga Detalye ng Paghahatid">Mga Detalye ng Paghahatid</h4>
+                        <p data-en="Specify how you want to receive your certificate" data-fil="Tukuyin kung paano ninyo gustong matanggap ang inyong sertipiko">
+                            Tukuyin kung paano ninyo gustong matanggap ang inyong sertipiko
+                        </p>
+                        <a href="details-delivery-user.html" class="step-button" data-en="DELIVERY DETAILS" data-fil="MGA DETALYE NG PAGHAHATID">MGA DETALYE NG PAGHAHATID</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Features Section -->
+        <section class="features-section">
+            <h3 class="features-title" data-en="Why Choose Chronos?" data-fil="Bakit Piliin ang Chronos?">Bakit Piliin ang Chronos?</h3>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <h4 data-en="24/7 Access" data-fil="24/7 na Access">24/7 na Access</h4>
+                    <p data-en="Request services anytime, anywhere" data-fil="Mag-request ng serbisyo kahit kailan, kahit saan">Mag-request ng serbisyo kahit kailan, kahit saan</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h4 data-en="Secure & Private" data-fil="Secure at Private">Secure at Private</h4>
+                    <p data-en="Your data is protected and confidential" data-fil="Ang inyong data ay protektado at kumpidensyal">Ang inyong data ay protektado at kumpidensyal</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h4 data-en="Mobile Friendly" data-fil="Mobile Friendly">Mobile Friendly</h4>
+                    <p data-en="Works perfectly on all devices" data-fil="Gumagana nang maayos sa lahat ng device">Gumagana nang maayos sa lahat ng device</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-headset"></i>
+                    </div>
+                    <h4 data-en="24/7 Support" data-fil="24/7 na Suporta">24/7 na Suporta</h4>
+                    <p data-en="Get help whenever you need it" data-fil="Makakuha ng tulong tuwing kailangan ninyo">Makakuha ng tulong tuwing kailangan ninyo</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Enhanced Tooltip -->
+    <div id="tooltip" class="tooltip"></div>
+
+    <!-- Enhanced Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-icon" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+            <div class="chatbot-badge">
+                <span data-en="Help" data-fil="Tulong">Tulong</span>
+            </div>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3 data-en="Chronos Support" data-fil="Chronos Suporta">Chronos Suporta</h3>
+                <button id="close-chatbot"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot" data-en="Hello! How can I help you with Chronos today?" data-fil="Kumusta! Paano kita matutulungan sa Chronos ngayon?">
+                    Kumusta! Paano kita matutulungan sa Chronos ngayon?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-message" placeholder="I-type ang inyong mensahe..." data-placeholder-en="Type your message..." data-placeholder-fil="I-type ang inyong mensahe...">
+                <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                <span data-en="Confirm Logout" data-fil="Kumpirmahin ang Pag-logout">Kumpirmahin ang Pag-logout</span>
+                <br>
+                <span class="subtitle" data-en="Confirm Logout" data-fil="Confirm Logout">Confirm Logout</span>
+            </h2>
+            <p>
+                <span data-en="Are you sure you want to logout?" data-fil="Sigurado ba kayong gusto ninyong mag-logout?">Sigurado ba kayong gusto ninyong mag-logout?</span>
+                <br>
+                <span class="subtitle" data-en="Are you sure you want to logout?" data-fil="Are you sure you want to logout?">Are you sure you want to logout?</span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    <span data-en="Cancel" data-fil="Kanselahin">Kanselahin</span>
+                    <br>
+                    <span class="subtitle" data-en="Cancel" data-fil="Cancel">Cancel</span>
+                </button>
+                <button id="confirm-logout">
+                    <span data-en="Logout" data-fil="Mag-logout">Mag-logout</span>
+                    <br>
+                    <span class="subtitle" data-en="Logout" data-fil="Logout">Logout</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Certificate Request Terms Modal -->
+    <div id="certificate-terms-modal" class="modal">
+        <div class="modal-content terms-modal-content">
+            <h2 data-en="Terms and Conditions" data-fil="Mga Tuntunin at Kondisyon">Mga Tuntunin at Kondisyon</h2>
+            <div class="terms-container">
+                <div class="terms-text">
+                    <h3 data-en="Service Terms" data-fil="Mga Tuntunin ng Serbisyo">Mga Tuntunin ng Serbisyo</h3>
+                    <p data-en="By using the Chronos Parish Services portal, you agree to follow these terms and conditions:" data-fil="Sa paggamit ng Chronos Parish Services portal, sumasang-ayon kayo na susundin ang mga sumusunod na tuntunin at kondisyon:">Sa paggamit ng Chronos Parish Services portal, sumasang-ayon kayo na susundin ang mga sumusunod na tuntunin at kondisyon:</p>
+                    <ul>
+                        <li data-en="All information provided must be accurate and truthful." data-fil="Lahat ng impormasyong ibinigay ay dapat na tumpak at totoo.">Lahat ng impormasyong ibinigay ay dapat na tumpak at totoo.</li>
+                        <li data-en="You must be authorized to request the services or documents you are applying for." data-fil="Dapat kayong awtorisado na humiling ng mga serbisyo o dokumentong inyong inaaply.">Dapat kayong awtorisado na humiling ng mga serbisyo o dokumentong inyong inaaply.</li>
+                        <li data-en="The parish has the right to verify all information before processing requests." data-fil="Ang parokya ay may karapatang i-verify ang lahat ng impormasyon bago iproseso ang mga kahilingan.">Ang parokya ay may karapatang i-verify ang lahat ng impormasyon bago iproseso ang mga kahilingan.</li>
+                        <li data-en="Processing time may vary depending on the type of request and parish workload." data-fil="Ang oras ng pagproseso ay maaaring mag-iba depende sa uri ng kahilingan at workload ng parokya.">Ang oras ng pagproseso ay maaaring mag-iba depende sa uri ng kahilingan at workload ng parokya.</li>
+                        <li data-en="Some services may have fees that are non-refundable once processing begins." data-fil="Maaaring may bayad para sa ilang serbisyo at hindi na ito maibabalik kapag nagsimula na ang pagproseso.">Maaaring may bayad para sa ilang serbisyo at hindi na ito maibabalik kapag nagsimula na ang pagproseso.</li>
+                    </ul>
+
+                    <h3 data-en="Data Privacy Notice" data-fil="Paunawa sa Privacy ng Data">Paunawa sa Privacy ng Data</h3>
+                    <p data-en="Divina Pastora Parish is committed to protecting your privacy:" data-fil="Ang Divina Pastora Parish ay nakatuon sa pagprotekta ng inyong privacy:">Ang Divina Pastora Parish ay nakatuon sa pagprotekta ng inyong privacy:</p>
+                    <ul>
+                        <li data-en="Personal information collected will only be used for processing your request and parish records." data-fil="Ang personal na impormasyong nakolekta ay gagamitin lamang para sa pagproseso ng inyong kahilingan at mga talaan ng parokya.">Ang personal na impormasyong nakolekta ay gagamitin lamang para sa pagproseso ng inyong kahilingan at mga talaan ng parokya.</li>
+                        <li data-en="Your data will be stored securely and not shared with third parties without your consent." data-fil="Ang inyong data ay itatago nang secure at hindi ibabahagi sa mga third party nang walang inyong pahintulot.">Ang inyong data ay itatago nang secure at hindi ibabahagi sa mga third party nang walang inyong pahintulot.</li>
+                        <li data-en="You have the right to access, correct, or request deletion of your personal information." data-fil="May karapatan kayong ma-access, itama, o hilingin ang pagbura ng inyong personal na impormasyon.">May karapatan kayong ma-access, itama, o hilingin ang pagbura ng inyong personal na impormasyon.</li>
+                        <li data-en="We retain your information only as long as necessary for the stated purposes or as required by law." data-fil="Pinapanatili namin ang inyong impormasyon lamang hanggang sa kinakailangan para sa mga layuning nabanggit o ayon sa batas.">Pinapanatili namin ang inyong impormasyon lamang hanggang sa kinakailangan para sa mga layuning nabanggit o ayon sa batas.</li>
+                        <li data-en="By proceeding, you consent to the collection and processing of your personal information as described." data-fil="Sa pagpatuloy, sumasang-ayon kayo sa pagkolekta at pagproseso ng inyong personal na impormasyon tulad ng inilarawan.">Sa pagpatuloy, sumasang-ayon kayo sa pagkolekta at pagproseso ng inyong personal na impormasyon tulad ng inilarawan.</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="consent-checkboxes">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="certificate-terms-checkbox">
+                    <label for="certificate-terms-checkbox" data-en="I have read and agree to the Service Terms" data-fil="Nabasa ko at sumasang-ayon ako sa Mga Tuntunin ng Serbisyo">Nabasa ko at sumasang-ayon ako sa Mga Tuntunin ng Serbisyo</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="certificate-privacy-checkbox">
+                    <label for="certificate-privacy-checkbox" data-en="I agree to the collection and processing of my personal data as described in the Data Privacy Notice" data-fil="Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data tulad ng inilarawan sa Data Privacy Notice">Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data tulad ng inilarawan sa Data Privacy Notice</label>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="cancel-certificate-terms" class="btn cancel-btn" data-en="Cancel" data-fil="Kanselahin">Kanselahin</button>
+                <button id="proceed-certificate-terms" class="btn proceed-btn" disabled data-en="Proceed" data-fil="Magpatuloy">Magpatuloy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mass Intention Terms Modal -->
+    <div id="mass-intention-terms-modal" class="modal">
+        <div class="modal-content terms-modal-content">
+            <h2 data-en="Mass Intention Terms and Conditions" data-fil="Mga Tuntunin at Kondisyon para sa Mass Intention">Mga Tuntunin at Kondisyon para sa Mass Intention</h2>
+            <div class="terms-container">
+                <div class="terms-text">
+                    <h3 data-en="Mass Intention Terms" data-fil="Mga Tuntunin ng Mass Intention">Mga Tuntunin ng Mass Intention</h3>
+                    <p data-en="By requesting a Mass Intention at Divina Pastora Parish, you agree to follow these terms:" data-fil="Sa pag-request ng Mass Intention sa Divina Pastora Parish, sumasang-ayon kayo na susundin ang mga sumusunod na tuntunin:">Sa pag-request ng Mass Intention sa Divina Pastora Parish, sumasang-ayon kayo na susundin ang mga sumusunod na tuntunin:</p>
+                    <ul>
+                        <li data-en="Mass Intentions must be for spiritual purposes and in accordance with Catholic Church teachings." data-fil="Ang Mass Intention ay dapat na para sa mga layuning spiritual at ayon sa mga turo ng Simbahang Katoliko.">Ang Mass Intention ay dapat na para sa mga layuning spiritual at ayon sa mga turo ng Simbahang Katoliko.</li>
+                        <li data-en="All information provided about the intention must be accurate and truthful." data-fil="Lahat ng impormasyong ibinigay tungkol sa intention ay dapat na tumpak at totoo.">Lahat ng impormasyong ibinigay tungkol sa intention ay dapat na tumpak at totoo.</li>
+                        <li data-en="The parish reserves the right to decline intentions that do not align with church policies." data-fil="Ang parokya ay may karapatang tanggihan ang mga intention na hindi naaayon sa mga patakaran ng simbahan.">Ang parokya ay may karapatang tanggihan ang mga intention na hindi naaayon sa mga patakaran ng simbahan.</li>
+                        <li data-en="Mass dates are subject to priest availability and parish schedule." data-fil="Ang petsa ng misa ay nakadepende sa availability ng pari at schedule ng parokya.">Ang petsa ng misa ay nakadepende sa availability ng pari at schedule ng parokya.</li>
+                        <li data-en="Mass Intention fees are non-refundable but may be rescheduled if necessary." data-fil="Ang bayad para sa Mass Intention ay hindi maibabalik ngunit maaaring ma-reschedule kung kinakailangan.">Ang bayad para sa Mass Intention ay hindi maibabalik ngunit maaaring ma-reschedule kung kinakailangan.</li>
+                        <li data-en="Special requests must comply with liturgical guidelines of the church." data-fil="Ang mga special na kahilingan ay dapat na naaayon sa mga liturgical guidelines ng simbahan.">Ang mga special na kahilingan ay dapat na naaayon sa mga liturgical guidelines ng simbahan.</li>
+                    </ul>
+
+                    <h3 data-en="Types of Mass Intentions" data-fil="Mga Uri ng Mass Intention">Mga Uri ng Mass Intention</h3>
+                    <ul>
+                        <li data-en="For the Deceased: Mass for the souls of the departed" data-fil="Para sa mga Yumao: Misa para sa kaluluwa ng mga namatay"><strong data-en="For the Deceased:" data-fil="Para sa mga Yumao:">Para sa mga Yumao:</strong> <span data-en="Mass for the souls of the departed" data-fil="Misa para sa kaluluwa ng mga namatay">Misa para sa kaluluwa ng mga namatay</span></li>
+                        <li data-en="Thanksgiving: Mass of gratitude" data-fil="Thanksgiving: Misa ng pasasalamat"><strong data-en="Thanksgiving:" data-fil="Thanksgiving:">Thanksgiving:</strong> <span data-en="Mass of gratitude" data-fil="Misa ng pasasalamat">Misa ng pasasalamat</span></li>
+                        <li data-en="Petition: Mass for special requests" data-fil="Petisyon: Misa para sa mga special na kahilingan"><strong data-en="Petition:" data-fil="Petisyon:">Petisyon:</strong> <span data-en="Mass for special requests" data-fil="Misa para sa mga special na kahilingan">Misa para sa mga special na kahilingan</span></li>
+                        <li data-en="Birthday or Anniversary: Mass for special occasions" data-fil="Kaarawan o Anniversary: Misa para sa mga special occasions"><strong data-en="Birthday or Anniversary:" data-fil="Kaarawan o Anniversary:">Kaarawan o Anniversary:</strong> <span data-en="Mass for special occasions" data-fil="Misa para sa mga special occasions">Misa para sa mga special occasions</span></li>
+                        <li data-en="Health: Mass for healing or health" data-fil="Kalusugan: Misa para sa pagaling o kalusugan"><strong data-en="Health:" data-fil="Kalusugan:">Kalusugan:</strong> <span data-en="Mass for healing or health" data-fil="Misa para sa pagaling o kalusugan">Misa para sa pagaling o kalusugan</span></li>
+                    </ul>
+
+                    <h3 data-en="Data Privacy Notice" data-fil="Paunawa sa Privacy ng Data">Paunawa sa Privacy ng Data</h3>
+                    <p data-en="Personal information you provide will only be used for processing the Mass Intention and will not be shared with third parties." data-fil="Ang personal na impormasyon na inyong ibibigay ay gagamitin lamang para sa pagproseso ng Mass Intention at hindi ibabahagi sa mga third party.">Ang personal na impormasyon na inyong ibibigay ay gagamitin lamang para sa pagproseso ng Mass Intention at hindi ibabahagi sa mga third party.</p>
+                </div>
+            </div>
+            
+            <div class="consent-checkboxes">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="mass-intention-terms-checkbox">
+                    <label for="mass-intention-terms-checkbox" data-en="I have read and agree to the Mass Intention Terms" data-fil="Nabasa ko at sumasang-ayon ako sa Mga Tuntunin ng Mass Intention">Nabasa ko at sumasang-ayon ako sa Mga Tuntunin ng Mass Intention</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="mass-intention-privacy-checkbox">
+                    <label for="mass-intention-privacy-checkbox" data-en="I agree to the collection and processing of my personal data" data-fil="Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data">Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data</label>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="cancel-mass-intention-terms" class="btn cancel-btn" data-en="Cancel" data-fil="Kanselahin">Kanselahin</button>
+                <button id="proceed-mass-intention-terms" class="btn proceed-btn" disabled data-en="Proceed" data-fil="Magpatuloy">Magpatuloy</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Service Terms Modal -->
+    <div id="schedule-service-terms-modal" class="modal">
+        <div class="modal-content terms-modal-content">
+            <h2 data-en="Church Service Scheduling Terms and Conditions" data-fil="Mga Tuntunin at Kondisyon para sa Pag-iskedyul ng Serbisyo sa Simbahan">Mga Tuntunin at Kondisyon para sa Pag-iskedyul ng Serbisyo sa Simbahan</h2>
+            <div class="terms-container">
+                <div class="terms-text">
+                    <h3 data-en="Reservation Policy" data-fil="Patakaran sa Reserbasyon">1. Patakaran sa Reserbasyon</h3>
+                    <p data-en="1.1. All reservations are subject to availability and approval by the parish office." data-fil="1.1. Lahat ng reserbasyon ay nakadepende sa availability at approval ng parish office.">1.1. Lahat ng reserbasyon ay nakadepende sa availability at approval ng parish office.</p>
+                    <p data-en="1.2. Reservations must be made at least 2 weeks in advance for most services." data-fil="1.2. Ang mga reserbasyon ay dapat gawin nang hindi bababa sa 2 linggo bago ang karamihan sa mga serbisyo.">1.2. Ang mga reserbasyon ay dapat gawin nang hindi bababa sa 2 linggo bago ang karamihan sa mga serbisyo.</p>
+                    <p data-en="1.3. For weddings, reservations must be made at least 6 months in advance." data-fil="1.3. Para sa mga kasal, ang mga reserbasyon ay dapat gawin nang hindi bababa sa 6 na buwan bago.">1.3. Para sa mga kasal, ang mga reserbasyon ay dapat gawin nang hindi bababa sa 6 na buwan bago.</p>
+                    <p data-en="1.4. The parish reserves the right to cancel or reschedule services due to unforeseen circumstances." data-fil="1.4. Ang parokya ay may karapatang kanselahin o mag-reschedule ng mga serbisyo dahil sa hindi inaasahang pangyayari.">1.4. Ang parokya ay may karapatang kanselahin o mag-reschedule ng mga serbisyo dahil sa hindi inaasahang pangyayari.</p>
+                    
+                    <h3 data-en="Payment Policy" data-fil="Patakaran sa Bayad">2. Patakaran sa Bayad</h3>
+                    <p data-en="2.1. Full payment is required to confirm your reservation." data-fil="2.1. Kailangan ng buong bayad para makumpirma ang inyong reserbasyon.">2.1. Kailangan ng buong bayad para makumpirma ang inyong reserbasyon.</p>
+                    <p data-en="2.2. Only GCash is accepted as payment method." data-fil="2.2. Ang GCash lamang ang tanggap na paraan ng pagbabayad.">2.2. Ang GCash lamang ang tanggap na paraan ng pagbabayad.</p>
+                    <p data-en="2.3. Payments are non-refundable but may be rescheduled with advance notice." data-fil="2.3. Ang mga bayad ay hindi maibabalik ngunit maaaring ma-reschedule na may advance notice.">2.3. Ang mga bayad ay hindi maibabalik ngunit maaaring ma-reschedule na may advance notice.</p>
+                    <p data-en="2.4. Transaction fees may apply for payment processing." data-fil="2.4. Maaaring may transaction fee para sa pagproseso ng bayad.">2.4. Maaaring may transaction fee para sa pagproseso ng bayad.</p>
+
+                    <h3 data-en="Service Requirements" data-fil="Mga Kinakailangan sa Serbisyo">3. Mga Kinakailangan sa Serbisyo</h3>
+                    <ul>
+                        <li data-en="Valid identification documents are required for all services." data-fil="Kailangan ng valid identification documents para sa lahat ng serbisyo.">Kailangan ng valid identification documents para sa lahat ng serbisyo.</li>
+                        <li data-en="Pre-marriage counseling is required for wedding ceremonies." data-fil="Kailangan ng pre-marriage counseling para sa mga seremonya ng kasal.">Kailangan ng pre-marriage counseling para sa mga seremonya ng kasal.</li>
+                        <li data-en="Baptism candidates must complete required preparation classes." data-fil="Ang mga kandidato sa binyag ay dapat kumpletuhin ang mga kinakailangang preparation classes.">Ang mga kandidato sa binyag ay dapat kumpletuhin ang mga kinakailangang preparation classes.</li>
+                        <li data-en="All participants must follow church dress code and conduct guidelines." data-fil="Lahat ng kalahok ay dapat sumunod sa dress code at conduct guidelines ng simbahan.">Lahat ng kalahok ay dapat sumunod sa dress code at conduct guidelines ng simbahan.</li>
+                    </ul>
+
+                    <h3 data-en="Data Privacy Notice" data-fil="Paunawa sa Privacy ng Data">Paunawa sa Privacy ng Data</h3>
+                    <p data-en="Your personal information will be used solely for service scheduling and parish records, and will be kept confidential in accordance with data privacy laws." data-fil="Ang inyong personal na impormasyon ay gagamitin lamang para sa pag-iskedyul ng serbisyo at mga talaan ng parokya, at itatago nang kumpidensyal ayon sa mga batas sa data privacy.">Ang inyong personal na impormasyon ay gagamitin lamang para sa pag-iskedyul ng serbisyo at mga talaan ng parokya, at itatago nang kumpidensyal ayon sa mga batas sa data privacy.</p>
+                </div>
+            </div>
+            
+            <div class="consent-checkboxes">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="schedule-service-terms-checkbox">
+                    <label for="schedule-service-terms-checkbox" data-en="I have read and agree to the service scheduling terms and conditions" data-fil="Nabasa ko at sumasang-ayon ako sa mga tuntunin at kondisyon sa pag-iskedyul ng serbisyo">Nabasa ko at sumasang-ayon ako sa mga tuntunin at kondisyon sa pag-iskedyul ng serbisyo</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="schedule-service-privacy-checkbox">
+                    <label for="schedule-service-privacy-checkbox" data-en="I agree to the collection and processing of my personal data" data-fil="Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data">Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data</label>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="cancel-schedule-service-terms" class="btn cancel-btn" data-en="Cancel" data-fil="Kanselahin">Kanselahin</button>
+                <button id="proceed-schedule-service-terms" class="btn proceed-btn" disabled data-en="Proceed to Scheduling" data-fil="Magpatuloy sa Pag-iskedyul">Magpatuloy sa Pag-iskedyul</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Donation Terms Modal -->
+    <div id="donation-terms-modal" class="modal">
+        <div class="modal-content terms-modal-content">
+            <h2 data-en="Donation Terms and Conditions" data-fil="Mga Tuntunin at Kondisyon para sa Donasyon">Mga Tuntunin at Kondisyon para sa Donasyon</h2>
+            <div class="terms-container">
+                <div class="terms-text">
+                    <h3 data-en="Donation Policy" data-fil="Patakaran sa Donasyon">1. Patakaran sa Donasyon</h3>
+                    <p data-en="By making a donation to Divina Pastora Parish, you agree to the following terms:" data-fil="Sa pagbibigay ng donasyon sa Divina Pastora Parish, sumasang-ayon kayo sa mga sumusunod na tuntunin:">Sa pagbibigay ng donasyon sa Divina Pastora Parish, sumasang-ayon kayo sa mga sumusunod na tuntunin:</p>
+                    <ul>
+                        <li data-en="All donations are voluntary and made with free will." data-fil="Lahat ng donasyon ay kusang-loob at ginawa nang may malayang kalooban.">Lahat ng donasyon ay kusang-loob at ginawa nang may malayang kalooban.</li>
+                        <li data-en="Donations will be used for church operations, maintenance, and charitable activities." data-fil="Ang mga donasyon ay gagamitin para sa operasyon ng simbahan, maintenance, at mga charitable activities.">Ang mga donasyon ay gagamitin para sa operasyon ng simbahan, maintenance, at mga charitable activities.</li>
+                        <li data-en="The parish reserves the right to allocate donations where they are most needed." data-fil="Ang parokya ay may karapatang i-allocate ang mga donasyon kung saan ito pinaka-kailangan.">Ang parokya ay may karapatang i-allocate ang mga donasyon kung saan ito pinaka-kailangan.</li>
+                        <li data-en="Donations are generally non-refundable unless there are exceptional circumstances." data-fil="Ang mga donasyon ay karaniwang hindi maibabalik maliban kung may mga exceptional na pangyayari.">Ang mga donasyon ay karaniwang hindi maibabalik maliban kung may mga exceptional na pangyayari.</li>
+                    </ul>
+
+                    <h3 data-en="Payment Methods" data-fil="Mga Paraan ng Pagbabayad">2. Mga Paraan ng Pagbabayad</h3>
+                    <ul>
+                        <li data-en="GCash: Secure digital payment method" data-fil="GCash: Secure na digital payment method"><strong>GCash:</strong> <span data-en="Secure digital payment method" data-fil="Secure na digital payment method">Secure na digital payment method</span></li>
+                        <li data-en="Bank Transfer: Direct bank-to-bank transfer" data-fil="Bank Transfer: Direct bank-to-bank transfer"><strong>Bank Transfer:</strong> <span data-en="Direct bank-to-bank transfer" data-fil="Direct bank-to-bank transfer">Direct bank-to-bank transfer</span></li>
+                        <li data-en="Cash: In-person donations at the parish office" data-fil="Cash: Personal na donasyon sa parish office"><strong>Cash:</strong> <span data-en="In-person donations at the parish office" data-fil="Personal na donasyon sa parish office">Personal na donasyon sa parish office</span></li>
+                    </ul>
+
+                    <h3 data-en="Donation Categories" data-fil="Mga Kategorya ng Donasyon">3. Mga Kategorya ng Donasyon</h3>
+                    <ul>
+                        <li data-en="General Fund: For overall church operations and maintenance" data-fil="General Fund: Para sa kabuuang operasyon at maintenance ng simbahan"><strong data-en="General Fund:" data-fil="General Fund:">General Fund:</strong> <span data-en="For overall church operations and maintenance" data-fil="Para sa kabuuang operasyon at maintenance ng simbahan">Para sa kabuuang operasyon at maintenance ng simbahan</span></li>
+                        <li data-en="Building Fund: For church construction and renovation projects" data-fil="Building Fund: Para sa mga proyektong construction at renovation ng simbahan"><strong data-en="Building Fund:" data-fil="Building Fund:">Building Fund:</strong> <span data-en="For church construction and renovation projects" data-fil="Para sa mga proyektong construction at renovation ng simbahan">Para sa mga proyektong construction at renovation ng simbahan</span></li>
+                        <li data-en="Charity Fund: For helping the poor and needy in the community" data-fil="Charity Fund: Para sa pagtulong sa mga mahihirap at nangangailangan sa komunidad"><strong data-en="Charity Fund:" data-fil="Charity Fund:">Charity Fund:</strong> <span data-en="For helping the poor and needy in the community" data-fil="Para sa pagtulong sa mga mahihirap at nangangailangan sa komunidad">Para sa pagtulong sa mga mahihirap at nangangailangan sa komunidad</span></li>
+                        <li data-en="Special Projects: For specific parish initiatives and programs" data-fil="Special Projects: Para sa mga tukoy na inisyatibo at programa ng parokya"><strong data-en="Special Projects:" data-fil="Special Projects:">Special Projects:</strong> <span data-en="For specific parish initiatives and programs" data-fil="Para sa mga tukoy na inisyatibo at programa ng parokya">Para sa mga tukoy na inisyatibo at programa ng parokya</span></li>
+                    </ul>
+
+                    <h3 data-en="Tax Deductibility" data-fil="Tax Deductibility">4. Tax Deductibility</h3>
+                    <p data-en="Donations to the parish may be tax-deductible. Official receipts will be provided for all donations. Please consult with your tax advisor for specific tax implications." data-fil="Ang mga donasyon sa parokya ay maaaring tax-deductible. Mga opisyal na resibo ay ibibigay para sa lahat ng donasyon. Mangyaring kumonsulta sa inyong tax advisor para sa mga tukoy na tax implications.">Ang mga donasyon sa parokya ay maaaring tax-deductible. Mga opisyal na resibo ay ibibigay para sa lahat ng donasyon. Mangyaring kumonsulta sa inyong tax advisor para sa mga tukoy na tax implications.</p>
+
+                    <h3 data-en="Data Privacy Notice" data-fil="Paunawa sa Privacy ng Data">Paunawa sa Privacy ng Data</h3>
+                    <p data-en="Donor information will be kept confidential and used only for donation processing, receipt generation, and parish communication. We will not share your information with third parties without your consent." data-fil="Ang impormasyon ng mga donor ay itatago nang kumpidensyal at gagamitin lamang para sa pagproseso ng donasyon, paggawa ng resibo, at komunikasyon ng parokya. Hindi namin ibabahagi ang inyong impormasyon sa mga third party nang walang inyong pahintulot.">Ang impormasyon ng mga donor ay itatago nang kumpidensyal at gagamitin lamang para sa pagproseso ng donasyon, paggawa ng resibo, at komunikasyon ng parokya. Hindi namin ibabahagi ang inyong impormasyon sa mga third party nang walang inyong pahintulot.</p>
+                </div>
+            </div>
+            
+            <div class="consent-checkboxes">
+                <div class="checkbox-container">
+                    <input type="checkbox" id="donation-terms-checkbox">
+                    <label for="donation-terms-checkbox" data-en="I have read and agree to the donation terms and conditions" data-fil="Nabasa ko at sumasang-ayon ako sa mga tuntunin at kondisyon ng donasyon">Nabasa ko at sumasang-ayon ako sa mga tuntunin at kondisyon ng donasyon</label>
+                </div>
+                <div class="checkbox-container">
+                    <input type="checkbox" id="donation-privacy-checkbox">
+                    <label for="donation-privacy-checkbox" data-en="I agree to the collection and processing of my personal data" data-fil="Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data">Sumasang-ayon ako sa pagkolekta at pagproseso ng aking personal na data</label>
+                </div>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="cancel-donation-terms" class="btn cancel-btn" data-en="Cancel" data-fil="Kanselahin">Kanselahin</button>
+                <button id="proceed-donation-terms" class="btn proceed-btn" disabled data-en="Proceed to Donate" data-fil="Magpatuloy sa Donasyon">Magpatuloy sa Donasyon</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-user.js"></script>
+</body>
+</html>

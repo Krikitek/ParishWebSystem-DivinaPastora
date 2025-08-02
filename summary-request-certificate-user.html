@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buod ng Kahilingan - Chronos</title>
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="summary-request-certificate-user.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <div class="details-container">
+            <a href="dashboard-user.html" class="back-link view-files-link"
+               style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+                <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+                <span>Bumalik sa Dashboard</span>
+            </a>
+            <style>
+                @media (max-width: 600px) {
+                    .details-container .back-link {
+                        width: 100%;
+                        justify-content: center;
+                        font-size: 15px;
+                        padding: 8px 0;
+                    }
+                    .details-container .back-link span {
+                        font-size: 15px;
+                    }
+                }
+            </style>
+
+            <section class="form-section" id="summary-section">
+                <!-- Progress Steps -->
+                <div class="form-progress progress-steps">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label" id="progress-step1-label">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <span class="step-subtitle">Request Details</span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span class="step-subtitle">Delivery Details</span>
+                        </div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Buod
+                            <br>
+                            <span class="step-subtitle">Summary</span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span class="step-subtitle">Acknowledgement</span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span class="step-subtitle">Payment</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Main Summary Container -->
+                <div class="summary-container">
+                    <div class="summary-header">
+                        <h2>
+                            Buod ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Request Summary
+                            </span>
+                        </h2>
+                    </div>
+
+                    <!-- Loading State (Initially Hidden) -->
+                    <div class="loading-state" style="display: none;">
+                        <div class="loading-spinner"></div>
+                        <h3>Naglo-load ng mga kahilingan...</h3>
+                        <p style="font-style: italic; font-size: 0.95em; color: #555;">Loading requests...</p>
+                    </div>
+
+                    <!-- Empty State (Initially Hidden) -->
+                    <div class="empty-state" style="display: none;">
+                        <i class="fas fa-inbox empty-icon"></i>
+                        <h3>Walang Mga Kahilingan</h3>
+                        <p class="empty-message">
+                            Wala pa kayong mga kahilingan para sa sertipiko.
+                            <br>
+                            <em style="font-style: italic; font-size: 0.95em; color: #555;">You don't have any certificate requests yet.</em>
+                        </p>
+                        <button class="btn next-btn" onclick="window.location.href='request-certificate-form-user.html'">
+                            <i class="fas fa-plus"></i> MAGSIMULA NG KAHILINGAN
+                        </button>
+                    </div>
+
+                    <!-- Certificate Details Section -->
+                    <div class="summary-section" id="certificate-details-section">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title">Mga Detalye ng Sertipiko</h3>
+                                <div class="section-subtitle">Certificate Details</div>
+                            </div>
+                            <button class="edit-btn section-edit-btn" id="edit-certificate-btn" 
+                                    title="I-edit ang Detalye ng Sertipiko">
+                                <i class="fas fa-edit"></i>
+                                <span>I-edit</span>
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-container">
+                                <table class="summary-table responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-label="Uri ng Sertipiko">
+                                                URI NG SERTIPIKO
+                                                <br>
+                                                <span class="th-subtitle">Certificate Type</span>
+                                            </th>
+                                            <th data-label="Pangalan">
+                                                PANGALAN NG MAY-ARI
+                                                <br>
+                                                <span class="th-subtitle">Owner's Name</span>
+                                            </th>
+                                            <th data-label="Petsa" id="event-date-header">
+                                                PETSA NG PANGYAYARI
+                                                <br>
+                                                <span class="th-subtitle">Event Date</span>
+                                            </th>
+                                            <th data-label="Lugar">
+                                                LUGAR NG PANGYAYARI
+                                                <br>
+                                                <span class="th-subtitle">Event Place</span>
+                                            </th>
+                                            <th data-label="Kopya">
+                                                BILANG NG KOPYA
+                                                <br>
+                                                <span class="th-subtitle">Number of Copies</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="certificate-details-row">
+                                            <td data-label="Uri ng Sertipiko" id="certificate-type-display">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Pangalan" id="document-owner-name">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Petsa" id="event-date">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Lugar" id="event-place">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Kopya" id="number-of-copies">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Parent Information Section -->
+                    <div class="summary-section" id="parent-details-section">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title">Impormasyon ng Magulang</h3>
+                                <div class="section-subtitle">Parents' Information</div>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-container">
+                                <table class="summary-table responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-label="Ama">
+                                                PANGALAN NG AMA
+                                                <br>
+                                                <span class="th-subtitle">Father's Name</span>
+                                            </th>
+                                            <th data-label="Ina">
+                                                PANGALAN NG INA
+                                                <br>
+                                                <span class="th-subtitle">Mother's Name</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="parent-details-row">
+                                            <td data-label="Ama" id="father-name">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Ina" id="mother-name">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requester Details Section -->
+                    <div class="summary-section" id="requester-details-section">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title">Buod ng Humiling</h3>
+                                <div class="section-subtitle">Requestor's Summary</div>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-container">
+                                <table class="summary-table responsive-table">
+                                    <thead>
+                                        <tr>
+                                            <th data-label="Pangalan">
+                                                PANGALAN
+                                                <br>
+                                                <span class="th-subtitle">Name</span>
+                                            </th>
+                                            <th data-label="Email">
+                                                EMAIL
+                                                <br>
+                                                <span class="th-subtitle">Email</span>
+                                            </th>
+                                            <th data-label="Telepono">
+                                                NUMERO NG TELEPONO
+                                                <br>
+                                                <span class="th-subtitle">Phone Number</span>
+                                            </th>
+                                            <th data-label="Relasyon">
+                                                RELASYON
+                                                <br>
+                                                <span class="th-subtitle">Relationship</span>
+                                            </th>
+                                            <th data-label="Layunin">
+                                                LAYUNIN
+                                                <br>
+                                                <span class="th-subtitle">Purpose</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="requester-details-row">
+                                            <td data-label="Pangalan" id="requester-name">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Email" id="requester-email">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Telepono" id="requester-mobile">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Relasyon" id="requester-relationship">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Layunin" id="requester-purpose">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Delivery Details Section -->
+                    <div class="summary-section" id="delivery-details-section">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title" id="delivery-section-title">
+                                    Address ng Paghahatid
+                                </h3>
+                                <div class="section-subtitle">Delivery Address</div>
+                            </div>
+                            <button class="edit-btn section-edit-btn" id="edit-delivery-btn" 
+                                    title="I-edit ang Detalye ng Paghahatid">
+                                <i class="fas fa-edit"></i>
+                                <span>I-edit</span>
+                            </button>
+                        </div>
+                        <div class="section-content">
+                            <div class="table-container">
+                                <table class="summary-table responsive-table">
+                                    <thead>
+                                        <tr id="delivery-table-header">
+                                            <th data-label="Address 1">
+                                                ADDRESS LINE 1
+                                                <br>
+                                                <span class="th-subtitle">Address Line 1</span>
+                                            </th>
+                                            <th data-label="Address 2">
+                                                ADDRESS LINE 2
+                                                <br>
+                                                <span class="th-subtitle">Address Line 2</span>
+                                            </th>
+                                            <th data-label="Barangay">
+                                                BARANGAY
+                                                <br>
+                                                <span class="th-subtitle">Barangay</span>
+                                            </th>
+                                            <th data-label="Lokasyon">
+                                                LOKASYON
+                                                <br>
+                                                <span class="th-subtitle">Location</span>
+                                            </th>
+                                            <th data-label="Paraan">
+                                                PAGHAHATID/PICKUP
+                                                <br>
+                                                <span class="th-subtitle">Delivery Method</span>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr id="delivery-details-row">
+                                            <td data-label="Address 1" id="address-line-1">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Address 2" id="address-line-2">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Barangay" id="barangay">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Lokasyon" id="location">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                            <td data-label="Paraan" id="delivery-method">
+                                                <span class="table-loading">Loading...</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Fee Breakdown Section -->
+                    <div class="summary-section fee-breakdown">
+                        <div class="section-header">
+                            <div>
+                                <h3 class="section-title">Kabuuang Bayad</h3>
+                                <div class="section-subtitle">Total Payment</div>
+                            </div>
+                        </div>
+                        <div class="section-content">
+                            <div class="fee-container">
+                                <div class="fee-row">
+                                    <span class="fee-label">
+                                        Bayad sa Sertipiko
+                                        <br>
+                                        <em class="fee-sublabel">Certificate Fee</em>
+                                    </span>
+                                    <span class="fee-amount" id="certificate-fee-amount">PHP 100.00</span>
+                                </div>
+                                <div class="fee-row" id="delivery-fee-row">
+                                    <span class="fee-label">
+                                        Bayad sa Paghahatid
+                                        <br>
+                                        <em class="fee-sublabel">Delivery Fee</em>
+                                    </span>
+                                    <span class="fee-amount" id="delivery-fee-amount">PHP 150.00</span>
+                                </div>
+                                <div class="fee-row total-row">
+                                    <span class="fee-label">
+                                        <strong>Kabuuang Halaga</strong>
+                                        <br>
+                                        <em class="fee-sublabel"><strong>Total Amount</strong></em>
+                                    </span>
+                                    <span class="fee-amount" id="total-fee-amount">
+                                        <strong>PHP 250.00</strong>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="summary-actions">
+                        <button class="btn add-request-btn" id="add-new-request-btn">
+                            <i class="fas fa-plus"></i> 
+                            MAGDAGDAG NG BAGONG KAHILINGAN
+                        </button>
+                        <div class="right-actions">
+                            <button class="btn cancel-btn" id="cancel-summary-btn">
+                                <i class="fas fa-times"></i> KANSELAHIN
+                            </button>
+                            <button class="btn next-btn" id="next-summary-btn">
+                                <i class="fas fa-arrow-right"></i> SUSUNOD
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Chatbot -->
+        <div class="chatbot-container">
+            <div class="chatbot-icon" id="chatbot-toggle">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="chatbot-window" id="chatbot-window">
+                <div class="chatbot-header">
+                    <h3>Suporta ng Chronos</h3>
+                    <button id="close-chatbot"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="chatbot-messages" id="chatbot-messages">
+                    <div class="message bot">
+                        Kamusta! Paano kita matutulungan sa Chronos ngayon?
+                    </div>
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="user-message" placeholder="I-type ang inyong mensahe... / Type your message...">
+                    <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout Modal -->
+        <div class="modal" id="logout-modal">
+            <div class="modal-content">
+                <h2>
+                    Kumpirmasyon ng Logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout Confirmation
+                    </span>
+                </h2>
+                <p>
+                    Sigurado ka bang gusto mong mag-logout?
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Are you sure you want to logout?
+                    </span>
+                </p>
+                <div class="modal-buttons">
+                    <button id="cancel-logout">
+                        Kanselahin
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                            Cancel
+                        </span>
+                    </button>
+                    <button id="confirm-logout">
+                        Mag-Logout
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                            Logout
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-user.js"></script>
+    <script src="summary-request-certificate-user.js"></script>
+</body>
+</html>

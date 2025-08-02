@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mga Donasyon</title>
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="files-user.css">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Header with logo and logout -->
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <a href="dashboard-user.html" class="back-link view-files-link"
+           style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+            <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+            <span>Bumalik sa Dashboard</span>
+        </a>
+        <style>
+            @media (max-width: 600px) {
+                .details-container .back-link {
+                    width: 100%;
+                    justify-content: center;
+                    font-size: 15px;
+                    padding: 8px 0;
+                }
+                .details-container .back-link span {
+                    font-size: 15px;
+                }
+            }
+        </style>
+
+        <!-- Main Content -->
+        <div class="content-wrapper">
+
+            <!-- Files Section -->
+            <section id="files-section" class="tab-content active"> 
+
+                <div class="section-header">
+                    <h2>Suportahan ang Ating Parokya</h2>
+                    <p>Ang iyong mga donasyon ay tumutulong sa amin na mapanatili ang aming mga serbisyo at suportahan ang aming komunidad</p>
+                </div>
+
+                <div class="donation-options">
+                    <div class="donation-card">
+                        <div class="donation-icon">
+                            <i class="fas fa-church"></i>
+                        </div>
+                        <h3>Pangalagaan ang Parokya</h3>
+                        <p>Tulungan kaming alagaan ang aming simbahan at mga pasilidad</p>
+                        <button class="donate-btn">Magdonasyon Ngayon</button>
+                    </div>
+
+                    <div class="donation-card">
+                        <div class="donation-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3>Mga Outreach Program</h3>
+                        <p>Suportahan ang aming mga outreach at charity program</p>
+                        <button class="donate-btn">Magdonasyon Ngayon</button>
+                    </div>
+
+                    <div class="donation-card">
+                        <div class="donation-icon">
+                            <i class="fas fa-cross"></i>
+                        </div>
+                        <h3>Edukasyong Panrelihiyon</h3>
+                        <p>Suportahan ang aming mga programa sa katekesis at edukasyong panrelihiyon</p>
+                        <button class="donate-btn">Magdonasyon Ngayon</button>
+                    </div>
+
+                    <div class="donation-card">
+                        <div class="donation-icon">
+                            <i class="fas fa-cross"></i>
+                        </div>
+                        <h3>Pangkalahatang Pondo ng Parokya</h3>
+                        <p>Suportahan ang pangkalahatang pondo ng parokya</p>
+                        <button class="donate-btn">Magdonasyon Ngayon</button>
+                    </div>
+                </div>
+
+                <div class="donation-form">
+                    <h3>Gumawa ng Pasadyang Donasyon</h3>
+                    <form id="custom-donation-form">
+                        <div class="form-group">
+                            <label for="donation-amount">Halaga (PHP)</label>
+                            <input type="number" id="donation-amount" min="100" step="100" value="500">
+                        </div>
+                        <div class="form-group">
+                            <label for="donation-purpose">Layunin</label>
+                            <select id="donation-purpose">
+                                <option value="general">Pangkalahatang Pondo ng Parokya</option>
+                                <option value="maintenance">Pangalagaan ang Parokya</option>
+                                <option value="outreach">Mga Outreach Program</option>
+                                <option value="education">Edukasyong Panrelihiyon</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="donation-message">Mensahe (Opsyonal)</label>
+                            <textarea id="donation-message" rows="3"></textarea>
+                        </div>
+                        <button type="submit" class="submit-donation">Magpatuloy sa Pagbabayad</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Donations Section -->
+            <section id="donations-section" class="tab-content">
+                
+            </section>
+        </div>
+    </div>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <div class="chatbot-icon" id="chatbot-toggle">
+            <i class="fas fa-comments"></i>
+        </div>
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>Chronos Support</h3>
+                <button id="close-chatbot"><i class="fas fa-times"></i></button>
+            </div>
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="message bot">
+                    Kamusta! Paano ako makakatulong sa iyo tungkol sa Chronos ngayon?
+                </div>
+            </div>
+            <div class="chatbot-input">
+                <input type="text" id="user-message" placeholder="I-type ang iyong mensahe...">
+                <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Logout confirmation modal -->
+    <div class="modal" id="logout-modal">
+        <div class="modal-content">
+            <h2>
+                Kumpirmahin ang Pag-logout
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Confirm Logout
+                </span>
+            </h2>
+            <p>
+                Sigurado ba kayong gusto ninyong mag-logout?
+                <br>
+                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                    Are you sure you want to logout?
+                </span>
+            </p>
+            <div class="modal-buttons">
+                <button id="cancel-logout">
+                    Kanselahin
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Cancel
+                    </span>
+                </button>
+                <button id="confirm-logout">
+                    Mag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Logout
+                    </span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Payment Modal -->
+    <div class="modal" id="payment-modal">
+        <div class="modal-content">
+            <h2>Kumpletuhin ang Iyong Donasyon</h2>
+            <div class="payment-details">
+                <p><strong>Halaga:</strong> <span id="modal-amount">PHP 500</span></p>
+                <p><strong>Layunin:</strong> <span id="modal-purpose">Pangkalahatang Pondo ng Parokya</span></p>
+            </div>
+            <div class="payment-methods">
+                <h3>Paraan ng Pagbabayad</h3>
+                <div class="payment-option">
+                    <input type="radio" id="gcash" name="payment" checked>
+                    <label for="gcash">GCash</label>
+                </div>
+            </div>
+            <div class="gcash-details">
+                <p>Mangyaring ipadala ang iyong donasyon sa:</p>
+                <div class="qr-code">
+                    <img src="/placeholder.svg?height=200&width=200" alt="GCash QR Code">
+                </div>
+                <p class="gcash-number">GCash Number: 09123456789</p>
+                <p>Pagkatapos magpadala, mangyaring i-upload ang resibo ng iyong pagbabayad:</p>
+                <input type="file" id="payment-receipt" accept="image/*">
+            </div>
+            <div class="modal-buttons">
+                <button id="cancel-payment">Kanselahin</button>
+                <button id="confirm-payment">Kumpirmahin ang Pagbabayad</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard-user.js"></script>
+    <script src="donate-user.js"></script>
+</body>
+</html>

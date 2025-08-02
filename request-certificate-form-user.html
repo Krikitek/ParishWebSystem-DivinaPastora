@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="tl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kahilingan ng Sertipiko</title>
+    <link rel="icon" href="yellow.png" type="image/png">
+    <link rel="stylesheet" href="styles-user.css">
+    <link rel="stylesheet" href="dashboard-user.css">
+    <link rel="stylesheet" href="request-certificate-form-user.css">
+    <link rel="stylesheet" href="request-certificate-form-handler-user.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <header class="dashboard-header">
+            <div class="header-flex-wrapper">
+                <div class="logo-container">
+                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                </div>
+                <nav class="user-actions" role="navigation" aria-label="User navigation">
+                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                        <i class="fas fa-folder" aria-hidden="true"></i>
+                        <span>Files</span>
+                    </a>
+                    <div class="user-logout">
+                        <button id="logout-btn" type="button" aria-label="Logout">
+                            <i class="fas fa-sign-out-alt" aria-hidden="true"></i>
+                            <span data-en="LOGOUT" data-fil="LOGOUT">LOGOUT</span>
+                        </button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <div class="details-container">
+            <a href="dashboard-user.html" class="back-link view-files-link"
+               style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
+                <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
+                <span>Bumalik sa Dashboard</span>
+            </a>
+            <style>
+                @media (max-width: 600px) {
+                    .details-container .back-link {
+                        width: 100%;
+                        justify-content: center;
+                        font-size: 15px;
+                        padding: 8px 0;
+                    }
+                    .details-container .back-link span {
+                        font-size: 15px;
+                    }
+                }
+            </style>
+
+            <!-- Request Form Section (Step 1) -->
+            <section class="form-section" id="request-form-section">
+                <div class="form-progress">
+                    <div class="progress-step active">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Request Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Delivery Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Buod
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Summary
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Requests Overview -->
+                <div class="requests-overview">
+                    <div class="requests-counter">
+                        <div class="counter-info">
+                            <i class="fas fa-list-alt"></i>
+                            <span>Kasalukuyang Kahilingan:</span>
+                            <div class="counter-badge" id="requests-count">1</div>
+                        </div>
+                        <button class="add-another-request" id="add-another-btn" style="display: none;">
+                            <i class="fas fa-plus"></i> Magdagdag pa
+                        </button>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h2>
+                        Mga Detalye ng Kahilingan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Request Details
+                        </span>
+                    </h2>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Uri ng Kahilingan
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Request Type
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="requestType" value="SERTIPIKASYON" disabled readonly>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Bilang ng Kopya
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Number of Copies
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="numberOfCopies" value="1" disabled readonly>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>
+                        Mga Detalye ng Sertipiko
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Certificate Details
+                        </span>
+                    </h3>
+
+                    <div class="form-group">
+                        <label>
+                            Uri ng Sertipiko <span class="required">*</span>
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Certificate Type
+                            </span>
+                        </label>
+                        <div class="select-field">
+                            <select id="certificateTypeSelect" required>
+                                <option value="" disabled selected>PUMILI NG SERTIPIKO</option>
+                                <option value="BAPTISMAL">SERTIPIKO NG BINYAG</option>
+                                <option value="KUMPIL">SERTIPIKO NG KUMPIL</option>
+                            </select>
+                            <div class="error-message"></div>
+                        </div>
+                    </div>
+
+                    <div class="uppercase-info">
+                        <i class="fas fa-info-circle"></i> Lahat ng text input ay awtomatikong magiging MALAKING TITIK
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            All text input will automatically be in UPPERCASE
+                        </span>
+                    </div>
+                    <div class="info-text">
+                        <i class="fas fa-info-circle"></i> Mangyaring ilagay ang Maiden Name, kung Married Female
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Please enter Maiden Name if Married Female
+                        </span>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Apelyido <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Last Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="lastName" required>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Unang Pangalan <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    First Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="firstName" required>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Gitnang Pangalan
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Middle Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="middleName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Petsa ng Kapanganakan <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Date of Birth
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="date" id="dateOfBirth" required>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Lugar ng Kapanganakan (Bansa) <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Place of Birth (Country)
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="birthCountry" required>
+                                    <option value="PHILIPPINES" selected>PILIPINAS</option>
+                                    <option value="UNITED STATES">UNITED STATES</option>
+                                    <option value="CANADA">CANADA</option>
+                                    <option value="AUSTRALIA">AUSTRALIA</option>
+                                    <option value="UNITED KINGDOM">UNITED KINGDOM</option>
+                                    <option value="JAPAN">JAPAN</option>
+                                    <option value="SINGAPORE">SINGAPORE</option>
+                                    <option value="SAUDI ARABIA">SAUDI ARABIA</option>
+                                    <option value="UNITED ARAB EMIRATES">UNITED ARAB EMIRATES</option>
+                                    <option value="ITALY">ITALY</option>
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Lugar ng Kapanganakan (Lalawigan) <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Place of Birth (Province)
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="birthProvince" required>
+                                    <option value="" disabled selected>PUMILI NG LALAWIGAN</option>
+                                    <option value="BATANGAS">BATANGAS</option>
+                                    <option value="CAVITE">CAVITE</option>
+                                    <option value="LAGUNA">LAGUNA</option>
+                                    <option value="RIZAL">RIZAL</option>
+                                    <option value="METRO MANILA">METRO MANILA</option>
+                                    <option value="BULACAN">BULACAN</option>
+                                    <option value="PAMPANGA">PAMPANGA</option>
+                                    <option value="CEBU">CEBU</option>
+                                    <option value="DAVAO">DAVAO</option>
+                                    <option value="ILOILO">ILOILO</option>
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Lugar ng Kapanganakan (Lungsod/Bayan) <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Place of Birth (City/Municipality)
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="birthCity" required>
+                                    <option value="" disabled selected>PUMILI NG LUNGSOD/BAYAN</option>
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label id="sacramentDateLabel">
+                                Petsa ng Binyag
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Date of Baptism
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="date" id="sacramentDate">
+                                <div class="error-message"></div>
+                            </div>
+                            <div class="info-text">
+                                <i class="fas fa-info-circle"></i> Iwanang blangko kung hindi sigurado sa petsa ng binyag/kumpil
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Leave blank if unsure of baptism/confirmation date
+                                </span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Kasarian <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Sex
+                                </span>
+                            </label>
+                            <div class="radio-group">
+                                <label class="radio-label">
+                                    <input type="radio" name="sex" value="Male" checked> Lalaki
+                                </label>
+                                <label class="radio-label">
+                                    <input type="radio" name="sex" value="Female"> Babae
+                                </label>
+                            </div>
+                            <div class="error-message"></div>
+                        </div>
+                    </div>
+                    
+                    <h3>
+                        Impormasyon ng Ama
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Father's Information
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Apelyido
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Last Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="fatherLastName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Unang Pangalan
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    First Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="fatherFirstName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Gitnang Pangalan
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Middle Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="fatherMiddleName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>
+                        Impormasyon ng Ina
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Mother's Information
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Apelyido (Maiden)
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Last Name (Maiden)
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="motherLastName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Unang Pangalan
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    First Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="motherFirstName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Gitnang Pangalan
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Middle Name
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="motherMiddleName">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Relasyon sa May-ari ng Dokumento <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Relationship to Document Owner
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="relationship" required>
+                                    <option value="" disabled selected>PUMILI NG RELASYON SA MAY-ARI NG DOKUMENTO</option>
+                                    <option>SARILI</option>
+                                    <option>MAGULANG</option>
+                                    <option>ANAK</option>
+                                    <option>ASAWA</option>
+                                    <option>KAPATID</option>
+                                    <option>LEGAL NA TAGAPAG-ALAGA</option>
+                                    <option>AWTORISADONG KINATAWAN</option>
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <h3>
+                        Layunin
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Purpose
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group full-width">
+                            <label>
+                                Layunin ng Kahilingan <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Purpose of Request
+                                </span>
+                            </label>
+                            <div class="select-field">
+                                <select id="purpose" required>
+                                    <option value="" disabled selected>PUMILI NG LAYUNIN NG KAHILINGAN</option>
+                                    <option>PANG-ESKWELA</option>
+                                    <option>PANG-TRABAHO</option>
+                                    <option>PANG-KASAL</option>
+                                    <option>PANG-KUMPIL</option>
+                                    <option>PANG-LEGAL</option>
+                                    <option>PANG-BIYAHE</option>
+                                    <option>PERSONAL NA REKORD</option>
+                                    <option value="OTHERS">IBA PA</option>
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Others purpose input field -->
+                    <div class="form-row" id="otherPurposeRow" style="display: none;">
+                        <div class="form-group full-width">
+                            <label>
+                                Tukuyin ang Layunin <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Specify Purpose
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="text" id="otherPurpose" placeholder="ILAGAY ANG LAYUNIN NG KAHILINGAN">
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Contact Information -->
+                    <h3>
+                        Impormasyon sa Pakikipag-ugnayan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Contact Information
+                        </span>
+                    </h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Numero ng Mobile <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Mobile Number
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="tel" id="mobileNumber" placeholder="09XXXXXXXXX" required>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>
+                                Email Address <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Email Address
+                                </span>
+                            </label>
+                            <div class="input-field">
+                                <input type="email" id="emailAddress" placeholder="your.email@example.com" required>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn add-request-btn" id="add-new-request-btn" type="button">
+                            <i class="fas fa-plus"></i> MAGDAGDAG NG BAGONG KAHILINGAN
+                        </button>
+                        <button class="btn cancel-btn" id="cancel-request-btn">KANSELAHIN</button>
+                        <button class="btn next-btn" id="save-and-continue-btn" disabled>I-SAVE AT MAGPATULOY</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Enhanced Requests Review Section -->
+            <section class="form-section" id="requests-review-section" style="display: none;">
+                <div class="form-progress">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Request Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Delivery Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Buod
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Summary
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="requests-review-section">
+                    <div class="requests-counter">
+                        <div class="counter-info">
+                            <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
+                            <span>Mga Nailagay na Kahilingan:</span>
+                            <div class="counter-badge" id="review-requests-count">0</div>
+                        </div>
+                        <button class="add-another-request" id="add-more-requests-btn">
+                            <i class="fas fa-plus"></i> Magdagdag pa ng Kahilingan
+                        </button>
+                    </div>
+
+                    <div class="form-container">
+                        <h2>
+                            Mga Nailagay na Kahilingan para sa Sertipiko
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Submitted Certificate Requests
+                            </span>
+                        </h2>
+
+                        <div class="flash-message" id="flash-message" style="display: none;">
+                            <i class="fas fa-info-circle"></i>
+                            <span id="flash-text">Matagumpay na naidagdag ang kahilingan!</span>
+                        </div>
+
+                        <div class="requests-table-container">
+                            <table class="requests-table" id="requests-review-table">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Uri ng Sertipiko</th>
+                                        <th>Pangalan ng May-ari</th>
+                                        <th>Petsa ng Pangyayari</th>
+                                        <th>Layunin</th>
+                                        <th>Mga Aksyon</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="requests-review-tbody">
+                                    <!-- Dynamic content will be inserted here -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="form-actions">
+                            <button class="btn back-btn" id="back-to-form-btn">BUMALIK SA FORM</button>
+                            <button class="btn next-btn" id="proceed-to-delivery-btn">MAGPATULOY SA PAGHAHATID</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Unified Delivery Section -->
+            <section class="form-section" id="unified-delivery-section" style="display: none;">
+                <div class="form-progress">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Request Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Delivery Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Buod
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Summary
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="unified-delivery-section">
+                    <div class="unified-delivery-header">
+                        <i class="fas fa-truck"></i>
+                        <h3>
+                            Mga Detalye ng Paghahatid para sa Lahat ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Delivery Details for All Requests
+                            </span>
+                        </h3>
+                    </div>
+                    
+                    <div class="delivery-notice">
+                        <p>
+                            Ang mga detalye ng paghahatid na inyong ibibigay ay gagamitin para sa lahat ng inyong mga kahilingan sa sertipiko.
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                The delivery details you provide will be used for all your certificate requests.
+                            </span>
+                        </p>
+                    </div>
+
+                    <div class="form-container">
+                        <h2>
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                Delivery Details
+                            </span>
+                        </h2>
+                        
+                        <h3>
+                            Pumili ng Paghahatid o Pagkuha <span class="required">*</span>
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Choose Delivery or Pickup
+                            </span>
+                        </h3>
+                        <div class="form-row">
+                            <div class="form-group full-width">
+                                <div class="radio-group delivery-options">
+                                    <label class="radio-label-block">
+                                        <input type="radio" name="unifiedDeliveryOption" value="delivery" checked id="unifiedDeliveryRadio"> 
+                                        <span>
+                                            PAGHAHATID
+                                            <br>
+                                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                                Delivery
+                                            </span>
+                                        </span>
+                                    </label>
+                                    <label class="radio-label-block">
+                                        <input type="radio" name="unifiedDeliveryOption" value="pickup" id="unifiedPickupRadio"> 
+                                        <span>
+                                            KUKUNIN SA PAROKYA
+                                            <br>
+                                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                                Pick Up at Parish
+                                            </span>
+                                        </span>
+                                    </label>
+                                </div>
+                                <div class="delivery-description">
+                                    <p id="unifiedDeliveryText">
+                                        Ang inyong mga sertipiko ay ihahatid direkta sa inyong address.
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                            Your certificates will be delivered directly to your address.
+                                        </span>
+                                    </p>
+                                    <p id="unifiedPickupText" style="display: none;">
+                                        Maaari ninyong kunin ang inyong mga sertipiko sa opisina ng parokya.
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                            You may pick up your certificates at the parish office.
+                                        </span>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Delivery Address Section -->
+                        <div id="unifiedDeliveryAddressSection">
+                            <h3>
+                                Address ng Paghahatid
+                                <br>
+                                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                    Delivery Address
+                                </span>
+                            </h3>
+                            
+                            <div class="form-row">
+                                <div class="form-group full-width">
+                                    <label>
+                                        Address Line 1 <span class="required">*</span>
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                            Address Line 1
+                                        </span>
+                                    </label>
+                                    <div class="input-field">
+                                        <input type="text" id="unifiedAddressLine1" placeholder="NUMERO NG BAHAY/APARTMENT/UNIT/FLOOR, PANGALAN NG GUSALI, PANGALAN NG KUMPANYA (KUNG OPISINA), KALYE" required>
+                                        <div class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Zip/Postal code <span class="required">*</span>
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                            Zip/Postal Code
+                                        </span>
+                                    </label>
+                                    <div class="input-field">
+                                        <input type="text" id="unifiedZipCode" required>
+                                        <div class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Pickup Section -->
+                        <div id="unifiedPickupSection" style="display: none;">
+                            <h3>
+                                Impormasyon sa Pagkuha
+                                <br>
+                                <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                    Pickup Information
+                                </span>
+                            </h3>
+                            
+                            <div class="info-text">
+                                <i class="fas fa-info-circle"></i> Mangyaring tandaan na kailangan ninyong magpakita ng valid ID kapag kinukuha ang inyong mga sertipiko.
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Please note that you must show a valid ID when collecting your certificates.
+                                </span>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Gustong Petsa ng Pagkuha <span class="required">*</span>
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                            Preferred Date of Pickup
+                                        </span>
+                                    </label>
+                                    <div class="input-field">
+                                        <input type="date" id="unifiedPickupDate" required>
+                                        <div class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>
+                                        Numero ng Telepono para sa Abiso ng Pagkuha <span class="required">*</span>
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                            Phone Number for Notice of Pickup
+                                        </span>
+                                    </label>
+                                    <div class="input-field">
+                                        <input type="text" id="unifiedPickupContactNumber" placeholder="NUMERO NG MOBILE" required>
+                                        <div class="error-message"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="terms-conditions-container">
+                            <h3>
+                                Mga Tuntunin at Kondisyon ng Paghahatid
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Delivery Terms and Conditions
+                                </span>
+                            </h3>
+                            <div class="terms-text">
+                                <p>1. Ang iskedyul ng paghahatid ay 8:00 AM hanggang 5:00 PM Lunes hanggang Biyernes (maliban sa mga holiday).</p>
+                                <p>2. Ang paghahatid ay maaaring tumagal ng 2-5 business days depende sa inyong lokasyon.</p>
+                                <p>3. Ang contact at delivery information na inyong ibinigay ay maaaring ibahagi sa third-party courier service para sa layunin ng paghahatid.</p>
+                                <p>4. Ang parokya ay walang responsibilidad sa anumang pinsala o liability para sa hindi matagumpay na paghahatid o maling paghahatid sa hindi awtorisadong o maling tagatanggap na resulta ng anumang maling o kulang na impormasyon na inyong ibinigay.</p>
+                            </div>
+                            
+                            <div class="consent-checkbox">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="unifiedDeliveryTermsCheckbox" required>
+                                    <span>
+                                        Pinapatunayan ko na ako ang may-ari ng dokumento / legal na kinatawan ng may-ari ng hinihiling na sertipiko. Pinatutunayan ko na ang mga impormasyon sa itaas ay totoo at tumpak batay sa aking sariling kaalaman. Nauunawaan at sumasang-ayon din ako sa mga tuntunin at kondisyon ng paghahatid.
+                                        <br>
+                                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                            I certify that I am the document owner / legal representative of the owner of the requested certificate. I certify that the information above is true and accurate based on my own knowledge. I also understand and agree to the delivery terms and conditions.
+                                        </span>
+                                    </span>
+                                </label>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+                        
+                        <div class="form-actions">
+                            <button class="btn back-btn" id="back-to-review-btn">BUMALIK</button>
+                            <button class="btn next-btn" id="proceed-to-summary-btn" disabled>MAGPATULOY SA BUOD</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Final Summary Section -->
+            <section class="form-section" id="final-summary-section" style="display: none;">
+                <div class="form-progress">
+                    <div class="progress-step completed">
+                        <div class="step-number">1</div>
+                        <div class="step-label">
+                            Mga Detalye ng Kahilingan
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Request Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step completed">
+                        <div class="step-number">2</div>
+                        <div class="step-label">
+                            Mga Detalye ng Paghahatid
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Delivery Details
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
+                            Buod
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Summary
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">4</div>
+                        <div class="step-label">
+                            Pagkilala
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Acknowledgement
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">5</div>
+                        <div class="step-label">
+                            Bayad
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Payment
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-container">
+                    <h2>
+                        Buod ng Lahat ng Kahilingan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Summary of All Requests
+                        </span>
+                    </h2>
+                    
+                    <div id="final-summary-content">
+                        <!-- Dynamic content will be inserted here -->
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn back-btn" id="back-to-delivery-final-btn">BUMALIK</button>
+                        <button class="btn confirm-btn" id="confirm-all-requests-btn">KUMPIRMAHIN LAHAT NG KAHILINGAN</button>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <!-- Chatbot and other components remain the same -->
+        <div class="chatbot-container">
+            <div class="chatbot-icon" id="chatbot-toggle">
+                <i class="fas fa-comments"></i>
+            </div>
+            <div class="chatbot-window" id="chatbot-window">
+                <div class="chatbot-header">
+                    <h3>Chronos Support</h3>
+                    <button id="close-chatbot"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="chatbot-messages" id="chatbot-messages">
+                    <div class="message bot">
+                        Kumusta! Paano ko kayo matutulungan sa Chronos ngayon?
+                    </div>
+                </div>
+                <div class="chatbot-input">
+                    <input type="text" id="user-message" placeholder="I-type ang inyong mensahe... / Type your message...">
+                    <button id="send-message"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Logout confirmation modal -->
+        <div class="modal" id="logout-modal">
+            <div class="modal-content">
+                <h2>
+                    Kumpirmahin ang Pag-logout
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Confirm Logout
+                    </span>
+                </h2>
+                <p>
+                    Sigurado ba kayong gusto ninyong mag-logout?
+                    <br>
+                    <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Are you sure you want to logout?
+                    </span>
+                </p>
+                <div class="modal-buttons">
+                    <button id="cancel-logout">
+                        Kanselahin
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                            Cancel
+                        </span>
+                    </button>
+                    <button id="confirm-logout">
+                        Mag-logout
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                            Logout
+                        </span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <script src="dashboard-user.js"></script>
+        <script src="request-certificate-form-validation-user.js"></script>
+        <script src="request-certificate-form-handler-user.js"></script>
+    </body>
+</html>
