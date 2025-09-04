@@ -74,24 +74,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Check if it starts with 9 and has exactly 10 digits
     const philippinePattern = /^9\d{9}$/
     
-    if (!philippinePattern.test(cleanNumber)) {
-      return false
-    }
-    
-    // Check if it's a valid Philippine mobile prefix
-    const validPrefixes = [
-      '905', '906', '907', '908', '909', '910', '912', '913', '914', '915', '916', '917', 
-      '918', '919', '920', '921', '922', '923', '924', '925', '926', '927', '928', '929',
-      '930', '931', '932', '933', '934', '935', '936', '937', '938', '939', '940', '941',
-      '942', '943', '944', '945', '946', '947', '948', '949', '950', '951', '952', '953',
-      '954', '955', '956', '957', '958', '959', '960', '961', '962', '963', '964', '965',
-      '966', '967', '968', '969', '970', '971', '972', '973', '974', '975', '976', '977',
-      '978', '979', '980', '981', '982', '983', '984', '985', '986', '987', '988', '989',
-      '990', '991', '992', '993', '994', '995', '996', '997', '998', '999'
-    ]
-    
-    const prefix = cleanNumber.substring(0, 3)
-    return validPrefixes.includes(prefix)
+    return philippinePattern.test(cleanNumber)
   }
 
   // Email validation
@@ -151,27 +134,34 @@ document.addEventListener("DOMContentLoaded", () => {
     const address = document.getElementById("create-address").value.trim()
     const errorElement = document.getElementById("create-error")
 
+    const loadingOverlay = document.getElementById("loading-overlay")
+    loadingOverlay.style.display = 'flex'
+
     // Clear previous errors
     errorElement.textContent = ""
 
     // Validation
     if (!firstName || !lastName || !email || !password) {
       errorElement.textContent = "Please fill in all required fields"
+      loadingOverlay.style.display = 'none'
       return
     }
 
     if (phoneNumber && !validatePhilippineMobile(phoneNumber)) {
       errorElement.textContent = "Please enter a valid Philippine mobile number"
+      loadingOverlay.style.display = 'none'
       return
     }
 
     if (!validateEmail(email)) {
       errorElement.textContent = "Please enter a valid email address"
+      loadingOverlay.style.display = 'none'
       return
     }
 
     if (!validatePassword(password)) {
       errorElement.textContent = "Password must be at least 6 characters long"
+      loadingOverlay.style.display = 'none'
       return
     }
 
@@ -192,10 +182,12 @@ document.addEventListener("DOMContentLoaded", () => {
       
       if (!checkResult.success) {
         errorElement.textContent = checkResult.message
+        loadingOverlay.style.display = 'none'
         return
       }
     } catch (error) {
       errorElement.textContent = "Network error. Please try again."
+      loadingOverlay.style.display = 'none'
       return
     }
 
@@ -210,11 +202,12 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     // Show OTP choice modal
+    loadingOverlay.style.display = 'none'
     showOTPChoiceModal(email, phoneNumber)
   })
 
   // Show OTP Choice Modal
-  function showOTPChoiceModal(email, phoneNumber) {
+  function showOTPChoiceModal(email, phoneNumber) {    
     const modal = document.getElementById("otp-choice-modal")
     const emailBtn = document.getElementById("choose-email-otp")
     const mobileBtn = document.getElementById("choose-mobile-otp")
@@ -255,46 +248,29 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Send OTP Code
   async function sendOTPCode(method, contact) {
+    const loadingOverlay = document.getElementById("loading-overlay")    
     try {
       if (method === 'mobile') {
+        loadingOverlay.style.display = 'flex'
         // Use Firebase for mobile OTP
-        await sendFirebaseOTP(contact)
+        await sendFirebaseMobileOTP(contact)
+        loadingOverlay.style.display = 'none'
       } else {
-        // Use PHP/SendGrid for email OTP
-        const formData = new FormData()
-        formData.append('method', method)
-        formData.append('contact', contact)
-        formData.append('purpose', 'account_creation')
-
-        const response = await fetch('sendOTP.php', {
-          method: 'POST',
-          body: formData
-        })
-
-        const result = await response.json()
-        
-        if (result.success) {
-          currentOTPMethod = method
-          currentOTPContact = contact
-          
-          // Hide choice modal and show verification modal
-          document.getElementById("otp-choice-modal").style.display = "none"
-          showOTPVerificationModal(method, contact)
-          
-          // Start timer
-          startOTPTimer(result.expires_in || 300)
-        } else {
-          alert('Failed to send OTP: ' + result.message)
-        }
+        loadingOverlay.style.display = 'flex'
+        // Use Firebase for email OTP
+        await sendFirebaseEmailOTP(contact)
+        loadingOverlay.style.display = 'none'
       }
     } catch (error) {
+      loadingOverlay.style.display = 'flex'
       console.error('Error sending OTP:', error)
       alert('Network error. Please try again.')
+      loadingOverlay.style.display = 'none'
     }
   }
 
-  // Send Firebase OTP for mobile
-  async function sendFirebaseOTP(phoneNumber) {
+  // Send Firebase OTP for mobile (renamed for clarity)
+  async function sendFirebaseMobileOTP(phoneNumber) {
     try {
       // First, register the request in PHP backend
       const formData = new FormData()
@@ -332,13 +308,56 @@ document.addEventListener("DOMContentLoaded", () => {
         showOTPVerificationModal('mobile', phoneNumber)
         
         // Start timer
-        startOTPTimer(300) // 5 minutes
+        startOTPTimer(120) // 2 minutes
       } else {
         throw new Error(firebaseResult.error || 'Failed to send Firebase OTP')
       }
     } catch (error) {
       console.error('Firebase OTP error:', error)
       alert('Failed to send OTP: ' + error.message)
+    }
+  }
+
+  // Send Firebase OTP for email
+  async function sendFirebaseEmailOTP(email) {
+    try {
+      // First, register the request in PHP backend
+      const formData = new FormData()
+      formData.append('method', 'email')
+      formData.append('contact', email)
+      formData.append('purpose', 'account_creation')
+
+      const response = await fetch('sendOTP.php', {
+        method: 'POST',
+        body: formData
+      })
+
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.message)
+      }
+
+      // Send OTP via Firebase custom email OTP
+      const { sendCustomEmailOTP } = await import('./firebase-auth.js')
+      const firebaseResult = await sendCustomEmailOTP(email)
+      
+      if (firebaseResult.success) {
+        currentOTPMethod = 'email'
+        currentOTPContact = email
+        
+        // Hide choice modal and show verification modal
+        document.getElementById("otp-choice-modal").style.display = "none"
+        showOTPVerificationModal('email', email)
+        
+        // Start timer
+        startOTPTimer(300) // 5 minutes
+      } else {
+        throw new Error(firebaseResult.error || 'Failed to send Firebase email OTP')
+      }
+    } catch (error) {
+      console.error('Firebase email OTP error:', error)
+      alert('Failed to send email OTP: ' + error.message)
     }
   }
 
@@ -432,11 +451,9 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  // Setup OTP inputs for both modals
-  document.addEventListener('DOMContentLoaded', function() {
-    setupOTPInputs('.otp-digit')
-    setupOTPInputs('.reset-otp-digit')
-  })
+  // Setup OTP inputs for both modals (called immediately since we're already in DOMContentLoaded)
+  setupOTPInputs('.otp-digit')
+  setupOTPInputs('.reset-otp-digit')
 
   // Start OTP Timer
   function startOTPTimer(seconds) {
@@ -466,53 +483,45 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000)
   }
 
-  // Verify OTP
+
+  // Verify OTP and Create Account
   document.getElementById("verify-otp").addEventListener("click", async () => {
     const otpInputs = document.querySelectorAll('.otp-digit')
     const otp = Array.from(otpInputs).map(input => input.value).join('')
     const errorElement = document.getElementById("otp-error")
-    
+
+    const loadingOverlay = document.getElementById("loading-overlay")
+    loadingOverlay.style.display = 'flex'
+
     errorElement.textContent = ""
-    
+
     if (otp.length !== 6) {
-      errorElement.textContent = "Please enter all 6 digits"
+      errorElement.textContent = "Please enter the 6-digit code."
       otpInputs.forEach(input => input.classList.add('error'))
       return
     }
-    
+
     try {
-      if (currentOTPMethod === 'mobile' && firebaseConfirmationResult) {
-        // Verify Firebase mobile OTP
+      if (currentOTPMethod === 'mobile') {
+        // For mobile, verify with Firebase first
+        if (!firebaseConfirmationResult) {
+          throw new Error("Firebase confirmation result not found.")
+        }
+        
         const { verifyPhoneOTP } = await import('./firebase-auth.js')
         const firebaseResult = await verifyPhoneOTP(firebaseConfirmationResult, otp)
-        
         if (firebaseResult.success) {
-          // Firebase verification successful, now verify with backend
-          const formData = new FormData()
-          formData.append('contact', currentOTPContact)
-          formData.append('otp', 'FIREBASE_VERIFIED')
-          formData.append('method', 'mobile')
-
-          const response = await fetch('verifyOTP.php', {
-            method: 'POST',
-            body: formData
-          })
-
-          const result = await response.json()
-          
-          if (result.success) {
-            // OTP verified, now create the account
-            await createAccountWithVerification()
-          } else {
-            errorElement.textContent = result.message
-            otpInputs.forEach(input => input.classList.add('error'))
-          }
-        } else {
-          errorElement.textContent = firebaseResult.error || 'Invalid OTP code'
-          otpInputs.forEach(input => input.classList.add('error'))
+          // OTP is correct, now create the account
+          await createAccountWithVerification()
+          loadingOverlay.style.display = 'none'
+        } 
+         else {
+          loadingOverlay.style.display = 'none'
+          throw new Error(firebaseResult.error || "Invalid OTP code.")          
         }
-      } else {
-        // Email OTP verification
+
+      } else if (currentOTPMethod === 'email') {
+        // For email, verify directly with our backend
         const formData = new FormData()
         formData.append('contact', currentOTPContact)
         formData.append('otp', otp)
@@ -526,16 +535,19 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json()
         
         if (result.success) {
-          // OTP verified, now create the account
+          // OTP is correct, now create the account
           await createAccountWithVerification()
+          loadingOverlay.style.display = 'none'
         } else {
-          errorElement.textContent = result.message
-          otpInputs.forEach(input => input.classList.add('error'))
+          loadingOverlay.style.display = 'none'
+          throw new Error(result.message || "Invalid OTP or OTP expired.")
         }
       }
     } catch (error) {
-      console.error('OTP verification error:', error)
-      errorElement.textContent = "Network error. Please try again."
+      loadingOverlay.style.display = 'none'
+      console.error('OTP Verification Error:', error)
+      errorElement.textContent = error.message || "An error occurred. Please try again."
+      otpInputs.forEach(input => input.classList.add('error'))
     }
   })
 
@@ -600,13 +612,18 @@ document.addEventListener("DOMContentLoaded", () => {
     currentOTPContact = null
   })
 
+  
+
   // Sign In Form Submission
   signinForm.addEventListener("submit", async (e) => {
-    e.preventDefault()
+    e.preventDefault()    
 
     const email = document.getElementById("email").value.trim()
     const password = document.getElementById("password").value
     const errorElement = document.getElementById("login-error")
+
+    const loadingOverlay = document.getElementById("loading-overlay")
+    loadingOverlay.style.display = 'flex'
 
     // Clear previous errors
     errorElement.textContent = ""
@@ -647,9 +664,11 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       } else {
         errorElement.textContent = "Incorrect Email or Password"
+        loadingOverlay.style.display = 'none'
       }
     } catch (error) {
       errorElement.textContent = "Network error. Please try again."
+      loadingOverlay.style.display = 'none'
     }
   })
 
@@ -695,11 +714,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 1000)
   }
 
+  // Global variables for forgot password Firebase
+  let forgotPasswordFirebaseConfirmationResult = null
+
+      const resetMobileInput = document.getElementById("reset-mobile");
+
+      // Function to format phone numbers
+      function formatPhoneNumber(value) {
+      // Remove spaces and hyphens first
+      value = value.replace(/[\s-]/g, '');
+
+      // Allow only digits and limit to 10 characters
+      value = value.replace(/\D/g, '').substring(0, 10);
+
+      // Format the number: XXX XXX XXXX
+      if (value.length >= 7) {
+      return `${value.substring(0, 3)} ${value.substring(3, 6)} ${value.substring(6)}`;
+      } else if (value.length >= 4) {
+      return `${value.substring(0, 3)} ${value.substring(3)}`;
+      }
+
+      return value;
+      }
+
+      // Add event listener to the reset mobile input
+      resetMobileInput.addEventListener("input", function (e) {
+      e.target.value = formatPhoneNumber(e.target.value);
+      });
+
   // Send verification code
   sendCodeBtn.addEventListener("click", async function () {
     const resetEmail = document.getElementById("reset-email").value.trim()
-    const resetMobile = document.getElementById("reset-mobile").value.replace(/[\s-]/g, '')
+    const resetMobile = resetMobileInput.value.replace(/\D/g, ''); 
     const verificationMethod = document.querySelector('input[name="verification"]:checked').value
+
+    const loadingOverlay = document.getElementById("loading-overlay")
+    loadingOverlay.style.display = 'flex'
 
     resetError.textContent = ""
 
@@ -707,20 +757,24 @@ document.addEventListener("DOMContentLoaded", () => {
     if (verificationMethod === "email") {
       if (!resetEmail) {
         resetError.textContent = "Please enter your email"
+        loadingOverlay.style.display = 'none'
         return
       }
       if (!validateEmail(resetEmail)) {
         resetError.textContent = "Please enter a valid email address"
+        loadingOverlay.style.display = 'none'
         return
       }
       contactInfo = resetEmail
     } else {
       if (!resetMobile) {
         resetError.textContent = "Please enter your mobile number"
+        loadingOverlay.style.display = 'none'
         return
       }
       if (!validatePhilippineMobile(resetMobile)) {
         resetError.textContent = "Please enter a valid Philippine mobile number"
+        loadingOverlay.style.display = 'none'
         return
       }
       contactInfo = `+63${resetMobile}`
@@ -741,47 +795,137 @@ document.addEventListener("DOMContentLoaded", () => {
       
       if (checkResult.success) {
         // User exists, now send OTP
-        const otpFormData = new FormData()
-        otpFormData.append('method', verificationMethod)
-        otpFormData.append('contact', contactInfo)
-        otpFormData.append('purpose', 'password_reset')
-
-        const otpResponse = await fetch('sendOTP.php', {
-          method: 'POST',
-          body: otpFormData
-        })
-
-        const otpResult = await otpResponse.json()
-        
-        if (otpResult.success) {
-          // Show verification section
-          verificationCodeSection.style.display = "block"
-          this.textContent = "RESEND CODE"
-          
-          // Clear reset OTP inputs
-          const resetOtpInputs = document.querySelectorAll('.reset-otp-digit')
-          resetOtpInputs.forEach(input => {
-            input.value = ''
-            input.classList.remove('filled', 'error')
-          })
-          
-          // Focus first input
-          resetOtpInputs[0].focus()
-          
-          // Start timer
-          startTimer(otpResult.expires_in || 300) // 5 minutes
-          
-          alert('Verification code sent to your ' + (verificationMethod === 'email' ? 'email' : 'mobile number'))
+        if (verificationMethod === 'mobile') {
+          // Use Firebase for mobile OTP
+          await sendForgotPasswordFirebaseOTP(contactInfo);
+          loadingOverlay.style.display = 'none'
         } else {
-          resetError.textContent = "Failed to send verification code. Please try again."
+          // Use Firebase for email link
+          await sendForgotPasswordEmailLink(contactInfo);
+          loadingOverlay.style.display = 'none'
         }
       } else {
+        await sendForgotPasswordEmailLink(contactInfo);
         resetError.textContent = verificationMethod === "email" ? "Email Not Found" : "Mobile Number Not Found"
       }
     } catch (error) {
+      await sendForgotPasswordEmailLink(contactInfo);
       resetError.textContent = "Network error. Please try again."
     }
   })
+
+  // Send Firebase Email Link for forgot password
+  async function sendForgotPasswordEmailLink(email) {
+    try {
+      // First, register the request in PHP backend
+      const formData = new FormData()
+      formData.append('method', 'email')
+      formData.append('contact', email)
+      formData.append('purpose', 'password-reset')
+
+      const response = await fetch('sendOTP.php', {
+        method: 'POST',
+        body: formData
+      })
+
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.message)
+      }
+
+      // Send OTP via Firebase custom email OTP
+      const { sendCustomEmailOTP } = await import('./firebase-auth.js')
+      const firebaseResult = await sendCustomEmailOTP(email)
+      
+      if (firebaseResult.success) {
+        forgotPasswordFirebaseConfirmationResult = firebaseResult.confirmationResult
+        
+        // Show verification section
+        verificationCodeSection.style.display = "block"
+        sendCodeBtn.textContent = "RESEND CODE"
+        
+        // Clear reset OTP inputs
+        const resetOtpInputs = document.querySelectorAll('.reset-otp-digit')
+        resetOtpInputs.forEach(input => {
+          input.value = ''
+          input.classList.remove('filled', 'error')
+        })
+        
+        // Focus first input
+        resetOtpInputs[0].focus()
+        
+        // Start timer
+        startTimer(300) // 5 minutes
+        
+        alert('Verification code sent to your Email')
+      } else {
+        throw new Error(firebaseResult.error || 'Failed to send Firebase OTP')
+      }
+    } catch (error) {
+      console.error('Firebase email OTP error:', error)
+      alert('Failed to send email OTP: ' + error.message)
+    }
+  }
+
+  // Send Firebase OTP for forgot password
+  async function sendForgotPasswordFirebaseOTP(phoneNumber) {
+    try {
+      // First, register the request in PHP backend
+      const formData = new FormData()
+      formData.append('method', 'mobile')
+      formData.append('contact', phoneNumber)
+      formData.append('purpose', 'password_reset')
+
+      const response = await fetch('sendOTP.php', {
+        method: 'POST',
+        body: formData
+      })
+
+      const result = await response.json()
+      
+      if (!result.success) {
+        throw new Error(result.message)
+      }
+
+      // Initialize Firebase if not already done
+      if (!window.recaptchaVerifier) {
+        await initializeFirebaseAuth()
+      }
+
+      // Send OTP via Firebase
+      const { sendPhoneOTP } = await import('./firebase-auth.js')
+      const firebaseResult = await sendPhoneOTP(phoneNumber)
+      
+      if (firebaseResult.success) {
+        forgotPasswordFirebaseConfirmationResult = firebaseResult.confirmationResult
+        
+        // Show verification section
+        verificationCodeSection.style.display = "block"
+        sendCodeBtn.textContent = "RESEND CODE"
+        
+        // Clear reset OTP inputs
+        const resetOtpInputs = document.querySelectorAll('.reset-otp-digit')
+        resetOtpInputs.forEach(input => {
+          input.value = ''
+          input.classList.remove('filled', 'error')
+        })
+        
+        // Focus first input
+        resetOtpInputs[0].focus()
+        
+        // Start timer
+        startTimer(120) // 2 minutes
+        
+        alert('Verification code sent to your mobile number')
+      } else {
+        throw new Error(firebaseResult.error || 'Failed to send Firebase OTP')
+      }
+    } catch (error) {
+      console.error('Firebase OTP error:', error)
+      resetError.textContent = 'Failed to send OTP: ' + error.message
+    }
+  }
 
   // Reset password form submission
   forgotPasswordForm.addEventListener("submit", async function (e) {
@@ -821,27 +965,40 @@ document.addEventListener("DOMContentLoaded", () => {
       // Get contact info
       const verificationMethod = document.querySelector('input[name="verification"]:checked').value
       const resetEmail = document.getElementById("reset-email").value.trim()
-      const resetMobile = document.getElementById("reset-mobile").value.replace(/[\s-]/g, '')
+      const resetMobile = document.getElementById("reset-mobile")
       const contactInfo = verificationMethod === "email" ? resetEmail : `+63${resetMobile}`
 
       try {
-        // First verify the OTP
-        const verifyFormData = new FormData()
-        verifyFormData.append('contact', contactInfo)
-        verifyFormData.append('otp', inputCode)
-        verifyFormData.append('purpose', 'password_reset')
+        // Handle Firebase mobile OTP verification
+        if (verificationMethod === 'mobile' && forgotPasswordFirebaseConfirmationResult) {
+          // Verify Firebase mobile OTP
+          const { verifyPhoneOTP } = await import('./firebase-auth.js')
+          const firebaseResult = await verifyPhoneOTP(forgotPasswordFirebaseConfirmationResult, inputCode)
+          
+          if (!firebaseResult.success) {
+            resetError.textContent = firebaseResult.error || 'Invalid OTP code'
+            resetOtpInputs.forEach(input => input.classList.add('error'))
+            return
+          }
+        } else {
+          // Email OTP verification
+          const verifyFormData = new FormData()
+          verifyFormData.append('contact', contactInfo)
+          verifyFormData.append('otp', inputCode)
+          verifyFormData.append('method', verificationMethod)
 
-        const verifyResponse = await fetch('verifyOTP.php', {
-          method: 'POST',
-          body: verifyFormData
-        })
+          const verifyResponse = await fetch('verifyOTP.php', {
+            method: 'POST',
+            body: verifyFormData
+          })
 
-        const verifyResult = await verifyResponse.json()
-        
-        if (!verifyResult.success) {
-          resetError.textContent = verifyResult.message
-          resetOtpInputs.forEach(input => input.classList.add('error'))
-          return
+          const verifyResult = await verifyResponse.json()
+          
+          if (!verifyResult.success) {
+            resetError.textContent = verifyResult.message
+            resetOtpInputs.forEach(input => input.classList.add('error'))
+            return
+          }
         }
 
         // OTP verified, now reset password
@@ -849,7 +1006,7 @@ document.addEventListener("DOMContentLoaded", () => {
         formData.append('method', verificationMethod)
         formData.append('contact', contactInfo)
         formData.append('newPassword', newPassword)
-        formData.append('verificationCode', inputCode)
+        formData.append('otp', inputCode)
 
         const response = await fetch('resetPassword.php', {
           method: 'POST',
@@ -867,43 +1024,11 @@ document.addEventListener("DOMContentLoaded", () => {
           resetError.textContent = "Error resetting password. Please try again."
         }
       } catch (error) {
+        console.error('Password reset error:', error)
         resetError.textContent = "Network error. Please try again."
       }
     }
   })
-
-  // Reset forgot password form
-  function resetForgotPasswordForm() {
-    forgotPasswordForm.reset()
-    verificationCodeSection.style.display = "none"
-    sendCodeBtn.textContent = "SEND VERIFICATION CODE"
-    timerDisplay.textContent = ""
-    timerDisplay.style.color = "#e74c3c"
-    
-    if (verificationTimer) {
-      clearInterval(verificationTimer)
-      verificationTimer = null
-    }
-    
-    verificationCode = null
-    verificationExpiry = null
-    
-    // Reset verification method display
-    emailVerification.classList.add("active")
-    mobileVerification.classList.remove("active")
-    document.querySelector('input[name="verification"][value="email"]').checked = true
-  }
-
-  // Check if user is already logged in
-  const isLoggedIn = sessionStorage.getItem("chronos_session") === "active"
-  if (isLoggedIn) {
-    const user = JSON.parse(sessionStorage.getItem("chronos_user") || '{}')
-    if (user.role === 'admin') {
-      window.location.href = "dashboard-admin.html"
-    } else {
-      window.location.href = "dashboard-user.html"
-    }
-  }
 
   // Chatbot functionality (keeping existing functionality)
   const chatbotToggle = document.getElementById("chatbot-toggle")

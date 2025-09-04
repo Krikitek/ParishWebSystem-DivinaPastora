@@ -42,10 +42,13 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
             'Psr\\Http\\Client\\' => 16,
             'Psr\\Clock\\' => 10,
             'Psr\\Cache\\' => 10,
+            'Paymongo\\' => 9,
         ),
         'M' => 
         array (
             'Monolog\\' => 8,
+            'MicrosoftAzure\\Storage\\Common\\' => 30,
+            'MicrosoftAzure\\Storage\\Blob\\' => 28,
         ),
         'L' => 
         array (
@@ -161,9 +164,21 @@ class ComposerStaticInita9cfa8b5d1d5a587bb5e2355faa68ea6
         array (
             0 => __DIR__ . '/..' . '/psr/cache/src',
         ),
+        'Paymongo\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/paymongo/paymongo-php/src',
+        ),
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'MicrosoftAzure\\Storage\\Common\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/microsoft/azure-storage-common/src/Common',
+        ),
+        'MicrosoftAzure\\Storage\\Blob\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/microsoft/azure-storage-blob/src/Blob',
         ),
         'Lcobucci\\JWT\\' => 
         array (

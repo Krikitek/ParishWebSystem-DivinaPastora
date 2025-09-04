@@ -1,10 +1,11 @@
 <?php
+session_start();
 require_once 'dbConnection.php';
 
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    try {
+    try {              
         $email = trim($_POST['email']);
         $password = $_POST['password'];
 
@@ -35,15 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // Verify password
-        if (!password_verify($password, $user['password'])) {
-            echo json_encode(['success' => false, 'message' => 'Incorrect Email or Password']);
+        if (!password_verify($password, $user['password'])) {            
+            echo json_encode(['success' => false, 'message' => 'Incorrect Email or Password']);            
             exit;
         }
 
+        $date = new DateTime('now', new DateTimeZone('Asia/Manila'));
+        $localDate = $date->format('Y-m-d H:i:s');
+
         // Update last login time
-        $updateSql = "UPDATE UserAccountTable SET lastLogIn = GETDATE() WHERE userID = ?";
+        $updateSql = "UPDATE UserAccountTable SET lastLogIn = ? WHERE userID = ?";
         $updateStmt = $conn->prepare($updateSql);
-        $updateStmt->execute([$user['userID']]);
+        $updateStmt->execute([$localDate, $user['userID']]);
+        $_SESSION['user_id'] = $user['userID'];
 
         // Remove password from user data before sending to client
         unset($user['password']);
@@ -52,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo json_encode([
             'success' => true,
             'user' => $user,
-            'message' => 'Login successful'
+            'message' => 'Login successful'            
         ]);
 
     } catch (PDOException $e) {

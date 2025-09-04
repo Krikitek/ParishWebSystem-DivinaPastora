@@ -46,13 +46,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        $date = new DateTime('now', new DateTimeZone('Asia/Manila'));
+        $localDate = $date->format('Y-m-d H:i:s');
+
         // Insert new user
         $sql = "INSERT INTO UserAccountTable 
                 (firstName, lastName, email, password, role, phoneNumber, address, accountStatus, accountDateCreated)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'active', GETDATE())";
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)";
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$firstName, $lastName, $email, $password, $role, $phoneNumber, $address]);
+        $stmt->execute([$firstName, $lastName, $email, $password, $role, $phoneNumber, $address, $localDate]);
 
         echo "Account created successfully!";
 

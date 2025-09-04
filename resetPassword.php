@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $method = $_POST['method']; // 'email' or 'mobile'
         $contact = trim($_POST['contact']);
         $newPassword = $_POST['newPassword'];
-        $verificationCode = $_POST['verificationCode'];
+        $verificationCode = $_POST['otp'];
 
         // Validate input
         if (empty($method) || empty($contact) || empty($newPassword) || empty($verificationCode)) {

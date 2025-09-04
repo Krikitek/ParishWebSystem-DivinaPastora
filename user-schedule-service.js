@@ -3646,11 +3646,326 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function processGcashPayment() {
     if (validatePaymentForm()) {
-      // Show verification modal
-      document.getElementById("gcash-verification-modal").style.display = "block"
+      // Submit the form data to the server
+      submitConfirmationService()
     } else {
       alert("Pakikumpletuhin ang lahat ng detalye ng bayad.")
     }
+  }
+
+  // Function to validate confirmation file sizes (10MB limit)
+  function validateConfirmationFileSizes() {
+    const maxSize = 10 * 1024 * 1024 // 10MB in bytes
+    const fileFields = [
+      'confirmandBaptismalCert',
+      'confirmandCommunionCert',
+      'confirmandFatherPrePentecostCard',
+      'confirmandMotherPrePentecostCard',
+      'confirmationParishPermit'
+    ]
+
+    let hasOversizedFiles = false
+    const oversizedFiles = []
+
+    // Check main file fields
+    fileFields.forEach(fieldId => {
+      const fileField = document.getElementById(fieldId)
+      if (fileField && fileField.files.length > 0) {
+        const file = fileField.files[0]
+        if (file.size > maxSize) {
+          hasOversizedFiles = true
+          oversizedFiles.push(`${fieldId}: ${(file.size / (1024 * 1024)).toFixed(2)}MB`)
+        }
+      }
+    })
+
+    // Check sponsor file uploads
+    for (let i = 1; i <= sponsorCount; i++) {
+      const sponsorFiles = [
+        `sponsorMarriageContract${i}`,
+        `sponsorConfirmationCert${i}`,
+        `sponsorPrePentecostCard${i}`
+      ]
+
+      sponsorFiles.forEach(fieldId => {
+        const fileField = document.getElementById(fieldId)
+        if (fileField && fileField.files.length > 0) {
+          const file = fileField.files[0]
+          if (file.size > maxSize) {
+            hasOversizedFiles = true
+            oversizedFiles.push(`${fieldId}: ${(file.size / (1024 * 1024)).toFixed(2)}MB`)
+          }
+        }
+      })
+    }
+
+    if (hasOversizedFiles) {
+      showNotification(`Ang mga sumusunod na file ay lumampas sa 10MB limit:\n${oversizedFiles.join('\n')}`, 'error')
+      return false
+    }
+
+    return true
+  }
+
+  // Function to validate communion file sizes (10MB limit)
+  function validateCommunionFileSizes() {
+    const maxSize = 10 * 1024 * 1024 // 10MB in bytes
+    const fileFields = [
+      'communionBaptismalCert',
+      'communionParishPermit'
+    ]
+
+    let hasOversizedFiles = false
+    const oversizedFiles = []
+
+    // Check main file fields
+    fileFields.forEach(fieldId => {
+      const fileField = document.getElementById(fieldId)
+      if (fileField && fileField.files.length > 0) {
+        const file = fileField.files[0]
+        if (file.size > maxSize) {
+          hasOversizedFiles = true
+          oversizedFiles.push(`${fieldId}: ${(file.size / (1024 * 1024)).toFixed(2)}MB`)
+        }
+      }
+    })
+
+    if (hasOversizedFiles) {
+      showNotification(`Ang mga sumusunod na file ay lumampas sa 10MB limit:\n${oversizedFiles.join('\n')}`, 'error')
+      return false
+    }
+
+    return true
+  }
+
+  // Function to submit service data
+  function submitConfirmationService() {
+    if (selectedService === "CONFIRMATION") {
+      submitConfirmationServiceData()
+    } else if (selectedService === "COMMUNION") {
+      submitCommunionServiceData()
+    } else {
+      // Show verification modal for other services
+      document.getElementById("gcash-verification-modal").style.display = "block"
+    }
+  }
+
+  // Function to submit confirmation service data
+  function submitConfirmationServiceData() {
+    // Validate file sizes first
+    if (!validateConfirmationFileSizes()) {
+      return
+    }
+
+    // Create FormData object to handle file uploads
+    const formData = new FormData()
+
+    // Add all form fields
+    const formFields = [
+      'preferredConfirmationDate',
+      'preferredConfirmationTime',
+      'confirmandLastName',
+      'confirmandFirstName',
+      'confirmandMiddleName',
+      'confirmandGender',
+      'confirmandBirthProvince',
+      'confirmandBirthCity',
+      'confirmandBirthDate',
+      'baptizedAt',
+      'confirmandFatherLastName',
+      'confirmandFatherFirstName',
+      'confirmandFatherMiddleName',
+      'confirmandMotherLastName',
+      'confirmandMotherFirstName',
+      'confirmandMotherMiddleName'
+    ]
+
+    formFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId)
+      if (field && field.value) {
+        formData.append(fieldId, field.value.trim())
+      }
+    })
+
+    // Add sponsor data
+    for (let i = 1; i <= sponsorCount; i++) {
+      const sponsorLastName = document.getElementById(`sponsorLastName${i}`)
+      const sponsorFirstName = document.getElementById(`sponsorFirstName${i}`)
+      const sponsorMiddleName = document.getElementById(`sponsorMiddleName${i}`)
+
+      if (sponsorLastName && sponsorLastName.value) {
+        formData.append(`sponsorLastName${i}`, sponsorLastName.value.trim())
+      }
+      if (sponsorFirstName && sponsorFirstName.value) {
+        formData.append(`sponsorFirstName${i}`, sponsorFirstName.value.trim())
+      }
+      if (sponsorMiddleName && sponsorMiddleName.value) {
+        formData.append(`sponsorMiddleName${i}`, sponsorMiddleName.value.trim())
+      }
+    }
+
+    // Add file uploads
+    const fileFields = [
+      'confirmandBaptismalCert',
+      'confirmandCommunionCert',
+      'confirmandFatherPrePentecostCard',
+      'confirmandMotherPrePentecostCard',
+      'confirmationParishPermit'
+    ]
+
+    fileFields.forEach(fieldId => {
+      const fileField = document.getElementById(fieldId)
+      if (fileField && fileField.files.length > 0) {
+        formData.append(fieldId, fileField.files[0])
+      }
+    })
+
+    // Add sponsor file uploads
+    for (let i = 1; i <= sponsorCount; i++) {
+      const sponsorFiles = [
+        `sponsorMarriageContract${i}`,
+        `sponsorConfirmationCert${i}`,
+        `sponsorPrePentecostCard${i}`
+      ]
+
+      sponsorFiles.forEach(fieldId => {
+        const fileField = document.getElementById(fieldId)
+        if (fileField && fileField.files.length > 0) {
+          formData.append(fieldId, fileField.files[0])
+        }
+      })
+    }
+
+    // Show loading state
+    payWithGcashBtn.disabled = true
+    payWithGcashBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Nagpo-proseso...'
+
+    // Submit to server
+    fetch('confirmation-service-handler.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Generate transaction ID
+        const transactionId = generateTransactionId()
+        
+        // Update receipt section
+        updateReceiptSection(transactionId)
+        
+        // Save final data
+        saveToLocalStorage()
+        
+        // Show receipt section
+        showSection(receiptSection)
+        updateProgressSteps(5)
+        
+        showNotification('Matagumpay na naisumite ang inyong appointment para sa kumpil!', 'success')
+      } else {
+        throw new Error(data.message || 'Hindi naisumite ang appointment')
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error)
+      showNotification('May error sa pagsusumite: ' + error.message, 'error')
+    })
+    .finally(() => {
+      // Reset button state
+      payWithGcashBtn.disabled = false
+      payWithGcashBtn.innerHTML = 'MAGBAYAD GAMIT ANG GCASH'
+    })
+  }
+
+  // Function to submit first communion service data
+  function submitCommunionServiceData() {
+    // Validate file sizes first
+    if (!validateCommunionFileSizes()) {
+      return
+    }
+
+    // Create FormData object to handle file uploads
+    const formData = new FormData()
+
+    // Add all form fields
+    const formFields = [
+      'preferredCommunionDate',
+      'preferredCommunionTime',
+      'communionChildLastName',
+      'communionChildFirstName',
+      'communionChildMiddleName',
+      'communionChildGender',
+      'communionChildBirthProvince',
+      'communionChildBirthCity',
+      'communionChildBirthDate',
+      'communionBaptizedAt',
+      'communionFatherLastName',
+      'communionFatherFirstName',
+      'communionFatherMiddleName',
+      'communionMotherLastName',
+      'communionMotherFirstName',
+      'communionMotherMiddleName'
+    ]
+
+    formFields.forEach(fieldId => {
+      const field = document.getElementById(fieldId)
+      if (field && field.value) {
+        formData.append(fieldId, field.value.trim())
+      }
+    })
+
+    // Add file uploads
+    const fileFields = [
+      'communionBaptismalCert',
+      'communionParishPermit'
+    ]
+
+    fileFields.forEach(fieldId => {
+      const fileField = document.getElementById(fieldId)
+      if (fileField && fileField.files.length > 0) {
+        formData.append(fieldId, fileField.files[0])
+      }
+    })
+
+    // Show loading state
+    payWithGcashBtn.disabled = true
+    payWithGcashBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Nagpo-proseso...'
+
+    // Submit to server
+    fetch('first-communion-service-handler.php', {
+      method: 'POST',
+      body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.success) {
+        // Generate transaction ID
+        const transactionId = generateTransactionId()
+        
+        // Update receipt section
+        updateReceiptSection(transactionId)
+        
+        // Save final data
+        saveToLocalStorage()
+        
+        // Show receipt section
+        showSection(receiptSection)
+        updateProgressSteps(5)
+        
+        showNotification('Matagumpay na naisumite ang inyong appointment para sa unang komunyon!', 'success')
+      } else {
+        throw new Error(data.message || 'Hindi naisumite ang appointment')
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error)
+      showNotification('May error sa pagsusumite: ' + error.message, 'error')
+    })
+    .finally(() => {
+      // Reset button state
+      payWithGcashBtn.disabled = false
+      payWithGcashBtn.innerHTML = 'MAGBAYAD GAMIT ANG GCASH'
+    })
   }
 
   function verifyPayment() {

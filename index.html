@@ -346,6 +346,36 @@
             margin: 0;
             padding: 12px 25px;
         }
+
+        /* Loading Screen Styles */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3a5e8c;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         @media (max-width: 600px) {
             .logo-top-bar {
                 padding: 18px 0 8px 0;
@@ -374,12 +404,17 @@
     </style>
 </head>
 <body>
+    <!-- Loading Screen -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader"></div>
+    </div>
+
     <div class="logo-top-bar">
         <img src="chronoslogo.png" alt="Chronos Logo" class="logo">
     </div>
     <div class="container">
         <div class="auth-container">
-            <h2 class="welcome-text">Welcome!</h2>
+            <h2 class="welcome-text">Divina Pastora Portal</h2>
             <!-- Sign In Form -->
             <form id="signin-form" class="auth-form active">
                 <div class="form-group">
@@ -395,9 +430,8 @@
                     <a href="#" id="forgot-password-link">Forgot password</a>
                 </div>
                 <div class="demo-credentials">
-                    <p>Demo Credentials:</p>
-                    <p>Email: admin@chronos.com</p>
-                    <p>Password: Chronos123</p>
+                    <strong>Note!</strong>
+                    <p>Sign in with your verified Email</p>
                 </div>
             </form>
             
@@ -444,11 +478,18 @@
             </div>
             </form>
 
+            <!-- Email Sent Modal -->
+            <div id="email-sent-modal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <h3 id="email-sent-message"></h3>
+                    <button type="button" id="email-sent-ok" class="btn-primary">OK</button>
+                </div>
+            </div>
+
             <!-- OTP Choice Modal -->
             <div id="otp-choice-modal" class="modal" style="display: none;">
                 <div class="modal-content">
-                    <h3>Choose Verification Method</h3>
-                    <p>How would you like to receive your verification code?</p>
+                    <h3>Choose OTP Verification Method</h3>
                     <div class="otp-choice-buttons">
                         <button type="button" id="choose-email-otp" class="btn-choice">
                             <i class="fas fa-envelope"></i>
@@ -501,13 +542,19 @@
                 
                 <div id="email-verification" class="verification-form active">
                     <div class="form-group">
-                        <input type="email" id="reset-email" placeholder="Enter your email" required>
+                        <input type="email" id="reset-email" placeholder="Enter your email">
                     </div>
                 </div>
                 
                 <div id="mobile-verification" class="verification-form">
                     <div class="form-group">
-                        <input type="tel" id="reset-mobile" placeholder="Enter your mobile number" required>
+                        <div class="phone-input-container">
+                            <div class="phone-prefix">
+                                <img src="https://flagcdn.com/w20/ph.png" alt="PH" class="flag-icon">
+                                <span>+63</span>
+                            </div>
+                            <input type="tel" id="reset-mobile" placeholder="9XX XXX XXXX">
+                        </div>
                     </div>
                 </div>
                 
@@ -574,12 +621,12 @@
         
         // Initialize Firebase
         const firebaseConfig = {
-            apiKey: "AIzaSyBF91Hg4HuWHpsVDO2Kzne3iGQbEmxi9SU",
-            authDomain: "verify-phone-number-and-email.firebaseapp.com",
-            projectId: "verify-phone-number-and-email",
-            storageBucket: "verify-phone-number-and-email.firebasestorage.app",
-            messagingSenderId: "968011142094",
-            appId: "1:968011142094:web:eaef9a91a0676bb644119f"
+        apiKey: "AIzaSyB3097ayNsh77G5NPTzmYDcQpTZNMRqjyM",
+        authDomain: "account-verifier-6d68a.firebaseapp.com",
+        projectId: "account-verifier-6d68a",
+        storageBucket: "account-verifier-6d68a.firebasestorage.app",
+        messagingSenderId: "317820331234",
+        appId: "1:317820331234:web:260a3bebc34e6631806abb"
         };
         
         const app = initializeApp(firebaseConfig);
@@ -588,8 +635,10 @@
         // Make Firebase available globally
         window.firebaseApp = app;
         window.firebaseAuth = auth;
+
+        console.log("Firebase initialized:", { app, auth });
     </script>
     
-    <script src="auth.js"></script>
+    <script src="auth.js" type="module"></script>
 </body>
 </html>

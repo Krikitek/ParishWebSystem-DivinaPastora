@@ -38,7 +38,7 @@ function verifyOTP($contact, $otp, $method) {
         if ($method === 'mobile') {
             // For mobile OTP, Firebase handles verification on client-side
             // We just need to mark the verification as successful in our database
-            $updateSql = "UPDATE OTPTable SET used = 1 WHERE contact = ? AND method = ? AND expiry > GETDATE() AND used = 0";
+            $updateSql = "UPDATE OTPTable SET used = 1 WHERE contact = ? AND method = ? AND used = 0";
             $updateStmt = $conn->prepare($updateSql);
             $updateStmt->execute([$contact, $method]);
             
@@ -55,9 +55,9 @@ function verifyOTP($contact, $otp, $method) {
             }
         } else {
             // For email OTP, verify against stored OTP
-            $verifySql = "SELECT * FROM OTPTable WHERE contact = ? AND otp = ? AND method = ? AND expiry > GETDATE() AND used = 0 ORDER BY created_at DESC";
+            $verifySql = "SELECT * FROM OTPTable WHERE contact = ? AND otp = ? AND used = 0 ORDER BY created_at DESC";
             $verifyStmt = $conn->prepare($verifySql);
-            $verifyStmt->execute([$contact, $otp, $method]);
+            $verifyStmt->execute([$contact, $otp]);
             $otpRecord = $verifyStmt->fetch(PDO::FETCH_ASSOC);
             
             if ($otpRecord) {

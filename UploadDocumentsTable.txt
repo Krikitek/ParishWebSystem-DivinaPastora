@@ -1,0 +1,23 @@
+CREATE TABLE UploadDocumentsTable (
+    uploadedDocID INT IDENTITY(1,1) PRIMARY KEY,
+    
+    title NVARCHAR(255) NOT NULL,
+    documentType NVARCHAR(100) NOT NULL,        -- e.g., 'baptismal certificate', 'marriage license'
+    
+    userID INT NOT NULL,                        -- Foreign key to UserAccountTable
+    dateUploaded DATETIME DEFAULT GETDATE(),
+    
+    fileURL NVARCHAR(MAX) NOT NULL,             -- Path or blob URL of uploaded file
+    metadata NVARCHAR(MAX),                     -- Optional metadata (JSON or key-value info)
+    
+    status NVARCHAR(50) DEFAULT 'active',       -- e.g., 'active', 'archived', 'deleted'
+    accessLevel NVARCHAR(50) DEFAULT 'private', -- e.g., 'public', 'restricted', 'private'
+    
+    retentionSchedule NVARCHAR(255),            -- How long the file should be retained
+    lastModified DATETIME DEFAULT GETDATE(),
+    
+    signedStatus NVARCHAR(50) DEFAULT 'unsigned', -- e.g., 'signed', 'unsigned'
+
+    CONSTRAINT FK_UploadDocs_User FOREIGN KEY (userID)
+        REFERENCES UserAccountTable(userID)
+);

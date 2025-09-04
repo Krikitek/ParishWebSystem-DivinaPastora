@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="yellow.png" type="image/png">
+    <title>Your OTP</title>
+    <link rel="stylesheet" href="styles-user.css">
+    <style>
+        body {
+            background: linear-gradient(135deg, #c5d5e9 0%, #e3eaf5 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .auth-container {
+            background: rgba(255,255,255,0.92);
+            box-shadow: 0 8px 32px 0 rgba(31,38,135,0.13);
+            border-radius: 18px;
+            max-width: 410px;
+            margin: 0 auto;
+            padding: 38px 32px 28px 32px;
+            border: 1px solid #e3eaf5;
+            text-align: center;
+        }
+        .welcome-text {
+            margin-bottom: 28px;
+            color: #2a3b5d;
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+        .otp-display {
+            font-size: 3rem;
+            font-weight: bold;
+            letter-spacing: 10px;
+            margin: 20px 0;
+            color: #3a5e8c;
+        }
+        .timer-display {
+            font-size: 1.2rem;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2 class="welcome-text">Your Verification Code</h2>
+        <p>Please enter this code on the registration page:</p>
+        <div id="otp-display" class="otp-display"></div>
+        <div id="timer-display" class="timer-display"></div>
+    </div>
+    <script src="display-otp.js"></script>
+</body>
+</html>

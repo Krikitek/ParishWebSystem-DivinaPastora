@@ -1,7 +1,5 @@
 import { 
     signInWithPhoneNumber, 
-    sendEmailVerification,
-    createUserWithEmailAndPassword,
     RecaptchaVerifier 
 } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js';
 
@@ -9,16 +7,23 @@ import {
 let recaptchaVerifier;
 
 export function initializeRecaptcha() {
-    if (!window.firebaseAuth) {
-        throw new Error('Firebase Auth not initialized');
+    try {
+        if (!window.firebaseAuth) {
+            throw new Error('Firebase Auth not initialized');
+        }
+        
+        console.log("Initializing reCAPTCHA...");
+        recaptchaVerifier = new RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
+            'size': 'invisible'
+        });
+        
+        // Make it globally available
+        window.recaptchaVerifier = recaptchaVerifier;
+        console.log("reCAPTCHA initialized successfully.");
+    } catch (error) {
+        console.error("Error initializing reCAPTCHA:", error);
+        throw error;
     }
-    
-    recaptchaVerifier = new RecaptchaVerifier(window.firebaseAuth, 'recaptcha-container', {
-        'size': 'invisible'
-    });
-    
-    // Make it globally available
-    window.recaptchaVerifier = recaptchaVerifier;
 }
 
 // Function to send OTP via phone
@@ -46,7 +51,9 @@ export async function sendPhoneOTP(phoneNumber) {
 // Function to verify phone OTP
 export async function verifyPhoneOTP(confirmationResult, otp) {
     try {
+        console.log("Verifying phone OTP:", { confirmationResult, otp });
         const result = await confirmationResult.confirm(otp);
+        console.log("Phone OTP verification successful:", result);
         return {
             success: true,
             user: result.user
@@ -60,25 +67,68 @@ export async function verifyPhoneOTP(confirmationResult, otp) {
     }
 }
 
-// Function to handle email verification
-export async function handleEmailVerification(email, password) {
+// Function to send email OTP using Firebase
+export async function sendCustomEmailOTP(email) {
     try {
         if (!window.firebaseAuth) {
             throw new Error('Firebase Auth not initialized');
         }
         
-        // Create user with email and password
-        const userCredential = await createUserWithEmailAndPassword(window.firebaseAuth, email, password);
+        // Import additional Firebase functions
+        const { sendSignInLinkToEmail } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
         
-        // Send email verification
-        await sendEmailVerification(userCredential.user);
+        // Configure action code settings
+        const actionCodeSettings = {
+            url: window.location.origin + '/display-otp.html?email=' + email,
+            handleCodeInApp: true,
+        };
+        
+        // Send sign-in link to email
+        await sendSignInLinkToEmail(window.firebaseAuth, email, actionCodeSettings);
+        
+        // Store email in localStorage for verification
+        window.localStorage.setItem('emailForSignIn', email);
         
         return {
             success: true,
             message: 'Verification email sent successfully'
         };
     } catch (error) {
-        console.error('Error sending email verification:', error);
+        console.error('Error sending email OTP:', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+}
+
+// Function to verify email link
+export async function verifyCustomEmailOTP(email, link) {
+    try {
+        if (!window.firebaseAuth) {
+            throw new Error('Firebase Auth not initialized');
+        }
+        
+        const { isSignInWithEmailLink, signInWithEmailLink } = await import('https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js');
+        
+        if (isSignInWithEmailLink(window.firebaseAuth, link)) {
+            const result = await signInWithEmailLink(window.firebaseAuth, email, link);
+            
+            // Clear email from localStorage
+            window.localStorage.removeItem('emailForSignIn');
+            
+            return {
+                success: true,
+                user: result.user
+            };
+        } else {
+            return {
+                success: false,
+                error: 'Invalid verification link'
+            };
+        }
+    } catch (error) {
+        console.error('Error verifying email link:', error);
         return {
             success: false,
             error: error.message

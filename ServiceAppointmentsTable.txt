@@ -1,0 +1,19 @@
+CREATE TABLE ServiceAppointmentsTable (
+    appointmentID INT IDENTITY(1,1) PRIMARY KEY,
+
+    userID INT NOT NULL,                           -- Foreign key to UserAccountTable
+    serviceType NVARCHAR(100) NOT NULL,            -- e.g., 'baptism', 'confirmation', 'wedding'
+
+    preferredDate DATE NOT NULL,
+    preferredTime TIME NOT NULL,
+
+    status NVARCHAR(50) DEFAULT 'pending',         -- e.g., 'pending', 'confirmed', 'completed', 'canceled'
+    adminNotes NVARCHAR(MAX),                      -- Notes for admin/staff use
+
+    createdAt DATETIME DEFAULT GETDATE(),
+    updatedAt DATETIME DEFAULT GETDATE(),
+
+    CONSTRAINT FK_ServiceAppointments_User FOREIGN KEY (userID)
+        REFERENCES UserAccountTable(userID)
+        ON DELETE CASCADE
+);

@@ -191,15 +191,30 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   if (confirmLogout) {
-    confirmLogout.addEventListener("click", () => {
-      // Clear session data
-      sessionStorage.removeItem("chronos_session")
-      localStorage.removeItem("chronos_current_user")
+  confirmLogout.addEventListener("click", async () => {
+    try {
+      const response = await fetch("logOut.php", {
+        method: "POST",
+      });
 
-      // Redirect to login page
-      window.location.href = "index.html"
-    })
-  }
+      const result = await response.json();
+
+      if (result.success) {
+        // Clear all stored data
+        localStorage.removeItem("chronos_current_user");
+        sessionStorage.clear();
+
+        // Force reload of login page without cache
+        window.location.replace("index.html");
+      } else {
+        console.error("Logout failed:", result.message);
+      }
+    } catch (error) {
+      console.error("Error logging out:", error);
+    }
+  });
+}
+
 
   // Close modal if clicked outside
   window.addEventListener("click", (event) => {
