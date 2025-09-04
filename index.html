@@ -10,7 +10,11 @@
     <style>
         body {
             background: linear-gradient(135deg, #c5d5e9 0%, #e3eaf5 100%);
-            min-height: 100vh;            
+            min-height: 100vh;  
+            transition: opacity 0.5s ease;          
+        }
+        body.fade-out {
+        opacity: 0;
         }
         .logo-top-bar {
             width: 100%;
@@ -279,6 +283,11 @@
             opacity: 0.6;
             cursor: not-allowed;
         }
+
+        .btn-primary:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
         
         .btn-cancel {
             background: #e74c3c;
@@ -530,61 +539,85 @@
             
             <!-- Forgot Password Form -->
             <form id="forgot-password-form" class="auth-form">
-                <h2>Reset Password</h2>
-                <div class="verification-method">
-                    <label>
-                        <input type="radio" name="verification" value="email" checked> Email
-                    </label>
-                    <label>
-                        <input type="radio" name="verification" value="mobile"> Mobile
-                    </label>
+    <h2>Reset Password</h2>
+
+    <!-- Verification Method -->
+    <div class="verification-method">
+        <label>
+            <input type="radio" name="verification" value="email" checked> Email
+        </label>
+        <label>
+            <input type="radio" name="verification" value="mobile"> Mobile
+        </label>
+    </div>
+
+    <!-- Email Verification -->
+    <div id="email-verification" class="verification-form active">
+        <div class="form-group">
+            <input type="email" id="reset-email" placeholder="Enter your email">
+        </div>
+    </div>
+
+    <!-- Mobile Verification -->
+    <div id="mobile-verification" class="verification-form">
+        <div class="form-group">
+            <div class="phone-input-container">
+                <div class="phone-prefix">
+                    <img src="https://flagcdn.com/w20/ph.png" alt="PH" class="flag-icon">
+                    <span>+63</span>
                 </div>
-                
-                <div id="email-verification" class="verification-form active">
-                    <div class="form-group">
-                        <input type="email" id="reset-email" placeholder="Enter your email">
-                    </div>
-                </div>
-                
-                <div id="mobile-verification" class="verification-form">
-                    <div class="form-group">
-                        <div class="phone-input-container">
-                            <div class="phone-prefix">
-                                <img src="https://flagcdn.com/w20/ph.png" alt="PH" class="flag-icon">
-                                <span>+63</span>
-                            </div>
-                            <input type="tel" id="reset-mobile" placeholder="9XX XXX XXXX">
-                        </div>
-                    </div>
-                </div>
-                
-                <div id="reset-error" class="error-message"></div>
-                <button type="button" id="send-code-btn" class="btn-primary">SEND VERIFICATION CODE</button>
-                
-                <div id="verification-code-section" style="display: none;">
-                    <div class="timer-display" id="timer-display"></div>
-                    <p>Enter the 6-digit verification code:</p>
-                    <div class="otp-input-container">
-                        <input type="text" class="reset-otp-digit" maxlength="1" data-index="0">
-                        <input type="text" class="reset-otp-digit" maxlength="1" data-index="1">
-                        <input type="text" class="reset-otp-digit" maxlength="1" data-index="2">
-                        <input type="text" class="reset-otp-digit" maxlength="1" data-index="3">
-                        <input type="text" class="reset-otp-digit" maxlength="1" data-index="4">
-                        <input type="text" class="reset-otp-digit" maxlength="1" data-index="5">
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="reset-new-password" placeholder="New Password (min. 6 characters)" required>
-                    </div>
-                    <div class="form-group">
-                        <input type="password" id="reset-confirm-password" placeholder="Confirm New Password" required>
-                    </div>
-                    <button type="submit" class="btn-primary">RESET PASSWORD</button>
-                </div>
-                
-                <div class="form-links">
-                    <a href="#" id="back-to-signin-from-forgot">Back to Log In</a>
-                </div>
-            </form>
+                <input type="tel" id="reset-mobile" placeholder="9XX XXX XXXX">
+            </div>
+        </div>
+    </div>
+
+    <!-- Error Message -->
+    <div id="reset-error" class="error-message"></div>
+
+    <!-- Send Verification Code Button -->
+    <button type="button" id="send-code-btn" class="btn-primary">
+        SEND VERIFICATION CODE
+    </button>
+
+    <!-- Verification Code Section -->
+    <div id="verification-code-section" style="display: none;">
+        <!-- Countdown Timer -->
+        <div class="timer-display" id="timer-display"></div>
+
+        <p style="text-align: center;">Enter the 6-digit verification code:</p>
+
+        <!-- ✅ Moved OTP Inputs Inside the Form -->
+        <div>
+        <div class="form-group otp-input-container">
+            <input type="text" class="reset-otp-digit" maxlength="1" data-index="0">
+            <input type="text" class="reset-otp-digit" maxlength="1" data-index="1">
+            <input type="text" class="reset-otp-digit" maxlength="1" data-index="2">
+            <input type="text" class="reset-otp-digit" maxlength="1" data-index="3">
+            <input type="text" class="reset-otp-digit" maxlength="1" data-index="4">
+            <input type="text" class="reset-otp-digit" maxlength="1" data-index="5">
+        </div>
+        </div>
+
+        <!-- New Password -->
+        <div class="form-group">
+            <input type="password" id="reset-new-password" placeholder="New Password (min. 6 characters)" required>
+        </div>
+
+        <!-- Confirm Password -->
+        <div class="form-group">
+            <input type="password" id="reset-confirm-password" placeholder="Confirm New Password" required>
+        </div>
+
+        <!-- Reset Password Button -->
+        <button type="submit" class="btn-primary">RESET PASSWORD</button>
+    </div>
+
+    <!-- Back to Login Link -->
+    <div class="form-links">
+        <a href="#" id="back-to-signin-from-forgot">Back to Log In</a>
+    </div>
+</form>
+
         </div>
     </div>
     

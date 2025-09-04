@@ -28,18 +28,23 @@ document.addEventListener("DOMContentLoaded", () => {
   // Back to Sign In from Create Account
   backToSignin.addEventListener("click", (e) => {
     e.preventDefault()
-    createAccountForm.classList.remove("active")
-    signinForm.classList.add("active")
+    refresh();
     clearErrors()
   })
+
+  function refresh() {
+  document.body.classList.add("fade-out"); // Start fade-out animation
+
+  setTimeout(() => {
+    window.location.reload(true); // Refresh after animation ends
+  }, 300); 
+}
 
   // Back to Sign In from Forgot Password
   backToSigninFromForgot.addEventListener("click", (e) => {
     e.preventDefault()
-    forgotPasswordForm.classList.remove("active")
-    signinForm.classList.add("active")
+    refresh();
     clearErrors()
-    resetForgotPasswordForm()
   })
 
   // Clear all error messages
@@ -248,21 +253,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Send OTP Code
   async function sendOTPCode(method, contact) {
-    const loadingOverlay = document.getElementById("loading-overlay")    
+    const loadingOverlay = document.getElementById("loading-overlay")        
+    loadingOverlay.style.display = 'flex'
     try {
       if (method === 'mobile') {
-        loadingOverlay.style.display = 'flex'
         // Use Firebase for mobile OTP
         await sendFirebaseMobileOTP(contact)
         loadingOverlay.style.display = 'none'
       } else {
-        loadingOverlay.style.display = 'flex'
         // Use Firebase for email OTP
         await sendFirebaseEmailOTP(contact)
         loadingOverlay.style.display = 'none'
       }
     } catch (error) {
-      loadingOverlay.style.display = 'flex'
       console.error('Error sending OTP:', error)
       alert('Network error. Please try again.')
       loadingOverlay.style.display = 'none'
@@ -577,8 +580,7 @@ document.addEventListener("DOMContentLoaded", () => {
         
         // Reset form and show success
         createAccountForm.reset()
-        createAccountForm.classList.remove("active")
-        signinForm.classList.add("active")
+        createAccountForm.classList.remove("active")        
         
         alert('Account created successfully! Please log in.')
         
@@ -586,6 +588,7 @@ document.addEventListener("DOMContentLoaded", () => {
         pendingAccountData = null
         currentOTPMethod = null
         currentOTPContact = null
+        refresh();
       } else {
         document.getElementById("otp-error").textContent = "Error creating account. Please try again."
       }
@@ -674,23 +677,18 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Forgot Password functionality
   let verificationTimer = null
-  let verificationCode = null
-  let verificationExpiry = null
 
   const sendCodeBtn = document.getElementById("send-code-btn")
   const verificationCodeSection = document.getElementById("verification-code-section")
   const resetError = document.getElementById("reset-error")
   const timerDisplay = document.getElementById("timer-display")
 
-  // Generate random 6-digit code
-  function generateVerificationCode() {
-    return Math.floor(100000 + Math.random() * 900000).toString()
-  }
-
   // Start countdown timer
   function startTimer(duration) {
     let timeLeft = duration
     timerDisplay.textContent = `Time remaining: ${Math.floor(timeLeft / 60)}:${(timeLeft % 60).toString().padStart(2, '0')}`
+
+    sendCodeBtn.disabled = true
     
     verificationTimer = setInterval(() => {
       timeLeft--
@@ -699,8 +697,8 @@ document.addEventListener("DOMContentLoaded", () => {
         clearInterval(verificationTimer)
         timerDisplay.textContent = "Verification code expired"
         timerDisplay.style.color = "#e74c3c"
-        verificationCode = null
-        verificationExpiry = null
+        verificationTimer = null
+        sendCodeBtn.disabled = false
         return
       }
       
@@ -751,7 +749,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const loadingOverlay = document.getElementById("loading-overlay")
     loadingOverlay.style.display = 'flex'
 
-    resetError.textContent = ""
+    resetError.textContent = ""    
 
     let contactInfo = ""
     if (verificationMethod === "email") {
@@ -856,7 +854,7 @@ document.addEventListener("DOMContentLoaded", () => {
         resetOtpInputs[0].focus()
         
         // Start timer
-        startTimer(300) // 5 minutes
+        startTimer(10) // 5 minutes
         
         alert('Verification code sent to your Email')
       } else {
@@ -938,27 +936,34 @@ document.addEventListener("DOMContentLoaded", () => {
       const newPassword = document.getElementById("reset-new-password").value
       const confirmPassword = document.getElementById("reset-confirm-password").value
 
+      const loadingOverlay = document.getElementById("loading-overlay")
+      loadingOverlay.style.display = 'flex'
+
       resetError.textContent = ""
 
       // Validation
       if (inputCode.length !== 6) {
+        loadingOverlay.style.display = 'none'
         resetError.textContent = "Please enter all 6 digits of the verification code"
         resetOtpInputs.forEach(input => input.classList.add('error'))
         return
       }
 
       if (!newPassword || !confirmPassword) {
+        loadingOverlay.style.display = 'none'
         resetError.textContent = "Please fill in all fields"
         return
       }
 
       if (!validatePassword(newPassword)) {
+        loadingOverlay.style.display = 'none'
         resetError.textContent = "Password must be at least 6 characters long"
         return
       }
 
       if (newPassword !== confirmPassword) {
-        resetError.textContent = "Passwords do not match"
+        loadingOverlay.style.display = 'none'
+        resetError.textContent = "Passwords do not match"        
         return
       }
 
@@ -976,8 +981,9 @@ document.addEventListener("DOMContentLoaded", () => {
           const firebaseResult = await verifyPhoneOTP(forgotPasswordFirebaseConfirmationResult, inputCode)
           
           if (!firebaseResult.success) {
+            loadingOverlay.style.display = 'none'
             resetError.textContent = firebaseResult.error || 'Invalid OTP code'
-            resetOtpInputs.forEach(input => input.classList.add('error'))
+            resetOtpInputs.forEach(input => input.classList.add('error'))            
             return
           }
         } else {
@@ -995,6 +1001,7 @@ document.addEventListener("DOMContentLoaded", () => {
           const verifyResult = await verifyResponse.json()
           
           if (!verifyResult.success) {
+            loadingOverlay.style.display = 'none'
             resetError.textContent = verifyResult.message
             resetOtpInputs.forEach(input => input.classList.add('error'))
             return
@@ -1004,9 +1011,8 @@ document.addEventListener("DOMContentLoaded", () => {
         // OTP verified, now reset password
         const formData = new FormData()
         formData.append('method', verificationMethod)
-        formData.append('contact', contactInfo)
+        formData.append('contact', contactInfo.trim())
         formData.append('newPassword', newPassword)
-        formData.append('otp', inputCode)
 
         const response = await fetch('resetPassword.php', {
           method: 'POST',
@@ -1016,14 +1022,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const result = await response.json()
         
         if (result.success) {
+          loadingOverlay.style.display = 'none'
           alert("Password reset successfully!")
-          resetForgotPasswordForm()
           forgotPasswordForm.classList.remove("active")
-          signinForm.classList.add("active")
+          refresh();
         } else {
+          loadingOverlay.style.display = 'none'
           resetError.textContent = "Error resetting password. Please try again."
         }
       } catch (error) {
+        loadingOverlay.style.display = 'none'
         console.error('Password reset error:', error)
         resetError.textContent = "Network error. Please try again."
       }
