@@ -39,11 +39,6 @@ document.addEventListener("DOMContentLoaded", () => {
       message: "Wastong petsa ng sakramento",
     },
 
-    // Location validation
-    birthCountry: {
-      required: true,
-      message: "Kinakailangan ang bansa ng kapanganakan",
-    },
     birthProvince: {
       required: true,
       message: "Kinakailangan ang lalawigan ng kapanganakan",
@@ -51,6 +46,10 @@ document.addEventListener("DOMContentLoaded", () => {
     birthCity: {
       required: true,
       message: "Kinakailangan ang lungsod/bayan ng kapanganakan",
+    },
+    birthDistrict: {
+      required: true,
+      message: "Kinakailangan ang barangay ng kapanganakan",
     },
 
     // Parent information validation (now optional)
@@ -155,7 +154,7 @@ document.addEventListener("DOMContentLoaded", () => {
       if (!field.querySelector(".error-message")) {
         const errorMessage = document.createElement("div")
         errorMessage.className = "error-message"
-        errorMessage.style.color = "#ea4335"
+        errorMessage.style.color = "#eb2424ff"
         errorMessage.style.fontSize = "12px"
         errorMessage.style.marginTop = "4px"
         errorMessage.style.display = "none"
@@ -183,23 +182,6 @@ document.addEventListener("DOMContentLoaded", () => {
       field.addEventListener("change", () => {
         validateField(field)
       })
-    })
-  }
-
-  // Setup real-time validation for form sections
-  function setupRealTimeValidation() {
-    // Debounced validation to avoid excessive validation calls
-    let validationTimeout
-
-    document.addEventListener("input", () => {
-      clearTimeout(validationTimeout)
-      validationTimeout = setTimeout(() => {
-        updateButtonStates()
-      }, 300)
-    })
-
-    document.addEventListener("change", () => {
-      updateButtonStates()
     })
   }
 
@@ -357,19 +339,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show field error
   function showFieldError(field, message) {
-    const fieldContainer = field.closest(".input-field") || field.closest(".select-field")
-    const errorElement = fieldContainer?.querySelector(".error-message")
+  const fieldContainer = field.closest(".input-field") || field.closest(".select-field");
+  const errorElement = fieldContainer?.querySelector(".error-message");
 
-    if (fieldContainer) {
-      fieldContainer.classList.add("error")
-      fieldContainer.style.borderColor = "#ea4335"
-    }
-
-    if (errorElement) {
-      errorElement.textContent = message
-      errorElement.style.display = "block"
-    }
+  if (fieldContainer) {
+    fieldContainer.classList.add("error");
+    fieldContainer.style.borderColor = "#ea4335";
   }
+
+  if (errorElement) {
+    errorElement.textContent = message;
+    errorElement.style.display = "block";
+  }
+}
+
 
   // Clear field error
   function clearFieldError(field) {
@@ -410,21 +393,57 @@ document.addEventListener("DOMContentLoaded", () => {
     return isValid
   }
 
-  // Update button states based on validation
-  function updateButtonStates() {
-    const saveAndContinueBtn = document.getElementById("save-and-continue-btn")
-    const proceedToSummaryBtn = document.getElementById("proceed-to-summary-btn")
-    const requestFormSection = document.getElementById("request-form-section")
-    const unifiedDeliverySection = document.getElementById("unified-delivery-section")
+  function scrollToFirstInvalidField(sectionId) {
+  const section = document.getElementById(sectionId);
+  const firstInvalid = section.querySelector(".error-message:visible, .error");
 
-    if (saveAndContinueBtn && requestFormSection && requestFormSection.style.display !== "none") {
-      saveAndContinueBtn.disabled = !validateFormSection("request-form-section")
-    }
+  if (firstInvalid) {
+    firstInvalid.scrollIntoView({ behavior: "smooth", block: "center" });
 
-    if (proceedToSummaryBtn && unifiedDeliverySection && unifiedDeliverySection.style.display !== "none") {
-      proceedToSummaryBtn.disabled = !validateFormSection("unified-delivery-section")
+    const input = firstInvalid.querySelector("input, select, textarea") || firstInvalid;
+    if (input && input.focus) {
+      input.focus();
     }
   }
+}
+
+
+  // Update button states based on validation
+  function updateButtonStates() {
+  const saveAndContinueBtn = document.getElementById("save-and-continue-btn");
+  const proceedToSummaryBtn = document.getElementById("proceed-to-summary-btn");
+  const requestFormSection = document.getElementById("request-form-section");
+  const unifiedDeliverySection = document.getElementById("unified-delivery-section");
+
+  // Keep buttons always enabled but block navigation later
+  if (saveAndContinueBtn && requestFormSection && requestFormSection.style.display !== "none") {
+
+    saveAndContinueBtn.addEventListener("click", function (e) {
+      const isValid = validateFormSection("request-form-section");
+      if (!isValid) {
+        e.preventDefault();
+        scrollToFirstInvalidField("request-form-section");
+      } else {
+        goToNextSection(); // <-- Replace with your actual navigation logic
+      }
+    });
+  }
+
+  if (proceedToSummaryBtn && unifiedDeliverySection && unifiedDeliverySection.style.display !== "none") {
+    proceedToSummaryBtn.disabled = false;
+
+    proceedToSummaryBtn.addEventListener("click", function (e) {
+      const isValid = validateFormSection("unified-delivery-section");
+      if (!isValid) {
+        e.preventDefault();
+        scrollToFirstInvalidField("unified-delivery-section");
+      } else {
+        goToSummary(); // <-- Replace with your actual navigation logic
+      }
+    });
+  }
+}
+
 
   // Utility functions
   function getCurrentCertificateType() {

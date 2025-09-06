@@ -1,9 +1,16 @@
 <?php
+require_once __DIR__ . '/vendor/autoload.php';
+
+use Dotenv\Dotenv;
+
+// Load .env file
+$dotenv = Dotenv::createImmutable(__DIR__);
+$dotenv->load();
 // Azure SQL Database credentials
-$serverName = "parishdatabase.database.windows.net";
-$database   = "parishdatabase";
-$username   = "parishdatabase";
-$password   = "Password1";
+$serverName = $_ENV['DB_serverName'];
+$database   = $_ENV['DB_database'];
+$username   = $_ENV['DB_username'];
+$password   = $_ENV['DB_password'];
 
 // Create connection using PDO
 try {
@@ -21,7 +28,7 @@ try {
     die("❌ Connection failed: " . $e->getMessage());
 }
 
-require 'vendor/autoload.php';
+
 use MicrosoftAzure\Storage\Blob\BlobRestProxy;
 use MicrosoftAzure\Storage\Common\Exceptions\ServiceException;
 

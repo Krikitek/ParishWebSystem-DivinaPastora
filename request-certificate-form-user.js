@@ -701,7 +701,7 @@ document.addEventListener("DOMContentLoaded", () => {
       "METRO MANILA": ["MANILA", "QUEZON CITY", "MAKATI", "TAGUIG", "PASIG"],
     }
 
-    const barangayData = {
+    const districtData = {
       "TANAUAN CITY": ["BARANGAY 1", "BARANGAY 2", "BARANGAY 3", "BARANGAY 4", "BARANGAY 5"],
       MANILA: ["TONDO", "BINONDO", "QUIAPO", "SAN NICOLAS", "SANTA CRUZ"],
     }
@@ -709,10 +709,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Birth place dropdowns
     const birthProvince = document.getElementById("birthProvince")
     const birthCity = document.getElementById("birthCity")
+    const birthDistrict = document.getElementById("birthDistrict")
 
     if (birthProvince && birthCity) {
       birthProvince.addEventListener("change", function () {
         populateCityDropdown(this.value, birthCity, cityData)
+      })
+    }
+
+    if (birthCity && birthDistrict) {
+      birthCity.addEventListener("change", function () {
+        populateCityDropdown(this.value, birthDistrict, districtData)
       })
     }
 

@@ -1,4 +1,6 @@
-// Enhanced Multi-Request Certificate Form Handler
+  const PSGC_API = "https://psgc.gitlab.io/api";
+const CACHE_EXPIRY_HOURS = 24; // Cache expires every 24 hours
+// // Enhanced Multi-Request Certificate Form Handler
 document.addEventListener("DOMContentLoaded", () => {
   // State Management
   const FormState = {
@@ -38,9 +40,9 @@ document.addEventListener("DOMContentLoaded", () => {
       middleName: document.getElementById("middleName"),
       dateOfBirth: document.getElementById("dateOfBirth"),
       sacramentDate: document.getElementById("sacramentDate"),
-      birthCountry: document.getElementById("birthCountry"),
       birthProvince: document.getElementById("birthProvince"),
       birthCity: document.getElementById("birthCity"),
+      birthDistrict: document.getElementById("birthDistirict"),
       fatherLastName: document.getElementById("fatherLastName"),
       fatherFirstName: document.getElementById("fatherFirstName"),
       fatherMiddleName: document.getElementById("fatherMiddleName"),
@@ -58,11 +60,11 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize the form
   init()
 
-  function init() {
+  async function init() {
     loadExistingRequests()
     setupEventListeners()
     setupUppercaseInputs()
-    setupLocationDropdowns()
+    await setupLocationDropdowns()
     updateRequestsCounter()
     showSection(FormState.sections.requestForm)
   }
@@ -125,7 +127,7 @@ document.addEventListener("DOMContentLoaded", () => {
     })
 
     // Also handle select dropdowns for location fields to ensure uppercase
-    const locationSelects = ["birthCountry", "birthProvince", "birthCity"]
+    const locationSelects = ["birthProvince", "birthCity", "birthDistrict"]
 
     locationSelects.forEach((selectId) => {
       const select = document.getElementById(selectId)
@@ -140,143 +142,119 @@ document.addEventListener("DOMContentLoaded", () => {
     })
   }
 
-  function setupLocationDropdowns() {
-    // City data by province
-    const cityData = {
-      BATANGAS: [
-        "TANAUAN CITY",
-        "LIPA CITY",
-        "BATANGAS CITY",
-        "STO. TOMAS",
-        "TAAL",
-        "BAUAN",
-        "NASUGBU",
-        "LEMERY",
-        "ROSARIO",
-        "MALVAR",
-      ],
-      CAVITE: [
-        "BACOOR",
-        "DASMARIÑAS",
-        "IMUS",
-        "GENERAL TRIAS",
-        "TRECE MARTIRES",
-        "TAGAYTAY",
-        "KAWIT",
-        "SILANG",
-        "CARMONA",
-        "TANZA",
-      ],
-      LAGUNA: [
-        "SAN PABLO CITY",
-        "SANTA ROSA CITY",
-        "CALAMBA CITY",
-        "BIÑAN",
-        "SAN PEDRO",
-        "CABUYAO",
-        "LOS BAÑOS",
-        "PAGSANJAN",
-        "ALAMINOS",
-        "PILA",
-      ],
-      RIZAL: [
-        "ANTIPOLO CITY",
-        "CAINTA",
-        "TAYTAY",
-        "ANGONO",
-        "BINANGONAN",
-        "RODRIGUEZ",
-        "SAN MATEO",
-        "TANAY",
-        "MORONG",
-        "PILILLA",
-      ],
-      "METRO MANILA": [
-        "MANILA",
-        "QUEZON CITY",
-        "MAKATI",
-        "TAGUIG",
-        "PASIG",
-        "PARAÑAQUE",
-        "MANDALUYONG",
-        "SAN JUAN",
-        "MARIKINA",
-        "PASAY",
-      ],
-      BULACAN: [
-        "MALOLOS",
-        "MEYCAUAYAN",
-        "SAN JOSE DEL MONTE",
-        "BALIUAG",
-        "PLARIDEL",
-        "HAGONOY",
-        "BUSTOS",
-        "CALUMPIT",
-        "PULILAN",
-        "SANTA MARIA",
-      ],
-      PAMPANGA: [
-        "SAN FERNANDO",
-        "ANGELES CITY",
-        "MABALACAT",
-        "LUBAO",
-        "GUAGUA",
-        "FLORIDABLANCA",
-        "PORAC",
-        "ARAYAT",
-        "MEXICO",
-        "BACOLOR",
-      ],
-      CEBU: [
-        "CEBU CITY",
-        "MANDAUE CITY",
-        "LAPU-LAPU CITY",
-        "TALISAY",
-        "DANAO",
-        "TOLEDO",
-        "CARCAR",
-        "NAGA",
-        "BOGO",
-        "MINGLANILLA",
-      ],
-      DAVAO: ["DAVAO CITY", "TAGUM", "PANABO", "DIGOS", "MATI", "SAMAL", "MALITA", "NABUNTURAN", "MACO", "PANTUKAN"],
-      ILOILO: [
-        "ILOILO CITY",
-        "OTON",
-        "PAVIA",
-        "LEGANES",
-        "SANTA BARBARA",
-        "CABATUAN",
-        "SAN MIGUEL",
-        "ZARRAGA",
-        "DUMANGAS",
-        "BAROTAC NUEVO",
-      ],
-    }
 
-    // Birth place dropdowns
-    const birthProvince = FormState.fields.birthProvince
-    const birthCity = FormState.fields.birthCity
 
-    if (birthProvince && birthCity) {
-      birthProvince.addEventListener("change", function () {
-        populateCityDropdown(this.value, birthCity, cityData)
-      })
+async function setupLocationDropdowns() {
+  const provinceDropdown = document.getElementById("birthProvince");
+  const cityDropdown = document.getElementById("birthCity");
+  const barangayDropdown = document.getElementById("birthDistrict");
+
+  // ✅ Load provinces first (cached or API)
+  const provinces = await getCachedData("psgc_provinces", fetchProvinces);
+  populateDropdown(provinceDropdown, provinces, "PUMILI NG LALAWIGAN");
+
+  // ✅ Province change → Fetch cities
+  provinceDropdown.addEventListener("change", async function () {
+    const provinceCode = this.value;
+
+    // Disable city & barangay dropdowns until new data loads
+    cityDropdown.disabled = true;
+    barangayDropdown.disabled = true;    
+
+    cityDropdown.innerHTML = '<option value="" disabled selected>Loading cities...</option>';
+    barangayDropdown.innerHTML = '<option value="" disabled selected>PUMILI NG BARANGAY</option>';
+
+    // ✅ Fetch cities (cached per province)
+    const cacheKey = `psgc_cities_${provinceCode}`;
+    const cities = await getCachedData(cacheKey, () => fetchCities(provinceCode));
+    populateDropdown(cityDropdown, cities, "PUMILI NG LUNGSOD/BAYAN");
+    cityDropdown.disabled = false;
+  });
+
+  // ✅ City change → Fetch barangays
+  cityDropdown.addEventListener("change", async function () {
+    const cityCode = this.value;
+
+    barangayDropdown.disabled = true;
+    barangayDropdown.innerHTML = '<option value="" disabled selected>Loading barangays...</option>';
+
+    // ✅ Fetch barangays (cached per city)
+    const cacheKey = `psgc_barangays_${cityCode}`;
+    const barangays = await getCachedData(cacheKey, () => fetchBarangays(cityCode));
+    populateDropdown(barangayDropdown, barangays, "PUMILI NG BARANGAY");
+    barangayDropdown.disabled = false;
+  });
+}
+
+// ✅ Get data from cache or fetch from API
+async function getCachedData(cacheKey, fetchFunction) {
+  const cached = localStorage.getItem(cacheKey);
+
+  if (cached) {
+    const { data, timestamp } = JSON.parse(cached);
+    const now = Date.now();
+
+    // Check cache expiration
+    if ((now - timestamp) / (1000 * 60 * 60) < CACHE_EXPIRY_HOURS) {
+      return data; // ✅ Return cached data
     }
   }
 
-  function populateCityDropdown(province, cityDropdown, cityData) {
-    cityDropdown.innerHTML = '<option value="" disabled selected>PUMILI NG LUNGSOD/BAYAN</option>'
+  // ✅ No cache or expired → Fetch new data
+  const freshData = await fetchFunction();
 
-    if (province && cityData[province]) {
-      cityData[province].forEach((city) => {
-        const option = document.createElement("option")
-        option.value = city
-        option.textContent = city
-        cityDropdown.appendChild(option)
-      })
-    }
-  }
+  // Save to cache
+  localStorage.setItem(cacheKey, JSON.stringify({
+    data: freshData,
+    timestamp: Date.now()
+  }));
+
+  return freshData;
+}
+
+// ✅ Fetch all provinces
+async function fetchProvinces() {
+  const response = await fetch(`${PSGC_API}/provinces.json`);
+  const data = await response.json();
+  return data.map(p => ({ code: p.code, name: p.name }));
+}
+
+// ✅ Fetch cities per province
+async function fetchCities(provinceCode) {
+  const response = await fetch(`${PSGC_API}/provinces/${provinceCode}/cities-municipalities.json`);
+  const data = await response.json();
+  return data.map(c => ({ code: c.code, name: c.name }));
+}
+
+// ✅ Fetch barangays per city
+async function fetchBarangays(cityCode) {
+  const response = await fetch(`${PSGC_API}/cities-municipalities/${cityCode}/barangays.json`);
+  const data = await response.json();
+  return data.map(b => ({ code: b.code, name: b.name }));
+}
+
+// ✅ Populate dropdown helper
+function populateDropdown(dropdown, items, placeholder) {
+  // Clear dropdown and set placeholder
+  dropdown.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+
+  // ✅ Sort items alphabetically by name before populating
+  items.sort((a, b) => a.name.localeCompare(b.name));
+
+  // ✅ Populate dropdown options
+  items.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.code; // Use PSGC code as value
+    option.textContent = item.name.toUpperCase(); // Display uppercase name
+    option.setAttribute("data-code", item.code); // Keep code for later use
+    dropdown.appendChild(option);
+  });
+
+  // ✅ Enable dropdown if data is available
+  dropdown.disabled = items.length === 0;
+}
+
+
 
   function handleFormInput(e) {
     // Auto-uppercase for text inputs (except email)
@@ -358,9 +336,9 @@ document.addEventListener("DOMContentLoaded", () => {
       middleName: FormState.fields.middleName?.value || "",
       dateOfBirth: FormState.fields.dateOfBirth?.value || "",
       sacramentDate: FormState.fields.sacramentDate?.value || "",
-      birthCountry: FormState.fields.birthCountry?.value || "",
       birthProvince: FormState.fields.birthProvince?.value || "",
       birthCity: FormState.fields.birthCity?.value || "",
+      birthDistrict: FormState.fields.birthDistrict?.value || "",
       sex: document.querySelector('input[name="sex"]:checked')?.value || "Male",
       fatherName: fatherName || "",
       motherName: motherName || "",
@@ -491,18 +469,24 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   function updateRequestsCounter() {
-    const counter = document.getElementById("requests-count")
-    const reviewCounter = document.getElementById("review-requests-count")
-    const addAnotherBtn = document.getElementById("add-another-btn")
+    const counter = document.getElementById("requests-count");
+    const reviewCounter = document.getElementById("review-requests-count");
+    const addAnotherBtn = document.getElementById("add-another-btn");
 
-    if (counter) counter.textContent = FormState.allRequests.length + 1
-    if (reviewCounter) reviewCounter.textContent = FormState.allRequests.length
+    const totalRequests = FormState.allRequests.length;
 
-    // Show add another button if there are requests
+    // If there are no requests yet, show 0 instead of 1
+    if (counter) counter.textContent = totalRequests > 0 ? totalRequests + 1 : 0;
+
+    // Review counter always shows actual number of saved requests
+    if (reviewCounter) reviewCounter.textContent = totalRequests;
+
+    // Show or hide "Add Another" button
     if (addAnotherBtn) {
-      addAnotherBtn.style.display = FormState.allRequests.length > 0 ? "flex" : "none"
+        addAnotherBtn.style.display = totalRequests > 0 ? "flex" : "none";
     }
-  }
+}
+
 
   function updateRequestsReviewTable() {
     const tbody = document.getElementById("requests-review-tbody")
@@ -824,9 +808,9 @@ document.addEventListener("DOMContentLoaded", () => {
     FormState.fields.middleName.value = request.middleName
     FormState.fields.dateOfBirth.value = request.dateOfBirth
     FormState.fields.sacramentDate.value = request.sacramentDate
-    FormState.fields.birthCountry.value = request.birthCountry
     FormState.fields.birthProvince.value = request.birthProvince
     FormState.fields.birthCity.value = request.birthCity
+    FormState.fields.birthDistrict.value = request.birthDistrict
 
     // Parse father's name
     if (request.fatherName) {
@@ -845,8 +829,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     FormState.fields.relationship.value = request.relationship
-    FormState.fields.mobileNumber.value = request.mobileNumber
-    FormState.fields.emailAddress.value = request.emailAddress
 
     // Handle purpose
     if (
@@ -903,7 +885,7 @@ Uri ng Sertipiko: ${request.certificateType === "KUMPIL" ? "KUMPIL" : "BINYAG"}
 Pangalan: ${formatName(request.lastName, request.firstName, request.middleName)}
 Petsa ng Kapanganakan: ${formatDate(request.dateOfBirth)}
 ${request.sacramentDate ? `Petsa ng ${request.certificateType === "KUMPIL" ? "Kumpil" : "Binyag"}: ${formatDate(request.sacramentDate)}` : ""}
-Lugar ng Kapanganakan: ${request.birthCity}, ${request.birthProvince}, ${request.birthCountry}
+Lugar ng Kapanganakan: ${request.birthCity}, ${request.birthProvince}, ${request.birthDistrict}
 Kasarian: ${request.sex === "Male" ? "Lalaki" : "Babae"}
 Pangalan ng Ama: ${request.fatherName || "Hindi nabanggit"}
 Pangalan ng Ina: ${request.motherName || "Hindi nabanggit"}

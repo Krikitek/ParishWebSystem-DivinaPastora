@@ -114,7 +114,7 @@
                         <div class="counter-info">
                             <i class="fas fa-list-alt"></i>
                             <span>Kasalukuyang Kahilingan:</span>
-                            <div class="counter-badge" id="requests-count">1</div>
+                            <div class="counter-badge" id="requests-count"></div>
                         </div>
                         <button class="add-another-request" id="add-another-btn" style="display: none;">
                             <i class="fas fa-plus"></i> Magdagdag pa
@@ -183,7 +183,6 @@
                                 <option value="BAPTISMAL">SERTIPIKO NG BINYAG</option>
                                 <option value="KUMPIL">SERTIPIKO NG KUMPIL</option>
                             </select>
-                            <div class="error-message"></div>
                         </div>
                     </div>
 
@@ -200,6 +199,31 @@
                         <span style="font-style: italic; font-size: 0.95em; color: #555;">
                             Please enter Maiden Name if Married Female
                         </span>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>
+                                Relasyon sa May-ari ng Dokumento <span class="required">*</span>
+                                <br>
+                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                                    Relationship to Document Owner
+                                </span>
+                            </label>
+                            <div class="select-field" id="relationshipField">
+                                <select id="relationship" required>
+                                    <option value="" disabled selected>PUMILI NG RELASYON SA MAY-ARI NG DOKUMENTO</option>
+                                    <option>SARILI</option>
+                                    <option>MAGULANG</option>
+                                    <option>ANAK</option>
+                                    <option>ASAWA</option>
+                                    <option>KAPATID</option>
+                                    <option>LEGAL NA TAGAPAG-ALAGA</option>
+                                    <option>AWTORISADONG KINATAWAN</option>
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
                     </div>
                     
                     <div class="form-row">
@@ -263,75 +287,56 @@
                     </div>
 
                     <div class="form-row">
+                        <!-- Province Dropdown -->
                         <div class="form-group">
-                            <label>
-                                Lugar ng Kapanganakan (Bansa) <span class="required">*</span>
+                            <label for="birthProvince">
+                                Lugar ng Kapanganakan <span class="required">*</span>
                                 <br>
-                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                    Place of Birth (Country)
-                                </span>
-                            </label>
-                            <div class="select-field">
-                                <select id="birthCountry" required>
-                                    <option value="PHILIPPINES" selected>PILIPINAS</option>
-                                    <option value="UNITED STATES">UNITED STATES</option>
-                                    <option value="CANADA">CANADA</option>
-                                    <option value="AUSTRALIA">AUSTRALIA</option>
-                                    <option value="UNITED KINGDOM">UNITED KINGDOM</option>
-                                    <option value="JAPAN">JAPAN</option>
-                                    <option value="SINGAPORE">SINGAPORE</option>
-                                    <option value="SAUDI ARABIA">SAUDI ARABIA</option>
-                                    <option value="UNITED ARAB EMIRATES">UNITED ARAB EMIRATES</option>
-                                    <option value="ITALY">ITALY</option>
-                                </select>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Lugar ng Kapanganakan (Lalawigan) <span class="required">*</span>
-                                <br>
-                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                    Place of Birth (Province)
-                                </span>
+                                <span class="label-sub">Province</span>
                             </label>
                             <div class="select-field">
                                 <select id="birthProvince" required>
                                     <option value="" disabled selected>PUMILI NG LALAWIGAN</option>
-                                    <option value="BATANGAS">BATANGAS</option>
-                                    <option value="CAVITE">CAVITE</option>
-                                    <option value="LAGUNA">LAGUNA</option>
-                                    <option value="RIZAL">RIZAL</option>
-                                    <option value="METRO MANILA">METRO MANILA</option>
-                                    <option value="BULACAN">BULACAN</option>
-                                    <option value="PAMPANGA">PAMPANGA</option>
-                                    <option value="CEBU">CEBU</option>
-                                    <option value="DAVAO">DAVAO</option>
-                                    <option value="ILOILO">ILOILO</option>
+                                    <!-- Provinces will be populated dynamically from PSGC API -->
                                 </select>
                                 <div class="error-message"></div>
                             </div>
                         </div>
-                        
+
+                        <!-- City / Municipality Dropdown -->
                         <div class="form-group">
-                            <label>
-                                Lugar ng Kapanganakan (Lungsod/Bayan) <span class="required">*</span>
+                            <label for="birthCity">
+                                <span class="required"></span>
                                 <br>
-                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                    Place of Birth (City/Municipality)
-                                </span>
+                                <span class="label-sub">City / Municipality</span>
                             </label>
                             <div class="select-field">
-                                <select id="birthCity" required>
+                                <select id="birthCity" required disabled>
                                     <option value="" disabled selected>PUMILI NG LUNGSOD/BAYAN</option>
+                                    <!-- Cities/Municipalities will be populated dynamically -->
                                 </select>
                                 <div class="error-message"></div>
                             </div>
                         </div>
+
+                        <!-- Barangay Dropdown -->
+                        <div class="form-group">
+                            <label for="birthDistrict">
+                                <span class="required"></span>
+                                <br>
+                                <span class="label-sub">Barangay</span>
+                            </label>
+                            <div class="select-field">
+                                <select id="birthDistrict" required disabled>
+                                    <option value="" disabled selected>PUMILI NG BARANGAY</option>
+                                    <!-- Barangays will be populated dynamically -->
+                                </select>
+                                <div class="error-message"></div>
+                            </div>
+                        </div>
+
                     </div>
+
                     
                     <div class="form-row">
                         <div class="form-group">
@@ -475,33 +480,8 @@
                                 <div class="error-message"></div>
                             </div>
                         </div>
-                    </div>
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Relasyon sa May-ari ng Dokumento <span class="required">*</span>
-                                <br>
-                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                    Relationship to Document Owner
-                                </span>
-                            </label>
-                            <div class="select-field">
-                                <select id="relationship" required>
-                                    <option value="" disabled selected>PUMILI NG RELASYON SA MAY-ARI NG DOKUMENTO</option>
-                                    <option>SARILI</option>
-                                    <option>MAGULANG</option>
-                                    <option>ANAK</option>
-                                    <option>ASAWA</option>
-                                    <option>KAPATID</option>
-                                    <option>LEGAL NA TAGAPAG-ALAGA</option>
-                                    <option>AWTORISADONG KINATAWAN</option>
-                                </select>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-                    </div>
-                    
+                    </div>                   
+                                        
                     <h3>
                         Layunin
                         <br>
@@ -552,50 +532,14 @@
                         </div>
                     </div>
 
-                    <!-- Contact Information -->
-                    <h3>
-                        Impormasyon sa Pakikipag-ugnayan
-                        <br>
-                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                            Contact Information
-                        </span>
-                    </h3>
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Numero ng Mobile <span class="required">*</span>
-                                <br>
-                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                    Mobile Number
-                                </span>
-                            </label>
-                            <div class="input-field">
-                                <input type="tel" id="mobileNumber" placeholder="09XXXXXXXXX" required>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>
-                                Email Address <span class="required">*</span>
-                                <br>
-                                <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                    Email Address
-                                </span>
-                            </label>
-                            <div class="input-field">
-                                <input type="email" id="emailAddress" placeholder="your.email@example.com" required>
-                                <div class="error-message"></div>
-                            </div>
-                        </div>
-                    </div>
+                    
                     
                     <div class="form-actions">
                         <button class="btn add-request-btn" id="add-new-request-btn" type="button">
                             <i class="fas fa-plus"></i> MAGDAGDAG NG BAGONG KAHILINGAN
                         </button>
                         <button class="btn cancel-btn" id="cancel-request-btn">KANSELAHIN</button>
-                        <button class="btn next-btn" id="save-and-continue-btn" disabled>I-SAVE AT MAGPATULOY</button>
+                        <button class="btn next-btn" id="save-and-continue-btn">I-SAVE AT MAGPATULOY</button>
                     </div>
                 </div>
             </section>
@@ -969,7 +913,7 @@
                         
                         <div class="form-actions">
                             <button class="btn back-btn" id="back-to-review-btn">BUMALIK</button>
-                            <button class="btn next-btn" id="proceed-to-summary-btn" disabled>MAGPATULOY SA BUOD</button>
+                            <button class="btn next-btn" id="proceed-to-summary-btn">MAGPATULOY SA BUOD</button>
                         </div>
                     </div>
                 </div>
