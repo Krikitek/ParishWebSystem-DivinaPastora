@@ -1,6 +1,5 @@
 <?php
 // Step 1: Set your secret key
-$secret_key = "sk_test_YijnHaamHJgpFP7byHk9R2ru"; // Replace with your Live Secret Key
 
 // Step 2: Create Payment Intent
 $ch = curl_init();
