@@ -1,3 +1,6 @@
+const PSGC_API = "https://psgc.gitlab.io/api";
+const CACHE_EXPIRY_HOURS = 24; // Cache expires every 24 hours
+
 document.addEventListener("DOMContentLoaded", () => {
   // Form switching functionality
   const signinForm = document.getElementById("signin-form")
@@ -14,6 +17,7 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault()
     signinForm.classList.remove("active")
     createAccountForm.classList.add("active")
+    setupLocationDropdowns()
     clearErrors()
   })
 
@@ -126,18 +130,29 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentOTPContact = null
   let otpTimer = null
   let otpTimeLeft = 0
+  
+  
+  // Get today's date in YYYY-MM-DD format
+    const today = new Date().toISOString().split("T")[0];
+    const date = document.getElementById("dateOfBirth");
+    date.setAttribute("max", today);   
 
   // Create Account Form Submission
   createAccountForm.addEventListener("submit", async (e) => {
     e.preventDefault()
     
     const firstName = document.getElementById("create-firstName").value.trim()
+    const midName = document.getElementById("create-midName").value.trim()
     const lastName = document.getElementById("create-lastName").value.trim()
     const phoneNumber = document.getElementById("create-phoneNumber").value.replace(/[\s-]/g, '')
     const email = document.getElementById("create-email").value.trim()
     const password = document.getElementById("create-password").value
-    const address = document.getElementById("create-address").value.trim()
-    const errorElement = document.getElementById("create-error")
+    const errorElement = document.getElementById("create-error") 
+    const province = provinceDropdown.options[provinceDropdown.selectedIndex].text;
+    const city = cityDropdown.options[cityDropdown.selectedIndex].text;
+    const barangay = barangayDropdown.options[barangayDropdown.selectedIndex].text;
+    const dateInput = date.value;
+
 
     const loadingOverlay = document.getElementById("loading-overlay")
     loadingOverlay.style.display = 'flex'
@@ -146,14 +161,14 @@ document.addEventListener("DOMContentLoaded", () => {
     errorElement.textContent = ""
 
     // Validation
-    if (!firstName || !lastName || !email || !password) {
+    if (!firstName || !midName || !lastName || !email || !password) {
       errorElement.textContent = "Please fill in all required fields"
       loadingOverlay.style.display = 'none'
       return
     }
 
     if (phoneNumber && !validatePhilippineMobile(phoneNumber)) {
-      errorElement.textContent = "Please enter a valid Philippine mobile number"
+      errorElement.textContent = "Please enter a valid Philippine mobile number" + barangay;
       loadingOverlay.style.display = 'none'
       return
     }
@@ -199,17 +214,131 @@ document.addEventListener("DOMContentLoaded", () => {
     // Store account data for later use
     pendingAccountData = {
       firstName,
+      midName,
       lastName,
+      dateInput,
       phoneNumber: phoneNumber ? `+63${phoneNumber}` : '',
       email,
       password,
-      address
+      province,
+      city,
+      barangay
     }
 
     // Show OTP choice modal
     loadingOverlay.style.display = 'none'
     showOTPChoiceModal(email, phoneNumber)
   })
+
+  const provinceDropdown = document.getElementById("birthProvince");
+  const cityDropdown = document.getElementById("birthCity");
+  const barangayDropdown = document.getElementById("birthDistrict");
+
+  async function setupLocationDropdowns() {
+
+  // ✅ Load provinces first (cached or API)
+  const provinces = await getCachedData("psgc_provinces", fetchProvinces);
+  populateDropdown(provinceDropdown, provinces, "Province of Birth");
+
+  // ✅ Province change → Fetch cities
+  provinceDropdown.addEventListener("change", async function () {
+    const provinceCode = this.value;
+
+    // Disable city & barangay dropdowns until new data loads
+    cityDropdown.disabled = true;
+    barangayDropdown.disabled = true;    
+
+    cityDropdown.innerHTML = '<option value="" disabled selected>Loading cities...</option>';
+    barangayDropdown.innerHTML = '<option value="" disabled selected>District of Birth</option>';
+
+    // ✅ Fetch cities (cached per province)
+    const cacheKey = `psgc_cities_${provinceCode}`;
+    const cities = await getCachedData(cacheKey, () => fetchCities(provinceCode));
+    populateDropdown(cityDropdown, cities, "City of Birth");
+    cityDropdown.disabled = false;
+  });
+
+  // ✅ City change → Fetch barangays
+  cityDropdown.addEventListener("change", async function () {
+    const cityCode = this.value;
+
+    barangayDropdown.disabled = true;
+    barangayDropdown.innerHTML = '<option value="" disabled selected>Loading Ditricts...</option>';
+
+    // ✅ Fetch barangays (cached per city)
+    const cacheKey = `psgc_barangays_${cityCode}`;
+    const barangays = await getCachedData(cacheKey, () => fetchBarangays(cityCode));
+    populateDropdown(barangayDropdown, barangays, "District of Birth");
+    barangayDropdown.disabled = false;
+  });
+}
+
+// ✅ Get data from cache or fetch from API
+async function getCachedData(cacheKey, fetchFunction) {
+  const cached = localStorage.getItem(cacheKey);
+
+  if (cached) {
+    const { data, timestamp } = JSON.parse(cached);
+    const now = Date.now();
+
+    // Check cache expiration
+    if ((now - timestamp) / (1000 * 60 * 60) < CACHE_EXPIRY_HOURS) {
+      return data; // ✅ Return cached data
+    }
+  }
+
+  // ✅ No cache or expired → Fetch new data
+  const freshData = await fetchFunction();
+
+  // Save to cache
+  localStorage.setItem(cacheKey, JSON.stringify({
+    data: freshData,
+    timestamp: Date.now()
+  }));
+
+  return freshData;
+}
+
+// ✅ Fetch all provinces
+async function fetchProvinces() {
+  const response = await fetch(`${PSGC_API}/provinces.json`);
+  const data = await response.json();
+  return data.map(p => ({ code: p.code, name: p.name }));
+}
+
+// ✅ Fetch cities per province
+async function fetchCities(provinceCode) {
+  const response = await fetch(`${PSGC_API}/provinces/${provinceCode}/cities-municipalities.json`);
+  const data = await response.json();
+  return data.map(c => ({ code: c.code, name: c.name }));
+}
+
+// ✅ Fetch barangays per city
+async function fetchBarangays(cityCode) {
+  const response = await fetch(`${PSGC_API}/cities-municipalities/${cityCode}/barangays.json`);
+  const data = await response.json();
+  return data.map(b => ({ code: b.code, name: b.name }));
+}
+
+// ✅ Populate dropdown helper
+function populateDropdown(dropdown, items, placeholder) {
+  // Clear dropdown and set placeholder
+  dropdown.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
+  // ✅ Sort items alphabetically by name before populating
+  items.sort((a, b) => a.name.localeCompare(b.name));
+
+  // ✅ Populate dropdown options
+  items.forEach(item => {
+    const option = document.createElement("option");
+    option.value = item.code; // Use PSGC code as value
+    option.textContent = item.name; // Display uppercase name
+    option.setAttribute("data-code", item.code); // Keep code for later use
+    dropdown.appendChild(option);
+  });
+
+  // ✅ Enable dropdown if data is available
+  dropdown.disabled = items.length === 0;
+}
 
   // Show OTP Choice Modal
   function showOTPChoiceModal(email, phoneNumber) {    
@@ -619,61 +748,111 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Sign In Form Submission
   signinForm.addEventListener("submit", async (e) => {
-    e.preventDefault()    
+    e.preventDefault();
 
-    const email = document.getElementById("email").value.trim()
-    const password = document.getElementById("password").value
-    const errorElement = document.getElementById("login-error")
+    let contact = document.getElementById("contact").value.trim();
+    const password = document.getElementById("password").value;
+    const errorElement = document.getElementById("login-error");
+    const loadingOverlay = document.getElementById("loading-overlay");
 
-    const loadingOverlay = document.getElementById("loading-overlay")
-    loadingOverlay.style.display = 'flex'
+    // Show loading spinner
+    loadingOverlay.style.display = 'flex';
 
-    // Clear previous errors
-    errorElement.textContent = ""
-
-    // Basic validation
-    if (!email || !password) {
-      errorElement.textContent = "Please enter both email and password"
-      return
+    // ✅ Step 1: Check for empty fields first
+    if (!contact || !password) {
+        loadingOverlay.style.display = 'none';
+        errorElement.textContent = "Please enter required credentials";
+        return;
     }
 
-    if (!validateEmail(email)) {
-      errorElement.textContent = "Please enter a valid email address"
-      return
+    // ✅ Step 2: Detect if it's a mobile number
+    if (/^\+?\d+$/.test(contact)) {
+        // If number starts with 0 → convert to +63
+        if (contact.startsWith("0")) {
+            contact = "+63" + contact.substring(1);
+        }
+        // If number starts without 0 or +63 → force +63 prefix
+        else if (!contact.startsWith("+63")) {
+            contact = "+63" + contact;
+        }
     }
+    // ✅ Step 3: Otherwise, validate as email
+    else {
+        if (!validateEmail(contact)) {
+            loadingOverlay.style.display = 'none';
+            errorElement.textContent = "Please enter a valid email address";
+            return;
+        }
+    }
+
+    // ✅ Step 4: Clear previous errors
+    errorElement.textContent = "";
 
     try {
-      const formData = new FormData()
-      formData.append('email', email)
-      formData.append('password', password)
+        // Send form data to server
+        const formData = new FormData();
+        formData.append('contact', contact);
+        formData.append('password', password);
 
-      const response = await fetch('signin.php', {
-        method: 'POST',
-        body: formData
-      })
+        const response = await fetch('signin.php', {
+            method: 'POST',
+            body: formData
+        });
 
-      const result = await response.json()
-      
-      if (result.success) {
-        // Store user info in sessionStorage
-        sessionStorage.setItem("chronos_session", "active")
-        sessionStorage.setItem("chronos_user", JSON.stringify(result.user))
-        
-        // Redirect based on role
-        if (result.user.role === 'admin') {
-          window.location.href = "dashboard-admin.html"
+        const result = await response.json();
+
+        if (result.success) {
+            // ✅ Save session info
+            sessionStorage.setItem("chronos_session", "active");
+            sessionStorage.setItem("chronos_user", JSON.stringify(result.user));
+            sessionStorage.setItem("chronos_firstName", result.user.firstName);
+            sessionStorage.setItem("chronos_lastName", result.user.lastName);
+
+            // ✅ Redirect based on role
+            if (result.user.role === 'admin') {
+                window.location.href = "dashboard-admin.html";
+            } else {
+                window.location.href = "dashboard-user.html";
+            }
         } else {
-          window.location.href = "dashboard-user.html"
+            // ✅ Show proper error message
+            if (/^\+?\d+$/.test(contact)) {
+                errorElement.textContent = "Incorrect Mobile Number or Password";
+            } else {
+                errorElement.textContent = "Incorrect Email or Password";
+            }
+            loadingOverlay.style.display = 'none';
         }
-      } else {
-        errorElement.textContent = "Incorrect Email or Password"
-        loadingOverlay.style.display = 'none'
-      }
     } catch (error) {
-      errorElement.textContent = "Network error. Please try again."
-      loadingOverlay.style.display = 'none'
+        errorElement.textContent = "Network error. Please try again.";
+        loadingOverlay.style.display = 'none';
     }
-  })
+});
+
+const engBtn = document.getElementById("lang-eng");
+const filBtn = document.getElementById("lang-fil");
+const noticeText = document.getElementById("notice-text");
+
+// English and Filipino translations
+const translations = {
+    eng: "Please ensure all information entered is accurate and complete. Your details will be used for future verification, recovery, and official records.",
+    fil: "Siguraduhin na tama at kumpleto ang lahat ng impormasyong ilalagay. Gagamitin ang iyong detalye para sa hinaharap na beripikasyon, pag-recover ng account, at opisyal na rekord."
+};
+
+// Switch to English
+engBtn.addEventListener("click", () => {
+    noticeText.textContent = translations.eng;
+    engBtn.classList.add("active");
+    filBtn.classList.remove("active");
+});
+
+// Switch to Filipino
+filBtn.addEventListener("click", () => {
+    noticeText.textContent = translations.fil;
+    filBtn.classList.add("active");
+    engBtn.classList.remove("active");
+});
+
 
   // Forgot Password functionality
   let verificationTimer = null
@@ -803,12 +982,12 @@ document.addEventListener("DOMContentLoaded", () => {
           loadingOverlay.style.display = 'none'
         }
       } else {
-        await sendForgotPasswordEmailLink(contactInfo);
         resetError.textContent = verificationMethod === "email" ? "Email Not Found" : "Mobile Number Not Found"
+        loadingOverlay.style.display = 'none'
       }
     } catch (error) {
-      await sendForgotPasswordEmailLink(contactInfo);
       resetError.textContent = "Network error. Please try again."
+      loadingOverlay.style.display = 'none'
     }
   })
 

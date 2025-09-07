@@ -1,6 +1,7 @@
   const PSGC_API = "https://psgc.gitlab.io/api";
 const CACHE_EXPIRY_HOURS = 24; // Cache expires every 24 hours
 // // Enhanced Multi-Request Certificate Form Handler
+const userData = JSON.parse(sessionStorage.getItem("chronos_user") || "{}");
 document.addEventListener("DOMContentLoaded", () => {
   // State Management
   const FormState = {
@@ -52,8 +53,6 @@ document.addEventListener("DOMContentLoaded", () => {
       relationship: document.getElementById("relationship"),
       purpose: document.getElementById("purpose"),
       otherPurpose: document.getElementById("otherPurpose"),
-      mobileNumber: document.getElementById("mobileNumber"),
-      emailAddress: document.getElementById("emailAddress"),
     },
   }
 
@@ -80,6 +79,36 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
+
+  
+
+// Function to auto-fill fields if relationship is "SARILI"
+function handleRelationshipChange() {
+    if (relationship.value === "SARILI") {
+        // Populate fields with stored data
+        firstName.value = userData.firstName || "";
+        lastName.value = userData.lastName || "";
+
+        // Make fields read-only to avoid accidental changes
+        firstName.readOnly = true;
+        lastName.readOnly = true;
+
+        // Add a subtle style to indicate it's auto-filled
+        firstName.style.backgroundColor = "#f0f0f0";
+        lastName.style.backgroundColor = "#f0f0f0";
+    } else {
+        // Reset fields when user selects other relationships
+        firstName.value = "";
+        lastName.value = "";
+        firstName.readOnly = false;
+        lastName.readOnly = false;
+        firstName.style.backgroundColor = "";
+        lastName.style.backgroundColor = "";
+    }
+}
+
+// Listen for dropdown changes
+relationship.addEventListener("change", handleRelationshipChange);
 
   function setupEventListeners() {
     // Navigation buttons

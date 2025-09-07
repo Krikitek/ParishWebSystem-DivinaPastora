@@ -921,9 +921,26 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Show welcome notification
   setTimeout(() => {
-    const userData = JSON.parse(localStorage.getItem("chronos_current_user") || "{}")
-    const userName = userData.name || "User"
-    const welcomeMessage = currentLanguage === "fil" ? `Maligayang pagdating, ${userName}!` : `Welcome, ${userName}!`
-    showNotification(welcomeMessage, "success")
+   // Get stored user data from sessionStorage (or fallback to localStorage if needed)
+const userData = JSON.parse(sessionStorage.getItem("chronos_user") || localStorage.getItem("chronos_current_user") || "{}");
+
+// Get firstName and lastName safely
+const firstName = userData.firstName || "";
+const lastName = userData.lastName || "";
+
+// If both names exist, use them; otherwise fallback to "User"
+const userName = (firstName && lastName) ? `${firstName} ${lastName}` : firstName || lastName || "User";
+
+// Create welcome message
+const welcomeMessage = `Maligayang pagdating, ${userName}!`;
+
+// Show notification
+if (!sessionStorage.getItem("welcome_shown")) {
+    showNotification(welcomeMessage, "success");
+
+    // ✅ Set flag so it won't show again until next login
+    sessionStorage.setItem("welcome_shown", "true");
+}
+
   }, 1000)
 })

@@ -4,15 +4,19 @@ require_once 'dbConnection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $firstName   = trim($_POST['firstName']);
+        $midName   = trim($_POST['midName']);
         $lastName    = trim($_POST['lastName']);
+        $birthDate    = $_POST['dateInput'];
         $email       = trim($_POST['email']);
         $password    = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $role        = 'user'; // Default role
         $phoneNumber = trim($_POST['phoneNumber']);
-        $address     = trim($_POST['address']);
+        $province    = $_POST['province'];
+        $city    = $_POST['city'];
+        $barangay    = $_POST['barangay'];
 
         // Validate required fields
-        if (empty($firstName) || empty($lastName) || empty($email) || empty($_POST['password'])) {
+        if (empty($firstName) || empty($midName) || empty($lastName) || empty($birthDate) || empty($email) || empty($_POST['password'])) {
             throw new Exception("Please fill in all required fields");
         }
 
@@ -51,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         // Insert new user
         $sql = "INSERT INTO UserAccountTable 
-                (firstName, lastName, email, password, role, phoneNumber, address, accountStatus, accountDateCreated)
-                VALUES (?, ?, ?, ?, ?, ?, ?, 'active', ?)";
+                (firstName, lastName, email, password, role, phoneNumber, accountStatus, accountDateCreated, middleName, dateOfBirth, birthProvince, birthCity, birthBarangay)
+                VALUES (?, ?, ?, ?, ?, ?, 'active', ?, ?, ?, ?, ?, ?)";
 
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$firstName, $lastName, $email, $password, $role, $phoneNumber, $address, $localDate]);
+        $stmt->execute([$firstName, $lastName, $email, $password, $role, $phoneNumber, $localDate, $midName, $birthDate, $province, $city, $barangay]);
 
         echo "Account created successfully!";
 

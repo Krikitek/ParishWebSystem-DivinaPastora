@@ -6,62 +6,64 @@ header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {              
-        $email = trim($_POST['email']);
+        $contact = trim($_POST['contact']);
         $password = $_POST['password'];
 
         // Validate input
-        if (empty($email) || empty($password)) {
-            echo json_encode(['success' => false, 'message' => 'Please enter both email and password']);
+        if (empty($contact) || empty($password)) {
+            echo json_encode(['success' => false, 'message' => 'Please enter complete credentials']);
             exit;
         }
 
-        // Validate email format
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            echo json_encode(['success' => false, 'message' => 'Please enter a valid email address']);
-            exit;
-        }
-
-        // Query user from database
+        // ✅ MSSQL compatible query
         $sql = "SELECT userID, firstName, lastName, email, password, role, phoneNumber, address, accountStatus 
-                FROM UserAccountTable 
-                WHERE email = ? AND accountStatus = 'active'";
-        
+                FROM UserAccountTable
+                WHERE (email = ? OR phoneNumber = ?)
+                AND accountStatus = 'active'";
+
+        // ✅ Prepare & execute for MSSQL
         $stmt = $conn->prepare($sql);
-        $stmt->execute([$email]);
+        $stmt->execute([$contact, $contact]);
+
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
+        // If no user found
         if (!$user) {
             echo json_encode(['success' => false, 'message' => 'Incorrect Email or Password']);
             exit;
         }
 
-        // Verify password
+        // ✅ Verify password
         if (!password_verify($password, $user['password'])) {            
             echo json_encode(['success' => false, 'message' => 'Incorrect Email or Password']);            
             exit;
         }
 
+        // ✅ Set timezone & get local time
         $date = new DateTime('now', new DateTimeZone('Asia/Manila'));
         $localDate = $date->format('Y-m-d H:i:s');
 
-        // Update last login time
+        // ✅ Update last login time (MSSQL)
         $updateSql = "UPDATE UserAccountTable SET lastLogIn = ? WHERE userID = ?";
         $updateStmt = $conn->prepare($updateSql);
         $updateStmt->execute([$localDate, $user['userID']]);
+
+        // ✅ Start session
         $_SESSION['user_id'] = $user['userID'];
 
-        // Remove password from user data before sending to client
+        // Remove password before sending response
         unset($user['password']);
 
-        // Return success response
-        echo json_encode([
+                echo json_encode([
             'success' => true,
             'user' => $user,
-            'message' => 'Login successful'            
+            'firstName' => $user['firstName'],
+            'lastName'  => $user['lastName'],
+            'message' => 'Login successful'
         ]);
 
     } catch (PDOException $e) {
-        echo json_encode(['success' => false, 'message' => 'Database error occurred']);
+        echo json_encode(['success' => false, 'message' => 'Database error: ' . $e->getMessage()]);
     } catch (Exception $e) {
         echo json_encode(['success' => false, 'message' => 'An error occurred']);
     }
