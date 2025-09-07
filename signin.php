@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         // ✅ MSSQL compatible query
-        $sql = "SELECT userID, firstName, lastName, email, password, role, phoneNumber, address, accountStatus 
+        $sql = "SELECT *
                 FROM UserAccountTable
                 WHERE (email = ? OR phoneNumber = ?)
                 AND accountStatus = 'active'";

@@ -1033,7 +1033,7 @@ filBtn.addEventListener("click", () => {
         resetOtpInputs[0].focus()
         
         // Start timer
-        startTimer(10) // 5 minutes
+        startTimer(300) // 5 minutes
         
         alert('Verification code sent to your Email')
       } else {
