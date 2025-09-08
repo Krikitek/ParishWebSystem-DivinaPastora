@@ -22,7 +22,6 @@ document.addEventListener("DOMContentLoaded", () => {
     buttons: {
       saveAndContinue: document.getElementById("save-and-continue-btn"),
       addAnother: document.getElementById("add-another-btn"),
-      addNewRequest: document.getElementById("add-new-request-btn"),
       addMoreRequests: document.getElementById("add-more-requests-btn"),
       backToForm: document.getElementById("back-to-form-btn"),
       proceedToDelivery: document.getElementById("proceed-to-delivery-btn"),
@@ -83,29 +82,91 @@ document.addEventListener("DOMContentLoaded", () => {
   
 
 // Function to auto-fill fields if relationship is "SARILI"
-function handleRelationshipChange() {
-    if (relationship.value === "SARILI") {
-        // Populate fields with stored data
-        firstName.value = userData.firstName || "";
-        lastName.value = userData.lastName || "";
+async function handleRelationshipChange() {
+  if (relationship.value === "SARILI") {
+    // ✅ Fill name fields
+    firstName.value = userData.firstName || "";
+    middleName.value = userData.middleName || "";
+    lastName.value = userData.lastName || "";
+    dateOfBirth.value = userData.dateOfBirth || "";
 
-        // Make fields read-only to avoid accidental changes
-        firstName.readOnly = true;
-        lastName.readOnly = true;
+    firstName.readOnly = true;
+    middleName.readOnly = true;
+    lastName.readOnly = true;
+    dateOfBirth.readOnly = true;
 
-        // Add a subtle style to indicate it's auto-filled
-        firstName.style.backgroundColor = "#f0f0f0";
-        lastName.style.backgroundColor = "#f0f0f0";
-    } else {
-        // Reset fields when user selects other relationships
-        firstName.value = "";
-        lastName.value = "";
-        firstName.readOnly = false;
-        lastName.readOnly = false;
-        firstName.style.backgroundColor = "";
-        lastName.style.backgroundColor = "";
+    // ✅ Highlight name fields
+    [firstName, middleName, lastName, dateOfBirth]
+      .forEach(field => field.style.backgroundColor = "#f0f0f0");
+
+    // ✅ Load provinces first
+    const provinces = await getCachedData("psgc_provinces", fetchProvinces);
+    populateDropdown(birthProvince, provinces, "PUMILI NG LALAWIGAN", userData.birthProvince);
+
+    // ✅ If province exists, fetch its cities
+    if (userData.birthProvince) {
+      const selectedProvince = provinces.find(
+        p => p.name.toUpperCase() === userData.birthProvince.toUpperCase()
+      );
+      if (selectedProvince) {
+        const cities = await getCachedData(
+          `psgc_cities_${selectedProvince.code}`,
+          () => fetchCities(selectedProvince.code)
+        );
+        populateDropdown(birthCity, cities, "PUMILI NG LUNGSOD/BAYAN", userData.birthCity);
+
+        // ✅ If city exists, fetch its barangays
+        if (userData.birthCity) {
+          const selectedCity = cities.find(
+            c => c.name.toUpperCase() === userData.birthCity.toUpperCase()
+          );
+          if (selectedCity) {
+            const barangays = await getCachedData(
+              `psgc_barangays_${selectedCity.code}`,
+              () => fetchBarangays(selectedCity.code)
+            );
+            populateDropdown(birthDistrict, barangays, "PUMILI NG BARANGAY", userData.birthBarangay);
+          }
+        }
+      }
     }
+
+    // Disable dropdowns since we're auto-filling
+    birthProvince.disabled = true;
+    birthCity.disabled = true;
+    birthDistrict.disabled = true;
+
+    [birthProvince, birthCity, birthDistrict].forEach(
+      field => field.style.backgroundColor = "#f0f0f0"
+    );
+
+    validateRequestForm("personalInfoSection", true);
+
+  } else {
+    // 🔄 Reset all fields for non-"SARILI"
+    firstName.value = "";
+    middleName.value = "";
+    lastName.value = "";
+    dateOfBirth.value = "";
+    birthProvince.value = "";
+    birthCity.value = "";
+    birthDistrict.value = "";
+
+    firstName.readOnly = false;
+    middleName.readOnly = false;
+    lastName.readOnly = false;
+    dateOfBirth.readOnly = false;
+
+    birthProvince.disabled = false;
+    birthCity.disabled = false;
+    birthDistrict.disabled = false;
+
+    [firstName, middleName, lastName, dateOfBirth, birthProvince, birthCity, birthDistrict]
+      .forEach(field => field.style.backgroundColor = "");
+  }
 }
+
+
 
 // Listen for dropdown changes
 relationship.addEventListener("change", handleRelationshipChange);
@@ -114,7 +175,6 @@ relationship.addEventListener("change", handleRelationshipChange);
     // Navigation buttons
     FormState.buttons.saveAndContinue?.addEventListener("click", saveCurrentRequestAndContinue)
     FormState.buttons.addAnother?.addEventListener("click", addAnotherRequest)
-    FormState.buttons.addNewRequest?.addEventListener("click", addNewRequest)
     FormState.buttons.addMoreRequests?.addEventListener("click", addMoreRequests)
     FormState.buttons.backToForm?.addEventListener("click", () => showSection(FormState.sections.requestForm))
     FormState.buttons.proceedToDelivery?.addEventListener("click", proceedToDelivery)
@@ -174,44 +234,44 @@ relationship.addEventListener("change", handleRelationshipChange);
 
 
 async function setupLocationDropdowns() {
-  const provinceDropdown = document.getElementById("birthProvince");
-  const cityDropdown = document.getElementById("birthCity");
-  const barangayDropdown = document.getElementById("birthDistrict");
+  const birthProvince = document.getElementById("birthProvince");
+  const birthCity = document.getElementById("birthCity");
+  const birthDistrict = document.getElementById("birthDistrict");
 
   // ✅ Load provinces first (cached or API)
   const provinces = await getCachedData("psgc_provinces", fetchProvinces);
-  populateDropdown(provinceDropdown, provinces, "PUMILI NG LALAWIGAN");
+  populateDropdown(birthProvince, provinces, "PUMILI NG LALAWIGAN");
 
   // ✅ Province change → Fetch cities
-  provinceDropdown.addEventListener("change", async function () {
+  birthProvince.addEventListener("change", async function () {
     const provinceCode = this.value;
 
     // Disable city & barangay dropdowns until new data loads
-    cityDropdown.disabled = true;
-    barangayDropdown.disabled = true;    
+    birthCity.disabled = true;
+    birthDistrict.disabled = true;    
 
-    cityDropdown.innerHTML = '<option value="" disabled selected>Loading cities...</option>';
-    barangayDropdown.innerHTML = '<option value="" disabled selected>PUMILI NG BARANGAY</option>';
+    birthCity.innerHTML = '<option value="" disabled selected>Loading cities...</option>';
+    birthDistrict.innerHTML = '<option value="" disabled selected>PUMILI NG BARANGAY</option>';
 
     // ✅ Fetch cities (cached per province)
     const cacheKey = `psgc_cities_${provinceCode}`;
     const cities = await getCachedData(cacheKey, () => fetchCities(provinceCode));
-    populateDropdown(cityDropdown, cities, "PUMILI NG LUNGSOD/BAYAN");
-    cityDropdown.disabled = false;
+    populateDropdown(birthCity, cities, "PUMILI NG LUNGSOD/BAYAN");
+    birthCity.disabled = false;
   });
 
   // ✅ City change → Fetch barangays
-  cityDropdown.addEventListener("change", async function () {
+  birthCity.addEventListener("change", async function () {
     const cityCode = this.value;
 
-    barangayDropdown.disabled = true;
-    barangayDropdown.innerHTML = '<option value="" disabled selected>Loading barangays...</option>';
+    birthDistrict.disabled = true;
+    birthDistrict.innerHTML = '<option value="" disabled selected>Loading barangays...</option>';
 
     // ✅ Fetch barangays (cached per city)
     const cacheKey = `psgc_barangays_${cityCode}`;
     const barangays = await getCachedData(cacheKey, () => fetchBarangays(cityCode));
-    populateDropdown(barangayDropdown, barangays, "PUMILI NG BARANGAY");
-    barangayDropdown.disabled = false;
+    populateDropdown(birthDistrict, barangays, "PUMILI NG BARANGAY");
+    birthDistrict.disabled = false;
   });
 }
 
@@ -263,25 +323,34 @@ async function fetchBarangays(cityCode) {
 }
 
 // ✅ Populate dropdown helper
-function populateDropdown(dropdown, items, placeholder) {
-  // Clear dropdown and set placeholder
+function populateDropdown(dropdown, items, placeholder, selectedText = "") {
+  // ✅ Clear and set placeholder
   dropdown.innerHTML = `<option value="" disabled selected>${placeholder}</option>`;
 
-  // ✅ Sort items alphabetically by name before populating
+  // ✅ Sort alphabetically
   items.sort((a, b) => a.name.localeCompare(b.name));
 
-  // ✅ Populate dropdown options
+  // ✅ Add options
   items.forEach(item => {
     const option = document.createElement("option");
-    option.value = item.code; // Use PSGC code as value
-    option.textContent = item.name.toUpperCase(); // Display uppercase name
-    option.setAttribute("data-code", item.code); // Keep code for later use
+    option.value = item.code;
+    option.textContent = item.name.toUpperCase();
     dropdown.appendChild(option);
   });
 
-  // ✅ Enable dropdown if data is available
+  // ✅ Auto-select if there's a saved value
+  if (selectedText && selectedText.trim() !== "") {
+    const match = Array.from(dropdown.options).find(
+      opt => opt.textContent.trim().toUpperCase() === selectedText.trim().toUpperCase()
+    );
+    if (match) dropdown.value = match.value;
+  }
+
+  // Enable/disable dropdown
   dropdown.disabled = items.length === 0;
 }
+
+
 
 
 
@@ -373,8 +442,6 @@ function populateDropdown(dropdown, items, placeholder) {
       motherName: motherName || "",
       relationship: FormState.fields.relationship?.value || "",
       purpose: purposeValue || "",
-      mobileNumber: FormState.fields.mobileNumber?.value || "",
-      emailAddress: FormState.fields.emailAddress?.value || "",
       createdAt: new Date().toISOString(),
     }
   }
@@ -421,30 +488,6 @@ function populateDropdown(dropdown, items, placeholder) {
     FormState.currentRequestIndex = FormState.allRequests.length
     updateRequestsCounter()
     showFlashMessage("Naidagdag na ang kahilingan! Maaari na kayong magdagdag pa.")
-  }
-
-  function addNewRequest() {
-    if (confirm("Magsisimula ito ng bagong kahilingan. Ang kasalukuyang progress ay ma-save. Magpatuloy?")) {
-      // Save current progress if form has data
-      if (hasFormData()) {
-        const requestData = collectCurrentRequestData()
-        FormState.allRequests.push(requestData)
-        saveAllRequests()
-      }
-
-      // Clear form and start new request
-      clearForm()
-      FormState.currentRequestIndex = FormState.allRequests.length
-      updateRequestsCounter()
-      showFlashMessage("Nagsimula na ang bagong kahilingan!")
-    }
-  }
-
-  function addMoreRequests() {
-    clearForm()
-    FormState.currentRequestIndex = FormState.allRequests.length
-    FormState.currentStep = 1
-    showSection(FormState.sections.requestForm)
   }
 
   function hasFormData() {
@@ -500,7 +543,6 @@ function populateDropdown(dropdown, items, placeholder) {
   function updateRequestsCounter() {
     const counter = document.getElementById("requests-count");
     const reviewCounter = document.getElementById("review-requests-count");
-    const addAnotherBtn = document.getElementById("add-another-btn");
 
     const totalRequests = FormState.allRequests.length;
 
@@ -511,8 +553,8 @@ function populateDropdown(dropdown, items, placeholder) {
     if (reviewCounter) reviewCounter.textContent = totalRequests;
 
     // Show or hide "Add Another" button
-    if (addAnotherBtn) {
-        addAnotherBtn.style.display = totalRequests > 0 ? "flex" : "none";
+    if (addAnother) {
+        addAnother.style.display = totalRequests > 0 ? "flex" : "none";
     }
 }
 

@@ -58,7 +58,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'success' => true,
             'user' => $user,
             'firstName' => $user['firstName'],
+            'middleName'  => $user['middleName'],
             'lastName'  => $user['lastName'],
+            'dateOfBirth' => $user['dateOfBirth'],
+            'birthProvince'  => $user['birthProvince'],
+            'birthCity'  => $user['birthCity'],
+            'birthBarangay'  => $user['birthBarangay'],
             'message' => 'Login successful'
         ]);
 

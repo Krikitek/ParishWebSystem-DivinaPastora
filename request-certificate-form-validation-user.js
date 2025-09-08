@@ -371,27 +371,43 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Validate entire form section
-  function validateFormSection(sectionId) {
-    const section = document.getElementById(sectionId)
-    if (!section) return true
+  function validateFormSection(sectionId, isAutoFilled = false) {
+  const section = document.getElementById(sectionId);
+  if (!section) return true;
 
-    const fields = section.querySelectorAll("input, select, textarea")
-    let isValid = true
+  const fields = section.querySelectorAll("input, select, textarea");
+  let isValid = true;
 
-    fields.forEach((field) => {
-      // Skip hidden fields
-      if (field.offsetParent === null) return
+  fields.forEach((field) => {
+    // ✅ Skip hidden fields
+    if (field.offsetParent === null) return;
 
-      // Skip fields in hidden sections
-      const fieldSection = field.closest(".form-group, .form-row")
-      if (fieldSection && fieldSection.offsetParent === null) return
+    // ✅ Skip fields in hidden sections
+    const fieldSection = field.closest(".form-group, .form-row");
+    if (fieldSection && fieldSection.offsetParent === null) return;
 
-      const fieldValid = validateField(field)
-      isValid = isValid && fieldValid
-    })
+    // ✅ If field is auto-filled by handleRelationshipChange
+    if (isAutoFilled && field.value.trim() !== "") {
+      // Remove invalid classes if previously marked
+      field.classList.remove("is-invalid");
+      field.classList.add("is-valid");
 
-    return isValid
-  }
+      // ✅ Remove associated error message if present
+      const errorEl = field.parentElement.querySelector(".invalid-feedback");
+      if (errorEl) {
+        errorEl.style.display = "none";
+        errorEl.textContent = "";
+      }
+      return; // Skip validation since it's auto-filled
+    }
+
+    // ✅ Validate only if not auto-filled or empty
+    const fieldValid = validateField(field);
+    isValid = isValid && fieldValid;
+  });
+
+  return isValid;
+}
 
   function scrollToFirstInvalidField(sectionId) {
   const section = document.getElementById(sectionId);

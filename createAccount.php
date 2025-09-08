@@ -3,17 +3,17 @@ require_once 'dbConnection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
-        $firstName   = trim($_POST['firstName']);
-        $midName   = trim($_POST['midName']);
-        $lastName    = trim($_POST['lastName']);
+        $firstName   = strtoupper(trim($_POST['firstName']));
+        $midName   = strtoupper(trim($_POST['midName']));
+        $lastName    = strtoupper(trim(($_POST['lastName'])));
         $birthDate    = $_POST['dateInput'];
         $email       = trim($_POST['email']);
         $password    = password_hash($_POST['password'], PASSWORD_DEFAULT);
         $role        = 'user'; // Default role
         $phoneNumber = trim($_POST['phoneNumber']);
-        $province    = $_POST['province'];
-        $city    = $_POST['city'];
-        $barangay    = $_POST['barangay'];
+        $province    = strtoupper($_POST['province']);
+        $city    = strtoupper($_POST['city']);
+        $barangay    = strtoupper($_POST['barangay']);
 
         // Validate required fields
         if (empty($firstName) || empty($midName) || empty($lastName) || empty($birthDate) || empty($email) || empty($_POST['password'])) {

@@ -806,7 +806,12 @@ function populateDropdown(dropdown, items, placeholder) {
             sessionStorage.setItem("chronos_session", "active");
             sessionStorage.setItem("chronos_user", JSON.stringify(result.user));
             sessionStorage.setItem("chronos_firstName", result.user.firstName);
+            sessionStorage.setItem("chronos_midName", result.user.middleName);
             sessionStorage.setItem("chronos_lastName", result.user.lastName);
+            sessionStorage.setItem("chronos_dateOfBirth", result.user.dateOfBirth);
+            sessionStorage.setItem("chronos_province", result.user.birthProvince);
+            sessionStorage.setItem("chronos_city", result.user.birthCity);
+            sessionStorage.setItem("chronos_barangay", result.user.birthBarangay);
 
             // ✅ Redirect based on role
             if (result.user.role === 'admin') {
