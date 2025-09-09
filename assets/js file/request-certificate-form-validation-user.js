@@ -143,7 +143,6 @@ document.addEventListener("DOMContentLoaded", () => {
   function initValidation() {
     addErrorElements()
     addValidationListeners()
-    setupRealTimeValidation()
   }
 
   // Add error message containers to form fields

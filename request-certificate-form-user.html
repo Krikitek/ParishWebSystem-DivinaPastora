@@ -5,11 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Kahilingan ng Sertipiko</title>
     <link rel="icon" href="yellow.png" type="image/png">
-    <link rel="stylesheet" href="styles-user.css">
-    <link rel="stylesheet" href="dashboard-user.css">
-    <link rel="stylesheet" href="request-certificate-form-user.css">
-    <link rel="stylesheet" href="request-certificate-form-handler-user.css">
+    <link rel="stylesheet" href="/assets/style/styles-user.css">
+    <link rel="stylesheet" href="/assets/style/dashboard-user.css">
+    <link rel="stylesheet" href="/assets/style/request-certificate-form-user.css">
+    <link rel="stylesheet" href="/assets/style/request-certificate-form-handler-user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <base href="assets/image file/">
+    <style>
+                @media (max-width: 600px) {
+                    .details-container .back-link {
+                        width: 100%;
+                        justify-content: center;
+                        font-size: 15px;
+                        padding: 8px 0;
+                    }
+                    .details-container .back-link span {
+                        font-size: 15px;
+                    }
+                }
+                .request-details {
+                background-color: white;
+                border-radius: 10px;
+                padding: 25px;
+                margin: 20px auto;
+                box-shadow: var(--shadow-light);
+                animation: fadeIn 0.5s ease-in-out;
+                max-width: 900px; /* Limit maximum width */
+                width: 90%;  
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 0 20px 0.75rem 30px; /* Added left & right margins */
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+
+        .detail-row:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: #495057;
+        }
+
+        .detail-value {
+            color: #212529;
+        }
+            </style>
 </head>
 <body>
     <div class="dashboard-container">
@@ -39,20 +87,7 @@
                 <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
                 <span>Bumalik sa Dashboard</span>
             </a>
-            <style>
-                @media (max-width: 600px) {
-                    .details-container .back-link {
-                        width: 100%;
-                        justify-content: center;
-                        font-size: 15px;
-                        padding: 8px 0;
-                    }
-                    .details-container .back-link span {
-                        font-size: 15px;
-                    }
-                }
-            </style>
-
+            
             <!-- Request Form Section (Step 1) -->
             <section class="form-section" id="request-form-section">
                 <div class="form-progress">
@@ -69,6 +104,16 @@
                     <div class="progress-step">
                         <div class="step-number">2</div>
                         <div class="step-label">
+                            Pagsusuri
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Review
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step">
+                        <div class="step-number">3</div>
+                        <div class="step-label">
                             Mga Detalye ng Paghahatid
                             <br>
                             <span style="font-style: italic; font-size: 0.92em; color: #888;">
@@ -77,27 +122,7 @@
                         </div>
                     </div>
                     <div class="progress-step">
-                        <div class="step-number">3</div>
-                        <div class="step-label">
-                            Buod
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Summary
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
                         <div class="step-number">4</div>
-                        <div class="step-label">
-                            Pagkilala
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Acknowledgement
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-number">5</div>
                         <div class="step-label">
                             Bayad
                             <br>
@@ -356,10 +381,10 @@
                             </label>
                             <div class="radio-group">
                                 <label class="radio-label">
-                                    <input type="radio" name="sex" value="Male" checked> Lalaki
+                                    <input type="radio" name="sex" value="LALAKI" checked> Lalaki
                                 </label>
                                 <label class="radio-label">
-                                    <input type="radio" name="sex" value="Female"> Babae
+                                    <input type="radio" name="sex" value="BABAE"> Babae
                                 </label>
                             </div>
                             <div class="error-message"></div>
@@ -529,6 +554,81 @@
 
             <!-- Enhanced Requests Review Section -->
             <section class="form-section" id="requests-review-section" style="display: none;">
+                <!-- Progress Steps -->
+                <div class="form-progress">
+                    <div class="progress-step completed">
+                    <div class="step-number">1</div>
+                    <div class="step-label">
+                        Mga Detalye ng Kahilingan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Request Details
+                        </span>
+                    </div>
+                    </div>
+                    <div class="progress-step active">
+                    <div class="step-number">2</div>
+                    <div class="step-label">
+                        Pagsusuri
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Review
+                        </span>
+                    </div>
+                    </div>
+                    <div class="progress-step">
+                    <div class="step-number">3</div>
+                    <div class="step-label">
+                        Mga Detalye ng Paghahatid
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Delivery Details
+                        </span>
+                    </div>
+                    </div>
+                    <div class="progress-step">
+                    <div class="step-number">4</div>
+                    <div class="step-label">
+                        Bayad
+                        <br>
+                        <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                        Payment
+                        </span>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Review Section -->
+                <div class="request-details" id="review-section" style="margin-top: 1.5rem;">
+                    <h3 style="margin-bottom: 1rem; color: #495057;">
+                    Mga Detalye ng Kahilingan
+                    <br>
+                    <small style="font-style: italic; color: #6c757d;">Request Details</small>
+                    </h3>
+
+                    <!-- Request Details Fields -->
+                    <div class="detail-row"><div class="detail-label">URI NG SERTIPIKO:</div> <div class="detail-value" id="review-certificateType"></div></div>
+                    <div class="detail-row"><div class="detail-label">RELASYON SA HUMIHILING:</div> <div class="detail-value" id="review-relationship"></div></div>
+                    <div class="detail-row"><div class="detail-label">BUONG PANGALAN:</div> <div class="detail-value" id="review-fullName"></div></div>
+                    <div class="detail-row"><div class="detail-label">KASARIAN:</div> <div class="detail-value" id="review-sex"></div></div>
+                    <div class="detail-row"><div class="detail-label">PETSA NG KAPANGANAKAN:</div> <div class="detail-value" id="review-dateOfBirth"></div></div>
+                    <div class="detail-row"><div class="detail-label">PETSA NG SAKRAMENTO:</div> <div class="detail-value" id="review-sacramentDate"></div></div>
+                    <div class="detail-row"><div class="detail-label">LUGAR NG KAPANGANAKAN:</div> <div class="detail-value" id="review-birthPlace"></div></div>
+                    <div class="detail-row"><div class="detail-label">AMA:</div> <div class="detail-value" id="review-fatherName"></div></div>
+                    <div class="detail-row"><div class="detail-label">INA:</div> <div class="detail-value" id="review-motherName"></div></div>
+                    <div class="detail-row"><div class="detail-label">LAYUNIN:</div> <div class="detail-value" id="review-purpose"></div></div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="form-actions">
+                    <button class="btn cancel-btn" id="back-to-form-btn">BUMALIK (EDIT)</button>
+                    <button class="btn next-btn" id="proceed-to-delivery-btn">MAGPATULOY</button>
+                </div>
+            </section>
+            
+
+            <!-- Final Summary Section -->
+            <section class="form-section" id="final-summary-section" style="display: none;">
                 <div class="form-progress">
                     <div class="progress-step completed">
                         <div class="step-number">1</div>
@@ -540,18 +640,8 @@
                             </span>
                         </div>
                     </div>
-                    <div class="progress-step active">
+                    <div class="progress-step completed">
                         <div class="step-number">2</div>
-                        <div class="step-label">
-                            Mga Detalye ng Paghahatid
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Delivery Details
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-number">3</div>
                         <div class="step-label">
                             Buod
                             <br>
@@ -560,8 +650,8 @@
                             </span>
                         </div>
                     </div>
-                    <div class="progress-step">
-                        <div class="step-number">4</div>
+                    <div class="progress-step completed">
+                        <div class="step-number">3</div>
                         <div class="step-label">
                             Pagkilala
                             <br>
@@ -570,8 +660,8 @@
                             </span>
                         </div>
                     </div>
-                    <div class="progress-step">
-                        <div class="step-number">5</div>
+                    <div class="progress-step active">
+                        <div class="step-number">4</div>
                         <div class="step-label">
                             Bayad
                             <br>
@@ -582,54 +672,22 @@
                     </div>
                 </div>
 
-                <div class="requests-review-section">
-                    <div class="requests-counter">
-                        <div class="counter-info">
-                            <i class="fas fa-check-circle" style="color: var(--success-color);"></i>
-                            <span>Mga Nailagay na Kahilingan:</span>
-                            <div class="counter-badge" id="review-requests-count">0</div>
-                        </div>
-                        <button class="add-another-request" id="add-more-requests-btn">
-                            <i class="fas fa-plus"></i> Magdagdag pa ng Kahilingan
-                        </button>
+                <div class="form-container">
+                    <h2>
+                        Buod ng Kahilingan
+                        <br>
+                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
+                            Summary of Requests
+                        </span>
+                    </h2>
+                    
+                    <div id="final-summary-content">
+                        <!-- Dynamic content will be inserted here -->
                     </div>
-
-                    <div class="form-container">
-                        <h2>
-                            Mga Nailagay na Kahilingan para sa Sertipiko
-                            <br>
-                            <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                                Submitted Certificate Requests
-                            </span>
-                        </h2>
-
-                        <div class="flash-message" id="flash-message" style="display: none;">
-                            <i class="fas fa-info-circle"></i>
-                            <span id="flash-text">Matagumpay na naidagdag ang kahilingan!</span>
-                        </div>
-
-                        <div class="requests-table-container">
-                            <table class="requests-table" id="requests-review-table">
-                                <thead>
-                                    <tr>
-                                        <th>#</th>
-                                        <th>Uri ng Sertipiko</th>
-                                        <th>Pangalan ng May-ari</th>
-                                        <th>Petsa ng Pangyayari</th>
-                                        <th>Layunin</th>
-                                        <th>Mga Aksyon</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="requests-review-tbody">
-                                    <!-- Dynamic content will be inserted here -->
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <div class="form-actions">
-                            <button class="btn back-btn" id="back-to-form-btn">BUMALIK SA FORM</button>
-                            <button class="btn next-btn" id="proceed-to-delivery-btn">MAGPATULOY SA PAGHAHATID</button>
-                        </div>
+                    
+                    <div class="form-actions">
+                        <button class="btn back-btn" id="back-to-delivery-final-btn">BUMALIK</button>
+                        <button class="btn confirm-btn" id="confirm-all-requests-btn">KUMPIRMAHIN LAHAT NG KAHILINGAN</button>
                     </div>
                 </div>
             </section>
@@ -647,8 +705,18 @@
                             </span>
                         </div>
                     </div>
-                    <div class="progress-step active">
+                    <div class="progress-step completed">
                         <div class="step-number">2</div>
+                        <div class="step-label">
+                            Pagsusuri
+                            <br>
+                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
+                                Review
+                            </span>
+                        </div>
+                    </div>
+                    <div class="progress-step active">
+                        <div class="step-number">3</div>
                         <div class="step-label">
                             Mga Detalye ng Paghahatid
                             <br>
@@ -658,27 +726,7 @@
                         </div>
                     </div>
                     <div class="progress-step">
-                        <div class="step-number">3</div>
-                        <div class="step-label">
-                            Buod
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Summary
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
                         <div class="step-number">4</div>
-                        <div class="step-label">
-                            Pagkilala
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Acknowledgement
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-number">5</div>
                         <div class="step-label">
                             Bayad
                             <br>
@@ -896,83 +944,8 @@
                         
                         <div class="form-actions">
                             <button class="btn back-btn" id="back-to-review-btn">BUMALIK</button>
-                            <button class="btn next-btn" id="proceed-to-summary-btn">MAGPATULOY SA BUOD</button>
+                            <button class="btn next-btn" id="proceed-to-summary-btn">MAGPATULOY SA BAYAD</button>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Final Summary Section -->
-            <section class="form-section" id="final-summary-section" style="display: none;">
-                <div class="form-progress">
-                    <div class="progress-step completed">
-                        <div class="step-number">1</div>
-                        <div class="step-label">
-                            Mga Detalye ng Kahilingan
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Request Details
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step completed">
-                        <div class="step-number">2</div>
-                        <div class="step-label">
-                            Mga Detalye ng Paghahatid
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Delivery Details
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step active">
-                        <div class="step-number">3</div>
-                        <div class="step-label">
-                            Buod
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Summary
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-number">4</div>
-                        <div class="step-label">
-                            Pagkilala
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Acknowledgement
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step">
-                        <div class="step-number">5</div>
-                        <div class="step-label">
-                            Bayad
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Payment
-                            </span>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="form-container">
-                    <h2>
-                        Buod ng Lahat ng Kahilingan
-                        <br>
-                        <span style="font-style: italic; font-size: 0.95em; color: #555;">
-                            Summary of All Requests
-                        </span>
-                    </h2>
-                    
-                    <div id="final-summary-content">
-                        <!-- Dynamic content will be inserted here -->
-                    </div>
-                    
-                    <div class="form-actions">
-                        <button class="btn back-btn" id="back-to-delivery-final-btn">BUMALIK</button>
-                        <button class="btn confirm-btn" id="confirm-all-requests-btn">KUMPIRMAHIN LAHAT NG KAHILINGAN</button>
                     </div>
                 </div>
             </section>
@@ -1036,8 +1009,8 @@
             </div>
         </div>
 
-        <script src="dashboard-user.js"></script>
-        <script src="request-certificate-form-validation-user.js"></script>
-        <script src="request-certificate-form-handler-user.js"></script>
+        <script src="/assets/js file/dashboard-user.js"></script>
+        <script src="/assets/js file/request-certificate-form-validation-user.js"></script>
+        <script src="/assets/js file/request-certificate-form-handler-user.js"></script>
     </body>
 </html>

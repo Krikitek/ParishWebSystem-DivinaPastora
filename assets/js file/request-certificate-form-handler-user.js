@@ -21,8 +21,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // Navigation buttons
     buttons: {
       saveAndContinue: document.getElementById("save-and-continue-btn"),
-      addAnother: document.getElementById("add-another-btn"),
-      addMoreRequests: document.getElementById("add-more-requests-btn"),
       backToForm: document.getElementById("back-to-form-btn"),
       proceedToDelivery: document.getElementById("proceed-to-delivery-btn"),
       backToReview: document.getElementById("back-to-review-btn"),
@@ -55,6 +53,8 @@ document.addEventListener("DOMContentLoaded", () => {
     },
   }
 
+  
+
   // Initialize the form
   init()
 
@@ -78,7 +78,6 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   }
-
   
 
 // Function to auto-fill fields if relationship is "SARILI"
@@ -167,15 +166,12 @@ async function handleRelationshipChange() {
 }
 
 
-
 // Listen for dropdown changes
 relationship.addEventListener("change", handleRelationshipChange);
 
   function setupEventListeners() {
     // Navigation buttons
     FormState.buttons.saveAndContinue?.addEventListener("click", saveCurrentRequestAndContinue)
-    FormState.buttons.addAnother?.addEventListener("click", addAnotherRequest)
-    FormState.buttons.addMoreRequests?.addEventListener("click", addMoreRequests)
     FormState.buttons.backToForm?.addEventListener("click", () => showSection(FormState.sections.requestForm))
     FormState.buttons.proceedToDelivery?.addEventListener("click", proceedToDelivery)
     FormState.buttons.backToReview?.addEventListener("click", () => showSection(FormState.sections.requestsReview))
@@ -402,118 +398,99 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
     }
   }
 
+  const pickupContactField = document.getElementById("unifiedPickupContactNumber");
+if (pickupContactField && userData.phoneNumber) {
+  let formattedNumber = userData.phoneNumber;
+    formattedNumber = "0" + formattedNumber.slice(3);
+    
+  pickupContactField.value = formattedNumber;
+}
+
   function collectCurrentRequestData() {
-    const purposeValue =
-      FormState.fields.purpose?.value === "OTHERS"
-        ? document.getElementById("otherPurpose")?.value
-        : FormState.fields.purpose?.value
 
-    // Collect father's name
-    const fatherName = [
-      FormState.fields.fatherLastName?.value,
-      FormState.fields.fatherFirstName?.value,
-      FormState.fields.fatherMiddleName?.value,
-    ]
-      .filter((name) => name && name.trim())
-      .join(", ")
+const birthProvinceSelect = FormState.fields.birthProvince;
+const birthCitySelect = FormState.fields.birthCity;
+const birthDistrictSelect = FormState.fields.birthDistrict;
 
-    // Collect mother's name
-    const motherName = [
-      FormState.fields.motherLastName?.value,
-      FormState.fields.motherFirstName?.value,
-      FormState.fields.motherMiddleName?.value,
-    ]
-      .filter((name) => name && name.trim())
-      .join(", ")
+const birthProvince =  birthProvinceSelect?.options[birthProvinceSelect.selectedIndex]?.text || "";
+const birthCity =  birthCitySelect?.options[birthCitySelect.selectedIndex]?.text || "";
+const birthDistrict =  birthDistrictSelect?.options[birthDistrictSelect.selectedIndex]?.text || "";
+  const purposeValue =
+    FormState.fields.purpose?.value === "OTHERS"
+      ? document.getElementById("otherPurpose")?.value?.trim() || ""
+      : FormState.fields.purpose?.value?.trim() || "";
 
-    return {
-      id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
-      certificateType: FormState.fields.certificateType?.value || "",
-      lastName: FormState.fields.lastName?.value || "",
-      firstName: FormState.fields.firstName?.value || "",
-      middleName: FormState.fields.middleName?.value || "",
-      dateOfBirth: FormState.fields.dateOfBirth?.value || "",
-      sacramentDate: FormState.fields.sacramentDate?.value || "",
-      birthProvince: FormState.fields.birthProvince?.value || "",
-      birthCity: FormState.fields.birthCity?.value || "",
-      birthDistrict: FormState.fields.birthDistrict?.value || "",
-      sex: document.querySelector('input[name="sex"]:checked')?.value || "Male",
-      fatherName: fatherName || "",
-      motherName: motherName || "",
-      relationship: FormState.fields.relationship?.value || "",
-      purpose: purposeValue || "",
-      createdAt: new Date().toISOString(),
-    }
+  // Format father's name
+  const fatherName = [
+  FormState.fields.fatherFirstName?.value,
+  FormState.fields.fatherMiddleName?.value,
+  FormState.fields.fatherLastName?.value,
+]
+  .filter(Boolean)
+  .join(" ");
+
+const motherName = [
+  FormState.fields.motherFirstName?.value,
+  FormState.fields.motherMiddleName?.value,
+  FormState.fields.motherLastName?.value,
+]
+  .filter(Boolean)
+  .join(" ");
+
+  return {
+    id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    certificateType: FormState.fields.certificateType?.value?.trim() || "",
+    lastName: FormState.fields.lastName?.value?.trim() || "",
+    firstName: FormState.fields.firstName?.value?.trim() || "",
+    middleName: FormState.fields.middleName?.value?.trim() || "",
+    dateOfBirth: FormState.fields.dateOfBirth?.value || "",
+    sacramentDate: FormState.fields.sacramentDate?.value || "",
+    birthProvince,
+    birthCity,
+    birthDistrict,
+    sex: document.querySelector('input[name="sex"]:checked')?.value || "",
+    fatherName,
+    motherName,
+    relationship: FormState.fields.relationship?.value?.trim() || "",
+    purpose: purposeValue,
+    createdAt: new Date().toISOString(),
+  };
+}
+
+function saveCurrentRequestAndContinue() {
+  if (!window.validateRequestForm()) {
+    alert("Mangyaring punan ang lahat ng kinakailangang field nang tama.");
+    return;
   }
 
-  function saveCurrentRequestAndContinue() {
-    if (!window.validateRequestForm()) {
-      alert("Mangyaring punan ang lahat ng kinakailangang field nang tama.")
-      return
-    }
+  const requestData = collectCurrentRequestData();
 
-    const requestData = collectCurrentRequestData()
+  // Save the current request for preview population
+  localStorage.setItem("requestData", JSON.stringify(requestData));
 
-    // If editing existing request
-    if (FormState.currentRequestIndex < FormState.allRequests.length) {
-      FormState.allRequests[FormState.currentRequestIndex] = requestData
-    } else {
-      FormState.allRequests.push(requestData)
-    }
-
-    saveAllRequests()
-    updateRequestsReviewTable()
-    showFlashMessage("Matagumpay na nai-save ang kahilingan!")
-    FormState.currentStep = 2
-    showSection(FormState.sections.requestsReview)
+  // Update all requests in FormState
+  if (FormState.currentRequestIndex < FormState.allRequests.length) {
+    FormState.allRequests[FormState.currentRequestIndex] = requestData;
+  } else {
+    FormState.allRequests.push(requestData);
   }
 
-  function addAnotherRequest() {
-    if (!window.validateRequestForm()) {
-      alert("Mangyaring punan muna ang kasalukuyang form bago magdagdag ng bago.")
-      return
-    }
+  // Persist all requests for future sessions
+  localStorage.setItem("allRequests", JSON.stringify(FormState.allRequests));
 
-    const requestData = collectCurrentRequestData()
+  saveAllRequests();
+  updateRequestsReviewTable();
 
-    // If editing existing request
-    if (FormState.currentRequestIndex < FormState.allRequests.length) {
-      FormState.allRequests[FormState.currentRequestIndex] = requestData
-    } else {
-      FormState.allRequests.push(requestData)
-    }
+  // Show success notification
+  showNotification("Matagumpay na nai-save ang kahilingan!");
 
-    saveAllRequests()
-    clearForm()
-    FormState.currentRequestIndex = FormState.allRequests.length
-    updateRequestsCounter()
-    showFlashMessage("Naidagdag na ang kahilingan! Maaari na kayong magdagdag pa.")
-  }
+  // Move to the next step after a short delay for smoother UX
+  setTimeout(() => {
+    FormState.currentStep = 2;
+    showSection(FormState.sections.requestsReview);
+  }, 800);
+}
 
-  function hasFormData() {
-    return (
-      FormState.fields.certificateType?.value ||
-      FormState.fields.lastName?.value ||
-      FormState.fields.firstName?.value ||
-      FormState.fields.mobileNumber?.value ||
-      FormState.fields.emailAddress?.value
-    )
-  }
-
-  function showFlashMessage(message) {
-    const flashElement = document.getElementById("flash-message")
-    const flashText = document.getElementById("flash-text")
-
-    if (flashElement && flashText) {
-      flashText.textContent = message
-      flashElement.style.display = "flex"
-
-      // Auto-hide after 4 seconds
-      setTimeout(() => {
-        flashElement.style.display = "none"
-      }, 4000)
-    }
-  }
 
   function clearForm() {
     // Reset all form fields
@@ -524,7 +501,7 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
     })
 
     // Reset radio buttons
-    const maleRadio = document.querySelector('input[name="sex"][value="Male"]')
+    const maleRadio = document.querySelector('input[name="sex"][value="LALAKI"]')
     if (maleRadio) maleRadio.checked = true
 
     // Hide other purpose row
@@ -552,52 +529,38 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
     // Review counter always shows actual number of saved requests
     if (reviewCounter) reviewCounter.textContent = totalRequests;
 
-    // Show or hide "Add Another" button
-    if (addAnother) {
-        addAnother.style.display = totalRequests > 0 ? "flex" : "none";
-    }
 }
 
 
   function updateRequestsReviewTable() {
-    const tbody = document.getElementById("requests-review-tbody")
-    if (!tbody) return
+    const savedData = JSON.parse(localStorage.getItem("requestData")) || {};
 
-    tbody.innerHTML = ""
 
-    FormState.allRequests.forEach((request, index) => {
-      const row = document.createElement("tr")
+    const formatName = (first, middle, last) => {
+    return [first, middle, last].filter(Boolean).join(" ");
+  };
 
-      // Add highlight class to newly added requests
-      if (index === FormState.allRequests.length - 1) {
-        row.classList.add("highlight-row")
-        setTimeout(() => {
-          row.classList.remove("highlight-row")
-        }, 3000)
-      }
+  // Helper function to format birthplace cleanly
+  const formatBirthPlace = (city, district, province) => {
+    return [city, district, province].filter(Boolean).join(", ") || "N/A";
+  };
 
-      row.innerHTML = `
-        <td>${index + 1}</td>
-        <td>${request.certificateType === "KUMPIL" ? "KUMPIL" : "BINYAG"}</td>
-        <td>${formatName(request.lastName, request.firstName, request.middleName)}</td>
-        <td>${request.sacramentDate ? formatDate(request.sacramentDate) : "Hindi nabanggit"}</td>
-        <td>${request.purpose}</td>
-        <td class="action-buttons">
-          <button class="action-btn edit-btn" onclick="editRequest(${index})">
-            <i class="fas fa-edit"></i> I-edit
-          </button>
-          <button class="action-btn delete-btn" onclick="deleteRequest(${index})">
-            <i class="fas fa-trash"></i> Burahin
-          </button>
-          <button class="action-btn view-btn" onclick="viewRequest(${index})">
-            <i class="fas fa-eye"></i> Tingnan
-          </button>
-        </td>
-      `
-      tbody.appendChild(row)
-    })
+    document.getElementById("review-certificateType").textContent = savedData.certificateType || "N/A";
+  document.getElementById("review-fullName").textContent = formatName(savedData.firstName, savedData.middleName, savedData.lastName);
+  document.getElementById("review-dateOfBirth").textContent = savedData.dateOfBirth || "N/A";
+  document.getElementById("review-sacramentDate").textContent = savedData.sacramentDate || "N/A";
+  document.getElementById("review-sex").textContent = savedData.sex || "N/A";
+  document.getElementById("review-birthPlace").textContent = formatBirthPlace(savedData.birthDistrict, savedData.birthCity, savedData.birthProvince);
+  document.getElementById("review-fatherName").textContent = savedData.fatherName;
+  document.getElementById("review-motherName").textContent = savedData.motherName;
+  document.getElementById("review-relationship").textContent = savedData.relationship || "N/A";
 
-    updateRequestsCounter()
+  // Handle purpose & other purpose properly
+  const purposeText =
+    savedData.purpose === "Other" && savedData.otherPurpose
+      ? `${savedData.purpose} - ${savedData.otherPurpose}`
+      : savedData.purpose || "N/A";
+  document.getElementById("review-purpose").textContent = purposeText;
   }
 
   function proceedToDelivery() {
@@ -657,6 +620,110 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
     showSection(FormState.sections.finalSummary)
   }
 
+  function showNotification(message, type = "info") {
+    // Remove existing notifications
+    const existingNotifications = document.querySelectorAll(".notification")
+    existingNotifications.forEach((notification) => notification.remove())
+
+    const notification = document.createElement("div")
+    notification.className = `notification notification-${type}`
+
+    const colors = {
+      info: "#2196F3",
+      success: "#4CAF50",
+      warning: "#FF9800",
+      error: "#f44336",
+    }
+
+    const icons = {
+      info: "info-circle",
+      success: "check-circle",
+      warning: "exclamation-triangle",
+      error: "times-circle",
+    }
+
+    notification.innerHTML = `
+      <div class="notification-content">
+        <i class="fas fa-${icons[type]}"></i>
+        <span>${message}</span>
+        <button class="notification-close">&times;</button>
+      </div>
+    `
+
+    // Add styles
+    notification.style.cssText = `
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: ${colors[type]};
+      color: white;
+      padding: 15px 20px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      z-index: 10000;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+      max-width: 350px;
+      font-family: inherit;
+    `
+
+    const content = notification.querySelector(".notification-content")
+    if (content) {
+      content.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 12px;
+      `
+    }
+
+    const closeBtn = notification.querySelector(".notification-close")
+    if (closeBtn) {
+      closeBtn.style.cssText = `
+        background: none;
+        border: none;
+        color: white;
+        font-size: 18px;
+        cursor: pointer;
+        margin-left: auto;
+        padding: 0;
+        width: 20px;
+        height: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      `
+    }
+
+    document.body.appendChild(notification)
+
+    // Animate in
+    setTimeout(() => {
+      notification.style.transform = "translateX(0)"
+    }, 100)
+
+    // Auto remove after 5 seconds
+    const autoRemove = setTimeout(() => {
+      removeNotification(notification)
+    }, 5000)
+
+    // Close button functionality
+    if (closeBtn) {
+      closeBtn.addEventListener("click", () => {
+        clearTimeout(autoRemove)
+        removeNotification(notification)
+      })
+    }
+
+    function removeNotification(notif) {
+      notif.style.transform = "translateX(100%)"
+      setTimeout(() => {
+        if (notif.parentNode) {
+          notif.parentNode.removeChild(notif)
+        }
+      }, 300)
+    }
+  }
+
   function generateFinalSummary() {
     const summaryContent = document.getElementById("final-summary-content")
     if (!summaryContent) return
@@ -670,15 +737,14 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
       <div class="summary-section">
         <div class="section-header">
           <div>
-            <h3 class="section-title">Mga Kahilingan para sa Sertipiko</h3>
-            <div class="section-subtitle">Certificate Requests (${FormState.allRequests.length})</div>
+            <h3 class="section-title">Kahilingan para sa Sertipiko</h3>
+            <div class="section-subtitle">Certificate Requests</div>
           </div>
         </div>
         <div class="section-content">
           <table class="requests-table">
             <thead>
               <tr>
-                <th>#</th>
                 <th>Uri ng Sertipiko</th>
                 <th>Pangalan ng May-ari</th>
                 <th>Petsa ng Pangyayari</th>
@@ -695,7 +761,6 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
 
       requestsHtml += `
         <tr>
-          <td>${index + 1}</td>
           <td>${request.certificateType === "KUMPIL" ? "KUMPIL" : "BINYAG"}</td>
           <td>${formatName(request.lastName, request.firstName, request.middleName)}</td>
           <td>${request.sacramentDate ? formatDate(request.sacramentDate) : "Hindi nabanggit"}</td>
@@ -740,6 +805,18 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
                 <p>${FormState.unifiedDeliveryDetails.addressLine1}</p>
                 <p>Zip Code: ${FormState.unifiedDeliveryDetails.zipCode}</p>
               </div>
+              <div class="form-group">
+                <label><strong></strong></label>
+                <p></p>
+              </div>
+              <div class="form-group">
+                <label><strong>Mobile Number:</strong></label>
+                <p>${FormState.unifiedDeliveryDetails.contactNumber ?? userData.phoneNumber}</p>
+              </div>
+              <div class="form-group">
+                <label><strong>Email:</strong></label>
+                <p>${userData.email}</p>
+              </div>
             </div>
           `
               : `
@@ -749,8 +826,16 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
                 <p>${formatDate(FormState.unifiedDeliveryDetails.pickupDate)}</p>
               </div>
               <div class="form-group">
-                <label><strong>Contact Number:</strong></label>
+                <label><strong></strong></label>
+                <p></p>
+              </div>
+              <div class="form-group">
+                <label><strong>Mobile Number:</strong></label>
                 <p>${FormState.unifiedDeliveryDetails.contactNumber}</p>
+              </div>
+              <div class="form-group">
+                <label><strong>Email:</strong></label>
+                <p>${userData.email}</p>
               </div>
             </div>
           `
@@ -833,7 +918,7 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
 
     // Redirect to acknowledgement page
     alert("Matagumpay na naipadala ang inyong mga kahilingan!")
-    window.location.href = "acknowledgement-request-certificate-user.html"
+    window.location.href = "../../acknowledgement-request-certificate-user.html"
   }
 
   function calculateTotalAmount() {
@@ -845,7 +930,7 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
   function cancelAllRequests() {
     if (confirm("Sigurado ba kayong gusto ninyong kanselahin ang lahat ng kahilingan?")) {
       localStorage.removeItem("allCertificateRequests")
-      window.location.href = "dashboard-user.html"
+      window.location.href = "../../dashboard-user.html"
     }
   }
 
@@ -930,44 +1015,30 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
     FormState.currentRequestIndex = index
     FormState.currentStep = 1
     showSection(FormState.sections.requestForm)
-    showFlashMessage("Nai-load na ang kahilingan para sa pag-edit.")
+    showNotification("Nai-load na ang kahilingan para sa pag-edit.")
   }
 
-  window.deleteRequest = (index) => {
+  window.deleteRequest = async (index) => {
     if (confirm("Sigurado ba kayong gusto ninyong burahin ang kahilingang ito?")) {
-      FormState.allRequests.splice(index, 1)
-      saveAllRequests()
-      updateRequestsReviewTable()
-      showFlashMessage("Matagumpay na nabura ang kahilingan.")
-
-      if (FormState.allRequests.length === 0) {
-        FormState.currentStep = 1
-        showSection(FormState.sections.requestForm)
-      }
+      FormState.allRequests.splice(index, 1)    
+      showNotification("Matagumpay na nabura ang kahilingan.")
+      await sleep(1000);      
+      showSection(FormState.sections.requestForm);
+      refresh();            
     }
   }
 
-  window.viewRequest = (index) => {
-    const request = FormState.allRequests[index]
-    if (!request) return
+  function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+} 
 
-    const details = `
-Uri ng Sertipiko: ${request.certificateType === "KUMPIL" ? "KUMPIL" : "BINYAG"}
-Pangalan: ${formatName(request.lastName, request.firstName, request.middleName)}
-Petsa ng Kapanganakan: ${formatDate(request.dateOfBirth)}
-${request.sacramentDate ? `Petsa ng ${request.certificateType === "KUMPIL" ? "Kumpil" : "Binyag"}: ${formatDate(request.sacramentDate)}` : ""}
-Lugar ng Kapanganakan: ${request.birthCity}, ${request.birthProvince}, ${request.birthDistrict}
-Kasarian: ${request.sex === "Male" ? "Lalaki" : "Babae"}
-Pangalan ng Ama: ${request.fatherName || "Hindi nabanggit"}
-Pangalan ng Ina: ${request.motherName || "Hindi nabanggit"}
-Relasyon: ${request.relationship}
-Layunin: ${request.purpose}
-Mobile: ${request.mobileNumber}
-Email: ${request.emailAddress}
-    `
+  function refresh() {
 
-    alert(details)
-  }
+  setTimeout(() => {
+    window.location.reload(true); // Refresh after animation ends
+  }, 100); 
+}
+
 
   // Utility functions
   function formatName(lastName, firstName, middleName) {

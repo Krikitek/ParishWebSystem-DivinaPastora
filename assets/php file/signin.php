@@ -64,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'birthProvince'  => $user['birthProvince'],
             'birthCity'  => $user['birthCity'],
             'birthBarangay'  => $user['birthBarangay'],
+            'email'  => $user['email'],
+            'phoneNumber'  => $user['phoneNumber'],
             'message' => 'Login successful'
         ]);
 

@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
         checkData.append('phoneNumber', `+63${phoneNumber}`)
       }
 
-      const checkResponse = await fetch('checkExistingUser.php', {
+      const checkResponse = await fetch('../php file/checkExistingUser.php', {
         method: 'POST',
         body: checkData
       })
@@ -410,7 +410,7 @@ function populateDropdown(dropdown, items, placeholder) {
       formData.append('contact', phoneNumber)
       formData.append('purpose', 'account_creation')
 
-      const response = await fetch('sendOTP.php', {
+      const response = await fetch('../php file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -459,7 +459,7 @@ function populateDropdown(dropdown, items, placeholder) {
       formData.append('contact', email)
       formData.append('purpose', 'account_creation')
 
-      const response = await fetch('sendOTP.php', {
+      const response = await fetch('../php file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -659,7 +659,7 @@ function populateDropdown(dropdown, items, placeholder) {
         formData.append('otp', otp)
         formData.append('method', currentOTPMethod)
 
-        const response = await fetch('verifyOTP.php', {
+        const response = await fetch('../php file/verifyOTP.php', {
           method: 'POST',
           body: formData
         })
@@ -691,7 +691,7 @@ function populateDropdown(dropdown, items, placeholder) {
         formData.append(key, pendingAccountData[key])
       })
 
-      const response = await fetch('createAccount.php', {
+      const response = await fetch('../php file/createAccount.php', {
         method: 'POST',
         body: formData
       })
@@ -794,7 +794,7 @@ function populateDropdown(dropdown, items, placeholder) {
         formData.append('contact', contact);
         formData.append('password', password);
 
-        const response = await fetch('signin.php', {
+        const response = await fetch('../php file/signin.php', {
             method: 'POST',
             body: formData
         });
@@ -812,12 +812,14 @@ function populateDropdown(dropdown, items, placeholder) {
             sessionStorage.setItem("chronos_province", result.user.birthProvince);
             sessionStorage.setItem("chronos_city", result.user.birthCity);
             sessionStorage.setItem("chronos_barangay", result.user.birthBarangay);
+            sessionStorage.setItem("chronos_email", result.user.email);
+            sessionStorage.setItem("chronos_number", result.user.phoneNumber);
 
             // ✅ Redirect based on role
             if (result.user.role === 'admin') {
-                window.location.href = "dashboard-admin.html";
+                window.location.href = "../../dashboard-admin.html";
             } else {
-                window.location.href = "dashboard-user.html";
+                window.location.href = "../../dashboard-user.html";
             }
         } else {
             // ✅ Show proper error message
@@ -968,7 +970,7 @@ filBtn.addEventListener("click", () => {
       checkFormData.append('method', verificationMethod)
       checkFormData.append('contact', contactInfo)
 
-      const checkResponse = await fetch('forgotPassword.php', {
+      const checkResponse = await fetch('../php file/forgotPassword.php', {
         method: 'POST',
         body: checkFormData
       })
@@ -1005,7 +1007,7 @@ filBtn.addEventListener("click", () => {
       formData.append('contact', email)
       formData.append('purpose', 'password-reset')
 
-      const response = await fetch('sendOTP.php', {
+      const response = await fetch('../php file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -1059,7 +1061,7 @@ filBtn.addEventListener("click", () => {
       formData.append('contact', phoneNumber)
       formData.append('purpose', 'password_reset')
 
-      const response = await fetch('sendOTP.php', {
+      const response = await fetch('../php file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -1177,7 +1179,7 @@ filBtn.addEventListener("click", () => {
           verifyFormData.append('otp', inputCode)
           verifyFormData.append('method', verificationMethod)
 
-          const verifyResponse = await fetch('verifyOTP.php', {
+          const verifyResponse = await fetch('../php file/verifyOTP.php', {
             method: 'POST',
             body: verifyFormData
           })
@@ -1198,7 +1200,7 @@ filBtn.addEventListener("click", () => {
         formData.append('contact', contactInfo.trim())
         formData.append('newPassword', newPassword)
 
-        const response = await fetch('resetPassword.php', {
+        const response = await fetch('../php file/resetPassword.php', {
           method: 'POST',
           body: formData
         })

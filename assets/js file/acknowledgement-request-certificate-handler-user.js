@@ -3,14 +3,22 @@ document.addEventListener("DOMContentLoaded", () => {
   const submittedData = JSON.parse(localStorage.getItem("submittedCertificateRequests") || "{}")
 
   // Generate reference number if not exists
-  let referenceNumber = submittedData.referenceNumber
-  if (!referenceNumber) {
-    const now = new Date()
-    const dateStr = now.toISOString().split("T")[0].replace(/-/g, "")
-    const timeStr = now.getTime().toString().slice(-4)
-    const certType = submittedData.requests?.[0]?.certificateType === "KUMPIL" ? "CONF" : "BAPT"
-    referenceNumber = `${certType}-${dateStr}-${timeStr}`
-  }
+  let referenceNumber = submittedData.referenceNumber;
+
+if (!referenceNumber) {
+  // Generate a 7-digit random number
+  const random7Digits = Math.floor(1000000 + Math.random() * 9000000); 
+
+  // Get the last 4 digits of the current timestamp
+  const timeStr = new Date().getTime().toString().slice(-4);
+
+  // Certificate type abbreviation
+  const certType = submittedData.requests?.[0]?.certificateType === "KUMPIL" ? "CONF" : "BAPT";
+
+  // Final reference number format
+  referenceNumber = `${certType}-${random7Digits}-${timeStr}`;
+}
+
 
   // Store request in admin system
   storeRequestInAdminSystem(submittedData, referenceNumber)
@@ -117,8 +125,6 @@ function updateStatusDisplay(status, rejectionReason = "") {
   const statusMessage = document.getElementById("status-message")
   const statusMessageEnglish = document.getElementById("status-message-english")
   const currentStatusElement = document.getElementById("current-status")
-  const step4Progress = document.getElementById("step-4-progress")
-  const step5Progress = document.getElementById("step-5-progress")
   const printBtn = document.getElementById("print-acknowledgement-btn")
   const paymentBtn = document.getElementById("proceed-payment-btn")
 
@@ -134,11 +140,6 @@ function updateStatusDisplay(status, rejectionReason = "") {
       statusMessageEnglish.textContent = "Your request has been received and is waiting for admin approval."
       currentStatusElement.textContent = "PENDING"
 
-      // Progress steps
-      step4Progress.classList.add("active")
-      step4Progress.classList.remove("completed")
-      step5Progress.classList.remove("active", "completed")
-
       // Hide action buttons
       printBtn.style.display = "none"
       paymentBtn.style.display = "none"
@@ -149,15 +150,10 @@ function updateStatusDisplay(status, rejectionReason = "") {
       statusIcon.innerHTML = '<i class="fas fa-check-circle"></i>'
       statusTitle.textContent = "Aprubado ang Kahilingan"
       statusMessage.textContent =
-        "Ang inyong kahilingan ay aprubado na! Maaari na ninyong i-print ang acknowledgement at magpatuloy sa bayad."
+        "Ang inyong kahilingan ay aprubado na! Maaari ka ng magpatuloy sa bayad upang makita online ang sertipiko."
       statusMessageEnglish.textContent =
-        "Your request has been approved! You can now print the acknowledgement and proceed to payment."
+        "Your request has been approved! You can now proceed to payment for certificate generation."
       currentStatusElement.textContent = "APPROVED"
-
-      // Progress steps
-      step4Progress.classList.add("completed")
-      step4Progress.classList.remove("active")
-      step5Progress.classList.add("active")
 
       // Show action buttons
       printBtn.style.display = "inline-flex"
@@ -175,11 +171,6 @@ function updateStatusDisplay(status, rejectionReason = "") {
         "Your request has been rejected. Please contact the admin for more information."
       currentStatusElement.textContent = "REJECTED"
 
-      // Progress steps
-      step4Progress.classList.add("active")
-      step4Progress.classList.remove("completed")
-      step5Progress.classList.remove("active", "completed")
-
       // Hide action buttons
       printBtn.style.display = "none"
       paymentBtn.style.display = "none"
@@ -193,12 +184,6 @@ function updateStatusDisplay(status, rejectionReason = "") {
       statusMessageEnglish.textContent = "Your request has been paid and the certificate is being processed."
       currentStatusElement.textContent = "PAID"
 
-      // Progress steps
-      step4Progress.classList.add("completed")
-      step4Progress.classList.remove("active")
-      step5Progress.classList.add("completed")
-      step5Progress.classList.remove("active")
-
       // Show print button only
       printBtn.style.display = "inline-flex"
       paymentBtn.style.display = "none"
@@ -211,10 +196,6 @@ function updateStatusDisplay(status, rejectionReason = "") {
       statusMessage.textContent = "Ang inyong sertipiko ay handa na! Maaari na ninyong kunin o makakakuha ng kopya."
       statusMessageEnglish.textContent = "Your certificate is ready! You can now collect it or get a copy."
       currentStatusElement.textContent = "COMPLETED"
-
-      // Progress steps
-      step4Progress.classList.add("completed")
-      step5Progress.classList.add("completed")
 
       // Show print button only
       printBtn.style.display = "inline-flex"

@@ -4,10 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acknowledgement - Chronos</title>
-    <link rel="icon" href="yellow.png" type="image/png">
-    <link rel="stylesheet" href="styles-user.css">
-    <link rel="stylesheet" href="dashboard-user.css">
-    <link rel="stylesheet" href="request-certificate-form-user.css">
+    <link rel="icon" href="/assets/image file/yellow.png" type="image/png">
+    <link rel="stylesheet" href="/assets/style/styles-user.css">
+    <link rel="stylesheet" href="/assets/style/dashboard-user.css">
+    <link rel="stylesheet" href="/assets/style/request-certificate-form-user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .acknowledgement-container {
@@ -59,7 +59,7 @@
         }
 
         .status-title {
-            font-size: 2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             margin-bottom: 0.5rem;
         }
@@ -96,6 +96,7 @@
         }
 
         .detail-value {
+            margin: auto 0px;
             color: #212529;
         }
 
@@ -223,10 +224,10 @@
         <header class="dashboard-header">
             <div class="header-flex-wrapper">
                 <div class="logo-container">
-                    <img src="chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                    <img src="/assets/image file/chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
                 </div>
                 <nav class="user-actions" role="navigation" aria-label="User navigation">
-                    <a href="files-user.html" class="view-files-link" aria-label="View Files">
+                    <a href="../../files-user.html" class="view-files-link" aria-label="View Files">
                         <i class="fas fa-folder" aria-hidden="true"></i>
                         <span>Files</span>
                     </a>
@@ -240,67 +241,8 @@
             </div>
         </header>
 
-        <div class="details-container">
-            <a href="dashboard-user.html" class="back-link view-files-link"
-               style="display: flex; justify-content: center; align-items: center; gap: 6px; color: #333; font-weight: 500; text-decoration: none; background: none; border: none; font-size: 16px; padding: 7px 16px; border-radius: 5px; transition: color 0.18s;">
-                <i class="fas fa-arrow-left" style="font-size: 17px; color: #5271ff;"></i>
-                <span>Bumalik sa Dashboard</span>
-            </a>
-
             <!-- Progress Steps -->
-            <section class="form-section">
-                <div class="form-progress">
-                    <div class="progress-step completed">
-                        <div class="step-number">1</div>
-                        <div class="step-label">
-                            Mga Detalye ng Kahilingan
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Request Details
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step completed">
-                        <div class="step-number">2</div>
-                        <div class="step-label">
-                            Mga Detalye ng Paghahatid
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Delivery Details
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step completed">
-                        <div class="step-number">3</div>
-                        <div class="step-label">
-                            Buod
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Summary
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step active" id="step-4-progress">
-                        <div class="step-number">4</div>
-                        <div class="step-label">
-                            Pagkilala
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Acknowledgement
-                            </span>
-                        </div>
-                    </div>
-                    <div class="progress-step" id="step-5-progress">
-                        <div class="step-number">5</div>
-                        <div class="step-label">
-                            Bayad
-                            <br>
-                            <span style="font-style: italic; font-size: 0.92em; color: #888;">
-                                Payment
-                            </span>
-                        </div>
-                    </div>
-                </div>
+            <section class="form-section">                
 
                 <div class="acknowledgement-container">
                     <!-- Status Header -->
@@ -312,12 +254,28 @@
                             Nakatanggap ng Kahilingan
                         </div>
                         <div class="status-message" id="status-message">
-                            Ang inyong kahilingan ay nakatanggap na at naghihintay ng pag-apruba ng admin.
+                            Ang inyong kahilingan ay natanggap na at naghihintay ng pag-apruba ng admin.
                         </div>
                         <div class="status-message" style="font-style: italic; color: #666;">
                             <span id="status-message-english">Your request has been received and is waiting for admin approval.</span>
                         </div>
                     </div>
+
+                        <div class="payment-section">
+                        <h2 class="payment-title">
+                        Bayad para sa Divina Pastora Parish  
+                        <br>
+                        <small>(Payment for Divina Pastora Parish)</small>
+                        </h2>
+
+                        <div class="qr-container">
+                        <img id="payment-qr" src="/assets/image file/paymongo qr code.jpg" alt="Divina Pastora Payment QR" />
+                        </div>
+
+                        <p class="payment-instructions">
+                        I-scan gamit ang <strong>GCash</strong> o <strong>Maya</strong> para magbayad.
+                        </p>
+                        </div>
 
                     <!-- Auto-refresh Notice -->
                     <div class="refresh-notice" id="refresh-notice">
@@ -336,7 +294,7 @@
                         </h3>
                         
                         <div class="detail-row">
-                            <div class="detail-label">Reference Number:</div>
+                            <div class="detail-label">Reference Number:<br><small style="font-style: italic; color: #6c757d;">Use for online Payment</small></div>
                             <div class="detail-value" id="reference-number">Loading...</div>
                         </div>
                         
@@ -468,7 +426,7 @@
         </div>
     </div>
 
-    <script src="dashboard-user.js"></script>
-    <script src="acknowledgement-request-certificate-handler-user.js"></script>
+    <script src="/assets/js file/dashboard-user.js"></script>
+    <script src="/assets/js file/acknowledgement-request-certificate-handler-user.js"></script>
 </body>
 </html>

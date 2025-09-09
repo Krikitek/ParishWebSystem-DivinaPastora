@@ -205,7 +205,7 @@ document.addEventListener("DOMContentLoaded", () => {
         sessionStorage.clear();
 
         // Force reload of login page without cache
-        window.location.replace("index.html");
+        window.location.replace("../../index.html");
       } else {
         console.error("Logout failed:", result.message);
       }
@@ -512,7 +512,7 @@ document.addEventListener("DOMContentLoaded", () => {
         closeCertificateTermsModal()
         showNotification("Redirecting to certificate request form...", "info")
         setTimeout(() => {
-          window.location.href = "request-certificate-form-user.html"
+          window.location.href = "../../request-certificate-form-user.html"
         }, 1500)
       }
     })
