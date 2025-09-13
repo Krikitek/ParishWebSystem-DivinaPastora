@@ -193,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (confirmLogout) {
   confirmLogout.addEventListener("click", async () => {
     try {
-      const response = await fetch("logOut.php", {
+      const response = await fetch("/assets/php_file/logOut.php", {
         method: "POST",
       });
 
@@ -943,4 +943,6 @@ if (!sessionStorage.getItem("welcome_shown")) {
 }
 
   }, 1000)
+
 })
+

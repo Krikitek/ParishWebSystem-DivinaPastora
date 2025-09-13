@@ -1,7 +1,10 @@
 const PSGC_API = "https://psgc.gitlab.io/api";
 const CACHE_EXPIRY_HOURS = 24; // Cache expires every 24 hours
 
-document.addEventListener("DOMContentLoaded", () => {
+const loadingOverlay = document.getElementById("loading-overlay")   
+document.addEventListener("DOMContentLoaded", () => {  
+  loadingOverlay.style.display = 'flex'
+  loadingOverlay.style.display = 'none'
   // Form switching functionality
   const signinForm = document.getElementById("signin-form")
   const createAccountForm = document.getElementById("create-account-form")
@@ -154,7 +157,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dateInput = date.value;
 
 
-    const loadingOverlay = document.getElementById("loading-overlay")
+    
     loadingOverlay.style.display = 'flex'
 
     // Clear previous errors
@@ -193,7 +196,7 @@ document.addEventListener("DOMContentLoaded", () => {
         checkData.append('phoneNumber', `+63${phoneNumber}`)
       }
 
-      const checkResponse = await fetch('../php file/checkExistingUser.php', {
+      const checkResponse = await fetch('../php_file/checkExistingUser.php', {
         method: 'POST',
         body: checkData
       })
@@ -381,8 +384,7 @@ function populateDropdown(dropdown, items, placeholder) {
   let firebaseConfirmationResult = null
 
   // Send OTP Code
-  async function sendOTPCode(method, contact) {
-    const loadingOverlay = document.getElementById("loading-overlay")        
+  async function sendOTPCode(method, contact) {     
     loadingOverlay.style.display = 'flex'
     try {
       if (method === 'mobile') {
@@ -410,7 +412,7 @@ function populateDropdown(dropdown, items, placeholder) {
       formData.append('contact', phoneNumber)
       formData.append('purpose', 'account_creation')
 
-      const response = await fetch('../php file/sendOTP.php', {
+      const response = await fetch('../php_file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -459,7 +461,7 @@ function populateDropdown(dropdown, items, placeholder) {
       formData.append('contact', email)
       formData.append('purpose', 'account_creation')
 
-      const response = await fetch('../php file/sendOTP.php', {
+      const response = await fetch('../php_file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -622,7 +624,6 @@ function populateDropdown(dropdown, items, placeholder) {
     const otp = Array.from(otpInputs).map(input => input.value).join('')
     const errorElement = document.getElementById("otp-error")
 
-    const loadingOverlay = document.getElementById("loading-overlay")
     loadingOverlay.style.display = 'flex'
 
     errorElement.textContent = ""
@@ -659,7 +660,7 @@ function populateDropdown(dropdown, items, placeholder) {
         formData.append('otp', otp)
         formData.append('method', currentOTPMethod)
 
-        const response = await fetch('../php file/verifyOTP.php', {
+        const response = await fetch('../php_file/verifyOTP.php', {
           method: 'POST',
           body: formData
         })
@@ -691,7 +692,7 @@ function populateDropdown(dropdown, items, placeholder) {
         formData.append(key, pendingAccountData[key])
       })
 
-      const response = await fetch('../php file/createAccount.php', {
+      const response = await fetch('../php_file/createAccount.php', {
         method: 'POST',
         body: formData
       })
@@ -753,7 +754,6 @@ function populateDropdown(dropdown, items, placeholder) {
     let contact = document.getElementById("contact").value.trim();
     const password = document.getElementById("password").value;
     const errorElement = document.getElementById("login-error");
-    const loadingOverlay = document.getElementById("loading-overlay");
 
     // Show loading spinner
     loadingOverlay.style.display = 'flex';
@@ -794,7 +794,7 @@ function populateDropdown(dropdown, items, placeholder) {
         formData.append('contact', contact);
         formData.append('password', password);
 
-        const response = await fetch('../php file/signin.php', {
+        const response = await fetch('../php_file/signin.php', {
             method: 'POST',
             body: formData
         });
@@ -819,6 +819,7 @@ function populateDropdown(dropdown, items, placeholder) {
             if (result.user.role === 'admin') {
                 window.location.href = "../../dashboard-admin.html";
             } else {
+                loadingOverlay.style.display = 'none';
                 window.location.href = "../../dashboard-user.html";
             }
         } else {
@@ -932,7 +933,6 @@ filBtn.addEventListener("click", () => {
     const resetMobile = resetMobileInput.value.replace(/\D/g, ''); 
     const verificationMethod = document.querySelector('input[name="verification"]:checked').value
 
-    const loadingOverlay = document.getElementById("loading-overlay")
     loadingOverlay.style.display = 'flex'
 
     resetError.textContent = ""    
@@ -970,7 +970,7 @@ filBtn.addEventListener("click", () => {
       checkFormData.append('method', verificationMethod)
       checkFormData.append('contact', contactInfo)
 
-      const checkResponse = await fetch('../php file/forgotPassword.php', {
+      const checkResponse = await fetch('../php_file/forgotPassword.php', {
         method: 'POST',
         body: checkFormData
       })
@@ -1007,7 +1007,7 @@ filBtn.addEventListener("click", () => {
       formData.append('contact', email)
       formData.append('purpose', 'password-reset')
 
-      const response = await fetch('../php file/sendOTP.php', {
+      const response = await fetch('../php_file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -1061,7 +1061,7 @@ filBtn.addEventListener("click", () => {
       formData.append('contact', phoneNumber)
       formData.append('purpose', 'password_reset')
 
-      const response = await fetch('../php file/sendOTP.php', {
+      const response = await fetch('../php_file/sendOTP.php', {
         method: 'POST',
         body: formData
       })
@@ -1122,7 +1122,6 @@ filBtn.addEventListener("click", () => {
       const newPassword = document.getElementById("reset-new-password").value
       const confirmPassword = document.getElementById("reset-confirm-password").value
 
-      const loadingOverlay = document.getElementById("loading-overlay")
       loadingOverlay.style.display = 'flex'
 
       resetError.textContent = ""
@@ -1179,7 +1178,7 @@ filBtn.addEventListener("click", () => {
           verifyFormData.append('otp', inputCode)
           verifyFormData.append('method', verificationMethod)
 
-          const verifyResponse = await fetch('../php file/verifyOTP.php', {
+          const verifyResponse = await fetch('../php_file/verifyOTP.php', {
             method: 'POST',
             body: verifyFormData
           })
@@ -1200,7 +1199,7 @@ filBtn.addEventListener("click", () => {
         formData.append('contact', contactInfo.trim())
         formData.append('newPassword', newPassword)
 
-        const response = await fetch('../php file/resetPassword.php', {
+        const response = await fetch('../php_file/resetPassword.php', {
           method: 'POST',
           body: formData
         })

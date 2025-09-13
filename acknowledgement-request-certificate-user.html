@@ -4,12 +4,39 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Acknowledgement - Chronos</title>
-    <link rel="icon" href="/assets/image file/yellow.png" type="image/png">
+    <link rel="icon" href="/assets/image_file/yellow.png" type="image/png">
     <link rel="stylesheet" href="/assets/style/styles-user.css">
     <link rel="stylesheet" href="/assets/style/dashboard-user.css">
     <link rel="stylesheet" href="/assets/style/request-certificate-form-user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3a5e8c;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
         .acknowledgement-container {
             max-width: 800px;
             margin: 0 auto;
@@ -220,11 +247,14 @@
     </style>
 </head>
 <body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader"></div>
+    </div>
     <div class="dashboard-container">
         <header class="dashboard-header">
             <div class="header-flex-wrapper">
                 <div class="logo-container">
-                    <img src="/assets/image file/chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
+                    <img src="/assets/image_file/chronoslogo.png" alt="Chronos Parish Services Logo" class="logo">
                 </div>
                 <nav class="user-actions" role="navigation" aria-label="User navigation">
                     <a href="../../files-user.html" class="view-files-link" aria-label="View Files">
@@ -269,7 +299,7 @@
                         </h2>
 
                         <div class="qr-container">
-                        <img id="payment-qr" src="/assets/image file/paymongo qr code.jpg" alt="Divina Pastora Payment QR" />
+                        <img id="payment-qr" src="/assets/image_file/paymongo qr code.jpg" alt="Divina Pastora Payment QR" />
                         </div>
 
                         <p class="payment-instructions">
@@ -294,7 +324,7 @@
                         </h3>
                         
                         <div class="detail-row">
-                            <div class="detail-label">Reference Number:<br><small style="font-style: italic; color: #6c757d;">Use for online Payment</small></div>
+                            <div class="detail-label">Reference Number:</div>
                             <div class="detail-value" id="reference-number">Loading...</div>
                         </div>
                         
@@ -426,7 +456,7 @@
         </div>
     </div>
 
-    <script src="/assets/js file/dashboard-user.js"></script>
-    <script src="/assets/js file/acknowledgement-request-certificate-handler-user.js"></script>
+    <script src="/assets/js_file/dashboard-user.js"></script>
+    <script src="/assets/js_file/acknowledgement-request-certificate-handler-user.js"></script>
 </body>
 </html>

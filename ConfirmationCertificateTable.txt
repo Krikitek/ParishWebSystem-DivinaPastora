@@ -1,0 +1,26 @@
+ConfirmationCertificateTable (
+    confirmationID 
+    userID 
+    requestID 
+    relationshipToTheDocumentOwner 
+    
+    lastName 
+    firstName 
+    middleName 
+
+    dateOfConfirmation
+
+    fatherLastName
+    fatherFirstName 
+    fatherMiddleName 
+
+    motherMaidenName
+    motherFirstName 
+    motherMiddleName 
+
+
+    placeOfBirth
+    dateOfBirth
+);
+
+

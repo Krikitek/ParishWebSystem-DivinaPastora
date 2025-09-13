@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="/assets/style/request-certificate-form-user.css">
     <link rel="stylesheet" href="/assets/style/request-certificate-form-handler-user.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <base href="assets/image file/">
+    <base href="assets/image_file/">
     <style>
                 @media (max-width: 600px) {
                     .details-container .back-link {
@@ -57,9 +57,39 @@
         .detail-value {
             color: #212529;
         }
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.8);
+            display: none; /* Hidden by default */
+            justify-content: center;
+            align-items: center;
+            z-index: 2000;
+            backdrop-filter: blur(5px);
+        }
+
+        .loader {
+            border: 8px solid #f3f3f3;
+            border-top: 8px solid #3a5e8c;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
             </style>
 </head>
 <body>
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loader"></div>
+    </div>
     <div class="dashboard-container">
         <header class="dashboard-header">
             <div class="header-flex-wrapper">
@@ -452,7 +482,7 @@
                     <div class="form-row">
                         <div class="form-group">
                             <label>
-                                Apelyido (Maiden)
+                                Apelyido (Noong Dalaga)
                                 <br>
                                 <span style="font-style: italic; font-size: 0.95em; color: #555;">
                                     Last Name (Maiden)
@@ -1009,8 +1039,8 @@
             </div>
         </div>
 
-        <script src="/assets/js file/dashboard-user.js"></script>
-        <script src="/assets/js file/request-certificate-form-validation-user.js"></script>
-        <script src="/assets/js file/request-certificate-form-handler-user.js"></script>
+        <script src="/assets/js_file/dashboard-user.js"></script>
+        <script src="/assets/js_file/request-certificate-form-validation-user.js"></script>
+        <script src="/assets/js_file/request-certificate-form-handler-user.js"></script>
     </body>
 </html>

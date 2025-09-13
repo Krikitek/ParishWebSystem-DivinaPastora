@@ -3,7 +3,9 @@ const CACHE_EXPIRY_HOURS = 24; // Cache expires every 24 hours
 // // Enhanced Multi-Request Certificate Form Handler
 const userData = JSON.parse(sessionStorage.getItem("chronos_user") || "{}");
 document.addEventListener("DOMContentLoaded", () => {
+  const lastFormSection = sessionStorage.getItem("lastFormSection");  
   // State Management
+  console.log(lastFormSection);
   const FormState = {
     allRequests: [],
     currentRequestIndex: 0,
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", () => {
       sacramentDate: document.getElementById("sacramentDate"),
       birthProvince: document.getElementById("birthProvince"),
       birthCity: document.getElementById("birthCity"),
-      birthDistrict: document.getElementById("birthDistirict"),
+      birthDistrict: document.getElementById("birthDistrict"),
       fatherLastName: document.getElementById("fatherLastName"),
       fatherFirstName: document.getElementById("fatherFirstName"),
       fatherMiddleName: document.getElementById("fatherMiddleName"),
@@ -52,6 +54,16 @@ document.addEventListener("DOMContentLoaded", () => {
       otherPurpose: document.getElementById("otherPurpose"),
     },
   }
+  if (lastFormSection==2) {
+    showSection(FormState.sections.requestsReview);
+    updateRequestsReviewTable(); // Restore last section
+  } else if (lastFormSection==3) {
+    showSection(FormState.sections.unifiedDelivery);
+    toggleDeliveryOptions()// Default section
+  }else if (lastFormSection==4) {
+    showSection(FormState.sections.finalSummary);
+    generateFinalSummary(); // Default section
+  }
 
   
 
@@ -59,26 +71,18 @@ document.addEventListener("DOMContentLoaded", () => {
   init()
 
   async function init() {
-    loadExistingRequests()
+    await getServiceFee()
     setupEventListeners()
     setupUppercaseInputs()
     await setupLocationDropdowns()
     updateRequestsCounter()
-    showSection(FormState.sections.requestForm)
-  }
-
-  function loadExistingRequests() {
-    const storedRequests = localStorage.getItem("allCertificateRequests")
-    if (storedRequests) {
-      try {
-        FormState.allRequests = JSON.parse(storedRequests)
-      } catch (error) {
-        console.error("Error loading requests:", error)
-        FormState.allRequests = []
-      }
+    loadRequestData()
+    if (lastFormSection==0) {
+    showSection(FormState.sections.requestForm)    
     }
   }
-  
+
+ 
 
 // Function to auto-fill fields if relationship is "SARILI"
 async function handleRelationshipChange() {
@@ -89,14 +93,6 @@ async function handleRelationshipChange() {
     lastName.value = userData.lastName || "";
     dateOfBirth.value = userData.dateOfBirth || "";
 
-    firstName.readOnly = true;
-    middleName.readOnly = true;
-    lastName.readOnly = true;
-    dateOfBirth.readOnly = true;
-
-    // ✅ Highlight name fields
-    [firstName, middleName, lastName, dateOfBirth]
-      .forEach(field => field.style.backgroundColor = "#f0f0f0");
 
     // ✅ Load provinces first
     const provinces = await getCachedData("psgc_provinces", fetchProvinces);
@@ -129,15 +125,6 @@ async function handleRelationshipChange() {
         }
       }
     }
-
-    // Disable dropdowns since we're auto-filling
-    birthProvince.disabled = true;
-    birthCity.disabled = true;
-    birthDistrict.disabled = true;
-
-    [birthProvince, birthCity, birthDistrict].forEach(
-      field => field.style.backgroundColor = "#f0f0f0"
-    );
 
     validateRequestForm("personalInfoSection", true);
 
@@ -397,13 +384,14 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
       `
     }
   }
-
+let formattedNumber=0;
   const pickupContactField = document.getElementById("unifiedPickupContactNumber");
 if (pickupContactField && userData.phoneNumber) {
-  let formattedNumber = userData.phoneNumber;
+  formattedNumber = userData.phoneNumber;
     formattedNumber = "0" + formattedNumber.slice(3);
     
   pickupContactField.value = formattedNumber;
+  pickupContactField.readOnly = true;
 }
 
   function collectCurrentRequestData() {
@@ -415,6 +403,7 @@ const birthDistrictSelect = FormState.fields.birthDistrict;
 const birthProvince =  birthProvinceSelect?.options[birthProvinceSelect.selectedIndex]?.text || "";
 const birthCity =  birthCitySelect?.options[birthCitySelect.selectedIndex]?.text || "";
 const birthDistrict =  birthDistrictSelect?.options[birthDistrictSelect.selectedIndex]?.text || "";
+
   const purposeValue =
     FormState.fields.purpose?.value === "OTHERS"
       ? document.getElementById("otherPurpose")?.value?.trim() || ""
@@ -438,7 +427,6 @@ const motherName = [
   .join(" ");
 
   return {
-    id: `req_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     certificateType: FormState.fields.certificateType?.value?.trim() || "",
     lastName: FormState.fields.lastName?.value?.trim() || "",
     firstName: FormState.fields.firstName?.value?.trim() || "",
@@ -453,8 +441,85 @@ const motherName = [
     motherName,
     relationship: FormState.fields.relationship?.value?.trim() || "",
     purpose: purposeValue,
-    createdAt: new Date().toISOString(),
   };
+}
+async function loadRequestData() {
+  const savedData = localStorage.getItem("requestData");
+  if (!savedData) return; // nothing to restore
+
+  const data = JSON.parse(savedData);
+
+  // Fill fields back
+  FormState.fields.certificateType.value = data.certificateType || "";
+  FormState.fields.lastName.value = data.lastName || "";
+  FormState.fields.firstName.value = data.firstName || "";
+  FormState.fields.middleName.value = data.middleName || "";
+  FormState.fields.dateOfBirth.value = data.dateOfBirth || "";
+  FormState.fields.sacramentDate.value = data.sacramentDate || "";
+  FormState.fields.birthProvince.value = data.birthProvince || "";
+  FormState.fields.birthCity.value = data.birthCity || "";
+  FormState.fields.birthDistrict.value = data.birthDistrict || "";
+  FormState.fields.relationship.value = data.relationship || "";
+
+  const provinces = await getCachedData("psgc_provinces", fetchProvinces);
+    populateDropdown(birthProvince, provinces, "PUMILI NG LALAWIGAN", data.birthProvince);
+
+    // ✅ If province exists, fetch its cities
+    if (data.birthProvince) {
+      const selectedProvince = provinces.find(
+        p => p.name.toUpperCase() === data.birthProvince.toUpperCase()
+      );
+      if (selectedProvince) {
+        const cities = await getCachedData(
+          `psgc_cities_${selectedProvince.code}`,
+          () => fetchCities(selectedProvince.code)
+        );
+        populateDropdown(birthCity, cities, "PUMILI NG LUNGSOD/BAYAN", data.birthCity);
+
+        // ✅ If city exists, fetch its barangays
+        if (data.birthCity) {
+          const selectedCity = cities.find(
+            c => c.name.toUpperCase() === data.birthCity.toUpperCase()
+          );
+          if (selectedCity) {
+            const barangays = await getCachedData(
+              `psgc_barangays_${selectedCity.code}`,
+              () => fetchBarangays(selectedCity.code)
+            );
+            populateDropdown(birthDistrict, barangays, "PUMILI NG BARANGAY", data.birthDistrict);
+          }
+        }
+      }
+    }
+
+  // Sex radio button
+  if (data.sex) {
+    const sexInput = document.querySelector(
+      `input[name="sex"][value="${data.sex}"]`
+    );
+    if (sexInput) sexInput.checked = true;
+  }
+
+  // Father’s name
+  if (data.fatherName) {
+    const parts = data.fatherName.split(" ");
+    FormState.fields.fatherFirstName.value = parts[0] || "";
+    FormState.fields.fatherMiddleName.value = parts[1] || "";
+    FormState.fields.fatherLastName.value = parts[2] || "";
+  }
+
+  // Mother’s name
+  if (data.motherName) {
+    const parts = data.motherName.split(" ");
+    FormState.fields.motherFirstName.value = parts[0] || "";
+    FormState.fields.motherMiddleName.value = parts[1] || "";
+    FormState.fields.motherLastName.value = parts[2] || "";
+  }
+
+  // Purpose
+  if (FormState.fields.purpose) {
+    FormState.fields.purpose.value = data.purpose || "";
+  }
 }
 
 function saveCurrentRequestAndContinue() {
@@ -475,10 +540,6 @@ function saveCurrentRequestAndContinue() {
     FormState.allRequests.push(requestData);
   }
 
-  // Persist all requests for future sessions
-  localStorage.setItem("allRequests", JSON.stringify(FormState.allRequests));
-
-  saveAllRequests();
   updateRequestsReviewTable();
 
   // Show success notification
@@ -487,36 +548,10 @@ function saveCurrentRequestAndContinue() {
   // Move to the next step after a short delay for smoother UX
   setTimeout(() => {
     FormState.currentStep = 2;
+    sessionStorage.setItem("lastFormSection", 2); 
     showSection(FormState.sections.requestsReview);
   }, 800);
 }
-
-
-  function clearForm() {
-    // Reset all form fields
-    Object.values(FormState.fields).forEach((field) => {
-      if (field && field.type !== "radio") {
-        field.value = ""
-      }
-    })
-
-    // Reset radio buttons
-    const maleRadio = document.querySelector('input[name="sex"][value="LALAKI"]')
-    if (maleRadio) maleRadio.checked = true
-
-    // Hide other purpose row
-    const otherPurposeRow = document.getElementById("otherPurposeRow")
-    if (otherPurposeRow) otherPurposeRow.style.display = "none"
-
-    // Hide sponsor section
-    const sponsorSection = document.getElementById("sponsorSection")
-    if (sponsorSection) sponsorSection.style.display = "none"
-
-    // Clear errors
-    document.querySelectorAll(".error").forEach((el) => el.classList.remove("error"))
-    document.querySelectorAll(".error-message").forEach((el) => (el.style.display = "none"))
-  }
-
   function updateRequestsCounter() {
     const counter = document.getElementById("requests-count");
     const reviewCounter = document.getElementById("review-requests-count");
@@ -564,10 +599,6 @@ function saveCurrentRequestAndContinue() {
   }
 
   function proceedToDelivery() {
-    if (FormState.allRequests.length === 0) {
-      alert("Walang mga kahilingan na ma-proceed. Magdagdag muna ng kahilingan.")
-      return
-    }
 
     FormState.currentStep = 2
     showSection(FormState.sections.unifiedDelivery)
@@ -723,14 +754,47 @@ function saveCurrentRequestAndContinue() {
       }, 300)
     }
   }
+  let certFee = 0;
+  let deliveryFee = 0;
+
+  async function getServiceFee() {
+    try {
+        const response = await fetch('/assets/php_file/serviceFee.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams({
+                certificateRequest: true
+            })
+        });
+
+        const data = await response.json();
+
+        if (data.certificateFee !== undefined) {
+            certFee = parseFloat(data.certificateFee);
+            deliveryFee = parseFloat(data.deliveryFee);
+
+            // ✅ return usable values
+            return { certFee, deliveryFee };
+        } else {
+            throw new Error(data.error || "Unknown error");
+        }
+    } catch (error) {
+        console.error("Fetch error:", error);
+        return null;
+    }
+}
+let totalAmount=0;
 
   function generateFinalSummary() {
     const summaryContent = document.getElementById("final-summary-content")
     if (!summaryContent) return
-
-    let totalAmount = 0
-    const baseCertificatePrice = 100
-    const deliveryFee = FormState.unifiedDeliveryDetails.deliveryOption === "pickup" ? 0 : 150
+      
+      if(FormState.unifiedDeliveryDetails.deliveryOption === "delivery")
+      {
+        totalAmount= deliveryFee + certFee;
+      }else{
+        totalAmount= certFee;
+      }
 
     // Requests Summary
     let requestsHtml = `
@@ -755,9 +819,7 @@ function saveCurrentRequestAndContinue() {
             <tbody>
     `
 
-    FormState.allRequests.forEach((request, index) => {
-      const requestAmount = baseCertificatePrice
-      totalAmount += requestAmount
+    FormState.allRequests.forEach((request, index) => {         
 
       requestsHtml += `
         <tr>
@@ -765,13 +827,10 @@ function saveCurrentRequestAndContinue() {
           <td>${formatName(request.lastName, request.firstName, request.middleName)}</td>
           <td>${request.sacramentDate ? formatDate(request.sacramentDate) : "Hindi nabanggit"}</td>
           <td>${request.purpose}</td>
-          <td>PHP ${requestAmount.toFixed(2)}</td>
+          <td>PHP ${totalAmount.toFixed(2)}</td>
         </tr>
       `
     })
-
-    // Add delivery fee to total
-    totalAmount += deliveryFee
 
     requestsHtml += `
             </tbody>
@@ -811,7 +870,7 @@ function saveCurrentRequestAndContinue() {
               </div>
               <div class="form-group">
                 <label><strong>Mobile Number:</strong></label>
-                <p>${FormState.unifiedDeliveryDetails.contactNumber ?? userData.phoneNumber}</p>
+                <p>${formattedNumber }</p>
               </div>
               <div class="form-group">
                 <label><strong>Email:</strong></label>
@@ -831,7 +890,7 @@ function saveCurrentRequestAndContinue() {
               </div>
               <div class="form-group">
                 <label><strong>Mobile Number:</strong></label>
-                <p>${FormState.unifiedDeliveryDetails.contactNumber}</p>
+                <p>${formattedNumber }</p>
               </div>
               <div class="form-group">
                 <label><strong>Email:</strong></label>
@@ -857,14 +916,14 @@ function saveCurrentRequestAndContinue() {
           <div class="fee-container">
             <div class="fee-row">
               <span class="fee-label">
-                Bayad sa mga Sertipiko (${FormState.allRequests.length} x PHP ${baseCertificatePrice})
+                Bayad sa Sertipiko (${FormState.allRequests.length} x PHP ${certFee})
                 <br>
                 <em class="fee-sublabel">Certificate Fees</em>
               </span>
-              <span class="fee-amount">PHP ${(FormState.allRequests.length * baseCertificatePrice).toFixed(2)}</span>
+              <span class="fee-amount">PHP ${(certFee).toFixed(2)}</span>
             </div>
             ${
-              deliveryFee > 0
+              FormState.unifiedDeliveryDetails.deliveryOption === "delivery"
                 ? `
               <div class="fee-row">
                 <span class="fee-label">
@@ -894,51 +953,49 @@ function saveCurrentRequestAndContinue() {
 
     summaryContent.innerHTML = requestsHtml + deliveryHtml + feeHtml
   }
+    
+
+// Example usage:
+
 
   function confirmAllRequests() {
-    if (FormState.allRequests.length === 0) {
-      alert("Walang mga kahilingan na ma-confirm.")
-      return
-    }
-
+       
+const savedRequestData = JSON.parse(localStorage.getItem("requestData")) || [];
     // Prepare final data structure
     const finalData = {
-      requests: FormState.allRequests,
-      deliveryDetails: FormState.unifiedDeliveryDetails,
-      totalAmount: calculateTotalAmount(),
-      submittedAt: new Date().toISOString(),
-      status: "submitted",
+      amount: totalAmount,
+      requests: savedRequestData,
+      deliveryDetails: FormState.unifiedDeliveryDetails
     }
 
     // Save to localStorage
     localStorage.setItem("submittedCertificateRequests", JSON.stringify(finalData))
 
-    // Clear working data
-    localStorage.removeItem("allCertificateRequests")
 
     // Redirect to acknowledgement page
-    alert("Matagumpay na naipadala ang inyong mga kahilingan!")
-    window.location.href = "../../acknowledgement-request-certificate-user.html"
-  }
-
-  function calculateTotalAmount() {
-    const baseCertificatePrice = 100
-    const deliveryFee = FormState.unifiedDeliveryDetails?.deliveryOption === "pickup" ? 0 : 150
-    return FormState.allRequests.length * baseCertificatePrice + deliveryFee
+    alert("Matagumpay na naipadala ang inyong mga kahilingan!")    
+    sessionStorage.removeItem("lastFormSection");  
+    window.location.href = "../../acknowledgement-request-certificate-user.html"    
   }
 
   function cancelAllRequests() {
     if (confirm("Sigurado ba kayong gusto ninyong kanselahin ang lahat ng kahilingan?")) {
       localStorage.removeItem("allCertificateRequests")
+      sessionStorage.removeItem("lastFormSection")
       window.location.href = "../../dashboard-user.html"
     }
   }
 
-  function saveAllRequests() {
-    localStorage.setItem("allCertificateRequests", JSON.stringify(FormState.allRequests))
-  }
-
-  function showSection(section) {
+  function showSection(section,) {
+    if (section === FormState.sections.requestForm) {     
+    sessionStorage.setItem("lastFormSection", 0); 
+    } else if (section === FormState.sections.requestsReview){
+    sessionStorage.setItem("lastFormSection", 2); 
+     } else if (section === FormState.sections.unifiedDelivery){
+    sessionStorage.setItem("lastFormSection", 3); 
+     } else if (section === FormState.sections.finalSummary){
+    sessionStorage.setItem("lastFormSection", 4); 
+     }
     // Hide all sections
     Object.values(FormState.sections).forEach((s) => {
       if (s) s.style.display = "none"
@@ -953,7 +1010,7 @@ function saveCurrentRequestAndContinue() {
   }
 
   // Global functions for table actions
-  window.editRequest = (index) => {
+  window.editRequest = (index) => {    
     const request = FormState.allRequests[index]
     if (!request) return
 
@@ -1053,4 +1110,6 @@ function saveCurrentRequestAndContinue() {
     const options = { year: "numeric", month: "long", day: "numeric" }
     return date.toLocaleDateString("tl-PH", options).toUpperCase()
   }
-})
+    
+}) 
+

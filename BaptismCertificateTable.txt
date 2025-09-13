@@ -1,0 +1,24 @@
+BaptismCertificateTable (
+    baptismID 
+    userID 
+    requestID 
+    relationshipToTheDocumentOwner 
+    
+    lastName 
+    firstName 
+    middleName 
+
+    dateOfBaptism
+
+    fatherLastName
+    fatherFirstName 
+    fatherMiddleName 
+
+    motherMaidenName
+    motherFirstName 
+    motherMiddleName 
+
+
+    placeOfBirth
+    dateOfBirth
+);
