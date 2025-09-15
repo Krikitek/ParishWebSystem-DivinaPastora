@@ -8,7 +8,7 @@ const email = urlParams.get("email");
 
     if (email) {
         try {
-            const response = await fetch(`getOTP.php?email=${email}`);
+            const response = await fetch(`/assets/php_file/getOTP.php?email=${email}`);
             const data = await response.json();
 
             if (data.success) {

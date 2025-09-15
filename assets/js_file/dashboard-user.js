@@ -155,7 +155,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     if (session !== "active") {
       // If no session is found, redirect to login page
-      window.location.href = "index.html"
+      window.location.href = "../../index.html"
     }
   }
 

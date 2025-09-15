@@ -10,7 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
     allRequests: [],
     currentRequestIndex: 0,
     currentStep: 1,
-    unifiedDeliveryDetails: null,
+    unifiedDeliveryDetails: {}, 
 
     // Form sections
     sections: {
@@ -54,28 +54,28 @@ document.addEventListener("DOMContentLoaded", () => {
       otherPurpose: document.getElementById("otherPurpose"),
     },
   }
-  if (lastFormSection==2) {
-    showSection(FormState.sections.requestsReview);
-    updateRequestsReviewTable(); // Restore last section
-  } else if (lastFormSection==3) {
-    showSection(FormState.sections.unifiedDelivery);
-    toggleDeliveryOptions()// Default section
-  }else if (lastFormSection==4) {
+          
+  if (lastFormSection==2) {      
+    showSection(FormState.sections.requestsReview);    
+    updateRequestsReviewTable();        
+  } else if (lastFormSection==3) {  
+    showSection(FormState.sections.unifiedDelivery); 
+    updateRequestsReviewTable();      
+  }else if (lastFormSection==4) {   
+    populateDelivery();
+    updateRequestsReviewTable();  
+    generateFinalSummary();
     showSection(FormState.sections.finalSummary);
-    generateFinalSummary(); // Default section
   }
-
   
 
   // Initialize the form
   init()
 
-  async function init() {
-    await getServiceFee()
+  async function init() {    
     setupEventListeners()
     setupUppercaseInputs()
     await setupLocationDropdowns()
-    updateRequestsCounter()
     loadRequestData()
     if (lastFormSection==0) {
     showSection(FormState.sections.requestForm)    
@@ -384,10 +384,9 @@ function populateDropdown(dropdown, items, placeholder, selectedText = "") {
       `
     }
   }
-let formattedNumber=0;
   const pickupContactField = document.getElementById("unifiedPickupContactNumber");
 if (pickupContactField && userData.phoneNumber) {
-  formattedNumber = userData.phoneNumber;
+  let formattedNumber = userData.phoneNumber;
     formattedNumber = "0" + formattedNumber.slice(3);
     
   pickupContactField.value = formattedNumber;
@@ -552,19 +551,6 @@ function saveCurrentRequestAndContinue() {
     showSection(FormState.sections.requestsReview);
   }, 800);
 }
-  function updateRequestsCounter() {
-    const counter = document.getElementById("requests-count");
-    const reviewCounter = document.getElementById("review-requests-count");
-
-    const totalRequests = FormState.allRequests.length;
-
-    // If there are no requests yet, show 0 instead of 1
-    if (counter) counter.textContent = totalRequests > 0 ? totalRequests + 1 : 0;
-
-    // Review counter always shows actual number of saved requests
-    if (reviewCounter) reviewCounter.textContent = totalRequests;
-
-}
 
 
   function updateRequestsReviewTable() {
@@ -604,7 +590,38 @@ function saveCurrentRequestAndContinue() {
     showSection(FormState.sections.unifiedDelivery)
   }
 
-  function toggleDeliveryOptions() {
+  function populateDelivery ()
+  {
+const savedDeliveryDetails = JSON.parse(localStorage.getItem("deliveryDetails")) || {};
+   
+
+// Function to safely set value
+function setInputValue(id, value) {
+  const el = document.getElementById(id);
+  if (el && "value" in el) {  // ensure element exists and supports .value
+    el.value = value || "";
+  }
+}
+
+// Set delivery option radio button
+if (savedDeliveryDetails.deliveryOption) {
+  const radioToCheck = document.querySelector(
+    `input[name="unifiedDeliveryOption"][value="${savedDeliveryDetails.deliveryOption}"]`
+  );
+  if (radioToCheck) radioToCheck.checked = true;
+}
+
+// Populate other fields safely
+setInputValue("unifiedAddressLine1", savedDeliveryDetails.addressLine1);
+setInputValue("unifiedZipCode", savedDeliveryDetails.zipCode);
+setInputValue("unifiedPickupDate", savedDeliveryDetails.pickupDate);
+setInputValue("unifiedPickupContactNumber", savedDeliveryDetails.contactNumber);
+document.getElementById("unifiedDeliveryTermsCheckbox").checked = savedDeliveryDetails.termsAccepted || false;
+toggleDeliveryOptions();
+  }
+
+   function toggleDeliveryOptions() {        
+
     const deliveryOption = document.querySelector('input[name="unifiedDeliveryOption"]:checked')?.value
     const deliverySection = document.getElementById("unifiedDeliveryAddressSection")
     const pickupSection = document.getElementById("unifiedPickupSection")
@@ -624,28 +641,32 @@ function saveCurrentRequestAndContinue() {
     }
   }
 
-  function proceedToSummary() {
+  async function proceedToSummary() {
     if (!window.validateUnifiedDeliveryForm()) {
       alert("Mangyaring punan ang lahat ng kinakailangang detalye ng paghahatid.")
       return
     }
+    FormState.unifiedDeliveryDetails = FormState.unifiedDeliveryDetails || {};
 
-    // Save unified delivery details
-    const deliveryOption = document.querySelector('input[name="unifiedDeliveryOption"]:checked')?.value
 
-    FormState.unifiedDeliveryDetails = {
-      deliveryOption: deliveryOption,
-      termsAccepted: document.getElementById("unifiedDeliveryTermsCheckbox")?.checked,
-    }
+// Get current selected delivery option
+const deliveryOption = document.querySelector('input[name="unifiedDeliveryOption"]:checked')?.value;
 
-    if (deliveryOption === "delivery") {
-      FormState.unifiedDeliveryDetails.addressLine1 = document.getElementById("unifiedAddressLine1")?.value
-      FormState.unifiedDeliveryDetails.zipCode = document.getElementById("unifiedZipCode")?.value
-    } else {
-      FormState.unifiedDeliveryDetails.pickupDate = document.getElementById("unifiedPickupDate")?.value
-      FormState.unifiedDeliveryDetails.contactNumber = document.getElementById("unifiedPickupContactNumber")?.value
-    }
+// Update FormState with current form values
+FormState.unifiedDeliveryDetails.deliveryOption = deliveryOption ;
+FormState.unifiedDeliveryDetails.termsAccepted = document.getElementById("unifiedDeliveryTermsCheckbox")?.checked;
 
+if (deliveryOption === "delivery") {
+  FormState.unifiedDeliveryDetails.addressLine1 = document.getElementById("unifiedAddressLine1")?.value;
+  FormState.unifiedDeliveryDetails.zipCode = document.getElementById("unifiedZipCode")?.value;
+} else if (deliveryOption === "pickup") {
+  FormState.unifiedDeliveryDetails.pickupDate = document.getElementById("unifiedPickupDate")?.value;
+  FormState.unifiedDeliveryDetails.contactNumber = document.getElementById("unifiedPickupContactNumber")?.value;
+}
+
+localStorage.setItem("deliveryDetails", JSON.stringify(FormState.unifiedDeliveryDetails));
+ 
+    await getServiceFee()
     generateFinalSummary()
     FormState.currentStep = 3
     showSection(FormState.sections.finalSummary)
@@ -754,50 +775,64 @@ function saveCurrentRequestAndContinue() {
       }, 300)
     }
   }
-  let certFee = 0;
-  let deliveryFee = 0;
-
   async function getServiceFee() {
+  const savedDeliveryDetails = JSON.parse(localStorage.getItem("deliveryDetails")) || {};
+  let certFee = savedDeliveryDetails.certificateFee || 0;
+  let deliveryFee = savedDeliveryDetails.deliveryFee || 0;
+
+  if (certFee === 0) {
     try {
-        const response = await fetch('/assets/php_file/serviceFee.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-            body: new URLSearchParams({
-                certificateRequest: true
-            })
-        });
+      const response = await fetch('/assets/php_file/serviceFee.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams({ certificateRequest: true })
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data.certificateFee !== undefined) {
-            certFee = parseFloat(data.certificateFee);
-            deliveryFee = parseFloat(data.deliveryFee);
+      if (data.certificateFee !== undefined) {
+        certFee = parseFloat(data.certificateFee) || 0;
+        deliveryFee = parseFloat(data.deliveryFee) || 0;
 
-            // ✅ return usable values
-            return { certFee, deliveryFee };
-        } else {
-            throw new Error(data.error || "Unknown error");
-        }
+        FormState.unifiedDeliveryDetails.certFee = certFee;
+        FormState.unifiedDeliveryDetails.deliveryFee = deliveryFee;
+        localStorage.setItem("deliveryDetails", JSON.stringify(FormState.unifiedDeliveryDetails));
+      } else {
+        throw new Error(data.error || "Unknown error");
+      }
     } catch (error) {
-        console.error("Fetch error:", error);
-        return null;
+      console.error("Fetch error:", error);
+      return null;
     }
-}
-let totalAmount=0;
+  }
 
-  function generateFinalSummary() {
+  // Always return the fees wrapped in a Promise
+  return { certFee, deliveryFee };
+}
+
+
+  function generateFinalSummary() {    
+    const savedRequestData = JSON.parse(localStorage.getItem("requestData")) || {};
+     const savedDeliveryDetails = JSON.parse(localStorage.getItem("deliveryDetails")) || {};
+     
+   totalAmount=0;
+    let formattedNumber = userData.phoneNumber;
+    formattedNumber = "0" + formattedNumber.slice(3);
+
     const summaryContent = document.getElementById("final-summary-content")
     if (!summaryContent) return
       
-      if(FormState.unifiedDeliveryDetails.deliveryOption === "delivery")
+      if(savedDeliveryDetails.deliveryOption === "delivery")
       {
-        totalAmount= deliveryFee + certFee;
+       FormState.unifiedDeliveryDetails.totalAmount=savedDeliveryDetails.deliveryFee + savedDeliveryDetails.certFee;
       }else{
-        totalAmount= certFee;
+        FormState.unifiedDeliveryDetails.totalAmount=savedDeliveryDetails.certFee;
       }
-
+console.log(savedDeliveryDetails);
     // Requests Summary
-    let requestsHtml = `
+    
+// Build Requests HTML
+let requestsHtml = `
       <div class="summary-section">
         <div class="section-header">
           <div>
@@ -819,139 +854,129 @@ let totalAmount=0;
             <tbody>
     `
 
-    FormState.allRequests.forEach((request, index) => {         
+  requestsHtml += `
+    <tr>
+      <td>${savedRequestData.certificateType === "KUMPIL" ? "KUMPIL" : "BINYAG"}</td>
+      <td>${savedRequestData.lastName ? `${savedRequestData.lastName}, ${savedRequestData.firstName} ${savedRequestData.middleName || ""}` : ""}</td>
+      <td>${savedRequestData.sacramentDate ? new Date(savedRequestData.sacramentDate).toLocaleDateString() : "Hindi nabanggit"}</td>
+      <td>${savedRequestData.purpose || ""}</td>
+      <td>PHP ${FormState.unifiedDeliveryDetails.totalAmount.toFixed(2)}</td>
+    </tr>
+  `;
 
-      requestsHtml += `
-        <tr>
-          <td>${request.certificateType === "KUMPIL" ? "KUMPIL" : "BINYAG"}</td>
-          <td>${formatName(request.lastName, request.firstName, request.middleName)}</td>
-          <td>${request.sacramentDate ? formatDate(request.sacramentDate) : "Hindi nabanggit"}</td>
-          <td>${request.purpose}</td>
-          <td>PHP ${totalAmount.toFixed(2)}</td>
-        </tr>
+
+requestsHtml += `
+        </tbody>
+      </table>
+    </div>
+  </div>
+`;
+
+// Delivery Summary
+const deliveryHtml = `
+  <div class="summary-section">
+    <div class="section-header">
+      <div>
+        <h3 class="section-title">Detalye ng Paghahatid</h3>
+        <div class="section-subtitle">Delivery Details</div>
+      </div>
+    </div>
+    <div class="section-content">
+      <div class="form-row">
+        <div class="form-group">
+          <label><strong>Paraan ng Paghahatid:</strong></label>
+          <p>${savedDeliveryDetails.deliveryOption === "pickup" ? "KUKUNIN SA PAROKYA" : "PAGHAHATID"}</p>
+        </div>
+      </div>
+      ${
+        savedDeliveryDetails.deliveryOption === "delivery"
+          ? `
+        <div class="form-row">
+          <div class="form-group">
+            <label><strong>Address:</strong></label>
+            <p>${savedDeliveryDetails.addressLine1 || ""}</p>
+            <p>Zip Code: ${savedDeliveryDetails.zipCode || ""}</p>
+          </div>
+          <div class="form-group">
+            <label><strong>Mobile Number:</strong></label>
+            <p>${formattedNumber}</p>
+          </div>
+          <div class="form-group">
+            <label><strong>Email:</strong></label>
+            <p>${userData.email}</p>
+          </div>
+        </div>
       `
-    })
-
-    requestsHtml += `
-            </tbody>
-          </table>
-        </div>
-      </div>
-    `
-
-    // Delivery Summary
-    const deliveryHtml = `
-      <div class="summary-section">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Detalye ng Paghahatid</h3>
-            <div class="section-subtitle">Delivery Details</div>
+          : `
+        <div class="form-row">
+          <div class="form-group">
+            <label><strong>Petsa ng Pagkuha:</strong></label>
+            <p>${savedDeliveryDetails.pickupDate ? new Date(savedDeliveryDetails.pickupDate).toLocaleDateString() : ""}</p>
+          </div>
+          <div class="form-group">
+            <label><strong>Mobile Number:</strong></label>
+            <p>${formattedNumber}</p>
+          </div>
+          <div class="form-group">
+            <label><strong>Email:</strong></label>
+            <p>${userData.email}</p>
           </div>
         </div>
-        <div class="section-content">
-          <div class="form-row">
-            <div class="form-group">
-              <label><strong>Paraan ng Paghahatid:</strong></label>
-              <p>${FormState.unifiedDeliveryDetails.deliveryOption === "pickup" ? "KUKUNIN SA PAROKYA" : "PAGHAHATID"}</p>
-            </div>
-          </div>
-          ${
-            FormState.unifiedDeliveryDetails.deliveryOption === "delivery"
-              ? `
-            <div class="form-row">
-              <div class="form-group">
-                <label><strong>Address:</strong></label>
-                <p>${FormState.unifiedDeliveryDetails.addressLine1}</p>
-                <p>Zip Code: ${FormState.unifiedDeliveryDetails.zipCode}</p>
-              </div>
-              <div class="form-group">
-                <label><strong></strong></label>
-                <p></p>
-              </div>
-              <div class="form-group">
-                <label><strong>Mobile Number:</strong></label>
-                <p>${formattedNumber }</p>
-              </div>
-              <div class="form-group">
-                <label><strong>Email:</strong></label>
-                <p>${userData.email}</p>
-              </div>
-            </div>
-          `
-              : `
-            <div class="form-row">
-              <div class="form-group">
-                <label><strong>Petsa ng Pagkuha:</strong></label>
-                <p>${formatDate(FormState.unifiedDeliveryDetails.pickupDate)}</p>
-              </div>
-              <div class="form-group">
-                <label><strong></strong></label>
-                <p></p>
-              </div>
-              <div class="form-group">
-                <label><strong>Mobile Number:</strong></label>
-                <p>${formattedNumber }</p>
-              </div>
-              <div class="form-group">
-                <label><strong>Email:</strong></label>
-                <p>${userData.email}</p>
-              </div>
-            </div>
-          `
-          }
-        </div>
-      </div>
+      `
+      }
+    </div>
+  </div>
     `
 
     // Fee Summary
     const feeHtml = `
-      <div class="summary-section">
-        <div class="section-header">
-          <div>
-            <h3 class="section-title">Kabuuang Bayad</h3>
-            <div class="section-subtitle">Total Payment</div>
-          </div>
+  <div class="summary-section">
+    <div class="section-header">
+      <div>
+        <h3 class="section-title">Kabuuang Bayad</h3>
+        <div class="section-subtitle">Total Payment</div>
+      </div>
+    </div>
+    <div class="section-content">
+      <div class="fee-container">
+        <div class="fee-row">
+          <span class="fee-label">
+            Bayad sa Sertipiko (${savedRequestData.length} x PHP ${savedDeliveryDetails.certFee})
+            <br>
+            <em class="fee-sublabel">Certificate Fees</em>
+          </span>
+          <span class="fee-amount">PHP ${savedDeliveryDetails.certFee.toFixed(2)}</span>
         </div>
-        <div class="section-content">
-          <div class="fee-container">
-            <div class="fee-row">
-              <span class="fee-label">
-                Bayad sa Sertipiko (${FormState.allRequests.length} x PHP ${certFee})
-                <br>
-                <em class="fee-sublabel">Certificate Fees</em>
-              </span>
-              <span class="fee-amount">PHP ${(certFee).toFixed(2)}</span>
-            </div>
-            ${
-              FormState.unifiedDeliveryDetails.deliveryOption === "delivery"
-                ? `
-              <div class="fee-row">
-                <span class="fee-label">
-                  Bayad sa Paghahatid
-                  <br>
-                  <em class="fee-sublabel">Delivery Fee</em>
-                </span>
-                <span class="fee-amount">PHP ${deliveryFee.toFixed(2)}</span>
-              </div>
-            `
-                : ""
-            }
-            <div class="fee-row total-row">
-              <span class="fee-label">
-                <strong>Kabuuang Halaga</strong>
-                <br>
-                <em class="fee-sublabel"><strong>Total Amount</strong></em>
-              </span>
-              <span class="fee-amount">
-                <strong>PHP ${totalAmount.toFixed(2)}</strong>
-              </span>
-            </div>
+        ${
+          savedDeliveryDetails.deliveryOption === "delivery"
+            ? `
+          <div class="fee-row">
+            <span class="fee-label">
+              Bayad sa Paghahatid
+              <br>
+              <em class="fee-sublabel">Delivery Fee</em>
+            </span>
+            <span class="fee-amount">PHP ${savedDeliveryDetails.deliveryFee.toFixed(2)}</span>
           </div>
+        `
+            : ""
+        }
+        <div class="fee-row total-row">
+          <span class="fee-label">
+            <strong>Kabuuang Halaga</strong>
+            <br>
+            <em class="fee-sublabel"><strong>Total Amount</strong></em>
+          </span>
+          <span class="fee-amount">
+            <strong>PHP ${FormState.unifiedDeliveryDetails.totalAmount.toFixed(2)}</strong>
+          </span>
         </div>
       </div>
-    `
+    </div>
+  </div>
+`
 
-    summaryContent.innerHTML = requestsHtml + deliveryHtml + feeHtml
+summaryContent.innerHTML = requestsHtml + deliveryHtml + feeHtml;
   }
     
 
@@ -963,7 +988,6 @@ let totalAmount=0;
 const savedRequestData = JSON.parse(localStorage.getItem("requestData")) || [];
     // Prepare final data structure
     const finalData = {
-      amount: totalAmount,
       requests: savedRequestData,
       deliveryDetails: FormState.unifiedDeliveryDetails
     }
@@ -973,13 +997,16 @@ const savedRequestData = JSON.parse(localStorage.getItem("requestData")) || [];
 
 
     // Redirect to acknowledgement page
-    alert("Matagumpay na naipadala ang inyong mga kahilingan!")    
     sessionStorage.removeItem("lastFormSection");  
+    localStorage.removeItem("deliveryDetails")
+    localStorage.removeItem("allCertificateRequests")
     window.location.href = "../../acknowledgement-request-certificate-user.html"    
   }
 
   function cancelAllRequests() {
     if (confirm("Sigurado ba kayong gusto ninyong kanselahin ang lahat ng kahilingan?")) {
+      // Get from localStorage
+      localStorage.removeItem("deliveryDetails")
       localStorage.removeItem("allCertificateRequests")
       sessionStorage.removeItem("lastFormSection")
       window.location.href = "../../dashboard-user.html"
@@ -989,13 +1016,15 @@ const savedRequestData = JSON.parse(localStorage.getItem("requestData")) || [];
   function showSection(section,) {
     if (section === FormState.sections.requestForm) {     
     sessionStorage.setItem("lastFormSection", 0); 
-    } else if (section === FormState.sections.requestsReview){
+    } else if (section === FormState.sections.requestsReview ){  
     sessionStorage.setItem("lastFormSection", 2); 
      } else if (section === FormState.sections.unifiedDelivery){
     sessionStorage.setItem("lastFormSection", 3); 
-     } else if (section === FormState.sections.finalSummary){
-    sessionStorage.setItem("lastFormSection", 4); 
+     } else if (section === FormState.sections.finalSummary){   
+       sessionStorage.setItem("lastFormSection", 4); 
      }
+     
+     // Default section
     // Hide all sections
     Object.values(FormState.sections).forEach((s) => {
       if (s) s.style.display = "none"
@@ -1073,42 +1102,6 @@ const savedRequestData = JSON.parse(localStorage.getItem("requestData")) || [];
     FormState.currentStep = 1
     showSection(FormState.sections.requestForm)
     showNotification("Nai-load na ang kahilingan para sa pag-edit.")
-  }
-
-  window.deleteRequest = async (index) => {
-    if (confirm("Sigurado ba kayong gusto ninyong burahin ang kahilingang ito?")) {
-      FormState.allRequests.splice(index, 1)    
-      showNotification("Matagumpay na nabura ang kahilingan.")
-      await sleep(1000);      
-      showSection(FormState.sections.requestForm);
-      refresh();            
-    }
-  }
-
-  function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-} 
-
-  function refresh() {
-
-  setTimeout(() => {
-    window.location.reload(true); // Refresh after animation ends
-  }, 100); 
-}
-
-
-  // Utility functions
-  function formatName(lastName, firstName, middleName) {
-    if (!lastName || !firstName) return ""
-    const middle = middleName ? ` ${middleName}` : ""
-    return `${lastName}, ${firstName}${middle}`
-  }
-
-  function formatDate(dateString) {
-    if (!dateString) return ""
-    const date = new Date(dateString)
-    const options = { year: "numeric", month: "long", day: "numeric" }
-    return date.toLocaleDateString("tl-PH", options).toUpperCase()
   }
     
 }) 

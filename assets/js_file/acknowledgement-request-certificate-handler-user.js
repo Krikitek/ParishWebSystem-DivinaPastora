@@ -120,7 +120,7 @@ function saveAllRequests() {
         paymentRef: generatePaymentRef((requestData.certificateType)),
         status: "pending",
         sex: unwrap(requestData.sex),
-        amount: submittedData.amount,
+        amount: deliveryDetails.totalAmount,
     };
 });
 
